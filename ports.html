@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ports — khanfarr</title>
+  <meta name="description" content="ports — khanfarr" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Monospace vibe is key; system monospace is fine, but this gives a nice look -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+      font-size: 20px;
+    }
+    
+    .container {
+      max-width: none;
+    }
+    
+    .brand {
+      font-size: 40px !important;
+    }
+    
+    .section {
+      font-size: 24px !important;
+    }
+    
+    .tree li ul li {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+    
+    .port-item {
+      position: relative;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    
+    .port-item:hover {
+      color: var(--accent);
+    }
+    
+    .port-item.active {
+      color: var(--link);
+    }
+    
+    .tooltip {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      left: 100%;
+      margin-left: 15px;
+      background-color: rgba(0, 0, 0, 0.95);
+      border: 1px solid var(--fg);
+      padding: 12px;
+      width: 300px;
+      font-size: 14px;
+      line-height: 1.5;
+      z-index: 1000;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    
+    .port-item:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    .tooltip-title {
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 6px;
+      border-bottom: 1px solid var(--fg);
+      padding-bottom: 4px;
+    }
+    
+    .tooltip-field {
+      margin: 4px 0;
+    }
+    
+    .tooltip-field strong {
+      color: var(--link);
+    }
+    
+    .container-wrapper {
+      display: flex;
+      width: 100%;
+      max-width: 1400px;
+      transition: all 0.3s ease;
+      justify-content: center;
+      align-items: flex-start;
+      margin: 0 auto;
+    }
+    
+    .container-wrapper.notes-visible {
+      justify-content: flex-start;
+    }
+    
+    .port-list-container {
+      width: auto;
+      transition: all 0.3s ease;
+      margin: 0 auto;
+    }
+    
+    .port-list-container.shrunk {
+      margin: 0;
+      margin-right: 15px;
+    }
+    
+    .notes-container {
+      position: fixed;
+      right: 500px;
+      top: 150px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .notes-container.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .notes-box {
+      background-color: rgba(0, 0, 0, 0.95);
+      border: 1px solid var(--fg);
+      padding: 20px;
+      width: 600px;
+      max-width: 900px;
+    }
+    
+    .notes-title {
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--fg);
+      padding-bottom: 8px;
+      font-size: 20px;
+    }
+    
+    .notes-textarea {
+      width: 100%;
+      min-height: 400px;
+      background-color: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--fg);
+      padding: 10px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: vertical;
+    }
+    
+    .notes-textarea:focus {
+      outline: 1px solid var(--accent);
+    }
+    
+    /* Password Modal */
+    .password-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .password-modal.show {
+      display: flex;
+    }
+    
+    .password-modal-content {
+      background-color: var(--bg);
+      border: 2px solid var(--fg);
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+    }
+    
+    .password-modal-title {
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    
+    .password-input {
+      width: 100%;
+      background-color: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--fg);
+      padding: 10px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    
+    .password-input:focus {
+      outline: 1px solid var(--accent);
+    }
+    
+    .password-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    
+    .password-button {
+      background-color: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--fg);
+      padding: 8px 16px;
+      cursor: pointer;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 14px;
+    }
+    
+    .password-button:hover {
+      background-color: var(--fg);
+      color: var(--bg);
+    }
+    
+    .password-error {
+      color: #ff6b6b;
+      font-size: 12px;
+      margin-bottom: 10px;
+      display: none;
+    }
+    
+    .password-error.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-wrapper">
+    <div class="port-list-container" id="portListContainer">
+      <main class="container">
+        <h1 class="brand"><a href="index.html" style="text-decoration: none; color: inherit;">khanfarr</a></h1>
+
+        <ul class="tree">
+          <li>
+            <span class="section">ports</span>
+            <ul>
+              <li class="port-item">20 — FTP (Data)
+                <div class="tooltip">
+                  <div class="tooltip-title">FTP (Data) - Port 20</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> File Transfer Protocol data channel</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Unencrypted, vulnerable to MITM attacks</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Suspicious file transfers, privilege escalation attempts</div>
+                </div>
+              </li>
+              <li class="port-item">21 — FTP (Control)
+                <div class="tooltip">
+                  <div class="tooltip-title">FTP (Control) - Port 21</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> File Transfer Protocol control commands</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Unencrypted authentication, weak protocols</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Brute force attacks, anonymous login attempts</div>
+                </div>
+              </li>
+              <li class="port-item">22 — SSH
+                <div class="tooltip">
+                  <div class="tooltip-title">SSH - Port 22</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Secure Shell remote administration</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Encrypted, strong authentication</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Brute force attacks, unusual login times/locations</div>
+                </div>
+              </li>
+              <li class="port-item">23 — Telnet
+                <div class="tooltip">
+                  <div class="tooltip-title">Telnet - Port 23</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Unencrypted remote terminal access</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Unencrypted, credentials exposed</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Any usage (should be replaced with SSH), password sniffing</div>
+                </div>
+              </li>
+              <li class="port-item">25 — SMTP
+                <div class="tooltip">
+                  <div class="tooltip-title">SMTP - Port 25</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Mail server communication</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Unencrypted by default</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Spam, phishing emails, relay attacks, DDoS amplification</div>
+                </div>
+              </li>
+              <li class="port-item">53 — DNS
+                <div class="tooltip">
+                  <div class="tooltip-title">DNS - Port 53</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP/UDP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Domain name resolution</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Unencrypted by default (DNS over HTTPS/TLS available)</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> DNS tunneling, DDoS amplification, cache poisoning</div>
+                </div>
+              </li>
+              <li class="port-item">80 — HTTP
+                <div class="tooltip">
+                  <div class="tooltip-title">HTTP - Port 80</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Web browsing, HTTP traffic</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Unencrypted, credentials in plaintext</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Credential harvesting, sensitive data exposure, malware downloads</div>
+                </div>
+              </li>
+              <li class="port-item">88 — Kerberos
+                <div class="tooltip">
+                  <div class="tooltip-title">Kerberos - Port 88</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP/UDP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Network authentication protocol</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Encrypted tickets, time-bound authentication</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Golden ticket attacks, ticket replay attacks, time skew attacks</div>
+                </div>
+              </li>
+              <li class="port-item">110 — POP3
+                <div class="tooltip">
+                  <div class="tooltip-title">POP3 - Port 110</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Email retrieval from mail server</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Unencrypted authentication and data</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Credential theft, email interception, brute force attacks</div>
+                </div>
+              </li>
+              <li class="port-item">111 — RPCbind
+                <div class="tooltip">
+                  <div class="tooltip-title">RPCbind - Port 111</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP/UDP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Maps RPC program numbers to ports</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Vulnerable, often exposed</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Enumeration attempts, unauthorized service discovery, RPC exploits</div>
+                </div>
+              </li>
+              <li class="port-item">135 — MSRPC
+                <div class="tooltip">
+                  <div class="tooltip-title">MSRPC - Port 135</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Microsoft RPC endpoint mapper</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Vulnerable to enumeration and exploitation</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> EternalBlue, DCE/RPC exploits, unauthorized enumeration</div>
+                </div>
+              </li>
+              <li class="port-item">139 — NetBIOS-SSN
+                <div class="tooltip">
+                  <div class="tooltip-title">NetBIOS-SSN - Port 139</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> NetBIOS session service, legacy Windows file sharing</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Unencrypted, NTLM authentication</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Pass-the-hash, NTLM relay, SMB exploits</div>
+                </div>
+              </li>
+              <li class="port-item">143 — IMAP
+                <div class="tooltip">
+                  <div class="tooltip-title">IMAP - Port 143</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Email access protocol</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Unencrypted authentication and mail content</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Credential theft, email interception, unauthorized access</div>
+                </div>
+              </li>
+              <li class="port-item">161 — SNMP
+                <div class="tooltip">
+                  <div class="tooltip-title">SNMP - Port 161</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> UDP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Network device monitoring and management</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Weak community strings, information disclosure</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Default community strings, network reconnaissance, OID brute force</div>
+                </div>
+              </li>
+              <li class="port-item">389 — LDAP
+                <div class="tooltip">
+                  <div class="tooltip-title">LDAP - Port 389</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP/UDP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Directory services authentication</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Unencrypted by default, bind attacks</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Null bind attacks, LDAP injection, credential harvesting</div>
+                </div>
+              </li>
+              <li class="port-item">443 — HTTPS
+                <div class="tooltip">
+                  <div class="tooltip-title">HTTPS - Port 443</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Encrypted web traffic</div>
+                  <div class="tooltip-field"><strong>Security:</strong> TLS/SSL encrypted</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> TLS downgrade attacks, weak ciphers, certificate issues, malware C2</div>
+                </div>
+              </li>
+              <li class="port-item">445 — SMB
+                <div class="tooltip">
+                  <div class="tooltip-title">SMB - Port 445</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Windows file sharing, print services</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Often exploits, EternalBlue, pass-the-hash</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Lateral movement, ransomware propagation, Null sessions, Kerberoasting</div>
+                </div>
+              </li>
+              <li class="port-item">636 — LDAPS
+                <div class="tooltip">
+                  <div class="tooltip-title">LDAPS - Port 636</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Secure LDAP over SSL/TLS</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Encrypted LDAP</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Weak SSL/TLS, certificate issues, LDAP injection</div>
+                </div>
+              </li>
+              <li class="port-item">993 — IMAPS
+                <div class="tooltip">
+                  <div class="tooltip-title">IMAPS - Port 993</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Secure IMAP over SSL/TLS</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Encrypted email access</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Certificate issues, weak ciphers, brute force attacks</div>
+                </div>
+              </li>
+              <li class="port-item">995 — POP3S
+                <div class="tooltip">
+                  <div class="tooltip-title">POP3S - Port 995</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Secure POP3 over SSL/TLS</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Encrypted email retrieval</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Certificate issues, weak ciphers, brute force attacks</div>
+                </div>
+              </li>
+              <li class="port-item">1433 — MSSQL
+                <div class="tooltip">
+                  <div class="tooltip-title">MSSQL - Port 1433</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Microsoft SQL Server</div>
+                  <div class="tooltip-field"><strong>Security:</strong> SQL injection vulnerabilities</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> SQL injection, brute force, unauthorized access, data exfiltration</div>
+                </div>
+              </li>
+              <li class="port-item">3306 — MySQL
+                <div class="tooltip">
+                  <div class="tooltip-title">MySQL - Port 3306</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> MySQL database server</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Weak authentication, SQL injection</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> SQL injection, brute force, privilege escalation, data exfiltration</div>
+                </div>
+              </li>
+              <li class="port-item">3389 — RDP
+                <div class="tooltip">
+                  <div class="tooltip-title">RDP - Port 3389</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Remote Desktop Protocol</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Targeted by ransomware, brute force attacks</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Brute force, BlueKeep exploits, unauthorized access, lateral movement</div>
+                </div>
+              </li>
+              <li class="port-item">5432 — PostgreSQL
+                <div class="tooltip">
+                  <div class="tooltip-title">PostgreSQL - Port 5432</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> PostgreSQL database server</div>
+                  <div class="tooltip-field"><strong>Security:</strong> SQL injection, weak auth</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> SQL injection, brute force, unauthorized database access</div>
+                </div>
+              </li>
+              <li class="port-item">5985 — WinRM HTTP
+                <div class="tooltip">
+                  <div class="tooltip-title">WinRM HTTP - Port 5985</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Windows Remote Management</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Unencrypted by default</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Credential theft, pass-the-hash, lateral movement</div>
+                </div>
+              </li>
+              <li class="port-item">5986 — WinRM HTTPS
+                <div class="tooltip">
+                  <div class="tooltip-title">WinRM HTTPS - Port 5986</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Windows Remote Management encrypted</div>
+                  <div class="tooltip-field"><strong>Security:</strong> TLS/SSL encrypted</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Certificate issues, pass-the-hash, lateral movement</div>
+                </div>
+              </li>
+              <li class="port-item">8080 — HTTP-Proxy
+                <div class="tooltip">
+                  <div class="tooltip-title">HTTP-Proxy - Port 8080</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Alternative HTTP port, proxies</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Often misconfigured, unencrypted</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Open proxies, malware C2, unauthorized access</div>
+                </div>
+              </li>
+              <li class="port-item">8443 — HTTPS-Proxy
+                <div class="tooltip">
+                  <div class="tooltip-title">HTTPS-Proxy - Port 8443</div>
+                  <div class="tooltip-field"><strong>Protocol:</strong> TCP</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Alternative HTTPS port, secure proxies</div>
+                  <div class="tooltip-field"><strong>Security:</strong> TLS/SSL encrypted</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Certificate issues, malware C2, unauthorized proxy use</div>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <footer class="footer">
+          <span>© <span id="year"></span> khanfarr</span>
+        </footer>
+      </main>
+    </div>
+
+    <div class="notes-container" id="notesContainer">
+      <div class="notes-box">
+        <div class="notes-title" id="notesTitle">Notes</div>
+        <textarea class="notes-textarea" id="notesTextarea" placeholder="Add your notes here..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Modal -->
+  <div class="password-modal" id="passwordModal">
+    <div class="password-modal-content">
+      <div class="password-modal-title">Enter Password to Save Notes</div>
+      <div class="password-error" id="passwordError">Incorrect password. Please try again.</div>
+      <input type="password" class="password-input" id="passwordInput" placeholder="Password">
+      <div class="password-buttons">
+        <button class="password-button" id="passwordCancel">Cancel</button>
+        <button class="password-button" id="passwordSubmit">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    
+    // Notes functionality
+    const portItems = document.querySelectorAll('.port-item');
+    const notesContainer = document.getElementById('notesContainer');
+    const notesTitle = document.getElementById('notesTitle');
+    const notesTextarea = document.getElementById('notesTextarea');
+    const portListContainer = document.getElementById('portListContainer');
+    const containerWrapper = document.querySelector('.container-wrapper');
+    const passwordModal = document.getElementById('passwordModal');
+    const passwordInput = document.getElementById('passwordInput');
+    const passwordError = document.getElementById('passwordError');
+    const passwordSubmit = document.getElementById('passwordSubmit');
+    const passwordCancel = document.getElementById('passwordCancel');
+    
+    let currentPort = '';
+    let saveResolve = null;
+    let originalNotes = '';
+    let notesChanged = false;
+    
+    // Load saved notes from localStorage
+    function loadNotes(portName) {
+      const savedNotes = localStorage.getItem(`port_notes_${portName}`);
+      if (savedNotes) {
+        notesTextarea.value = savedNotes;
+      } else {
+        notesTextarea.value = '';
+      }
+      originalNotes = notesTextarea.value;
+      notesChanged = false;
+    }
+    
+    // Show password modal
+    function showPasswordModal() {
+      return new Promise((resolve) => {
+        saveResolve = resolve;
+        passwordInput.value = '';
+        passwordError.classList.remove('show');
+        passwordModal.classList.add('show');
+        passwordInput.focus();
+      });
+    }
+    
+    // Hide password modal
+    function hidePasswordModal() {
+      passwordModal.classList.remove('show');
+      passwordError.classList.remove('show');
+    }
+    
+    // Password submit handler
+    passwordSubmit.addEventListener('click', function() {
+      if (passwordInput.value === 'khanfarris') {
+        hidePasswordModal();
+        if (saveResolve) saveResolve(true);
+      } else {
+        passwordError.classList.add('show');
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    });
+    
+    // Password cancel handler
+    passwordCancel.addEventListener('click', function() {
+      hidePasswordModal();
+      if (saveResolve) saveResolve(false);
+    });
+    
+    // Allow Enter key to submit password
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        passwordSubmit.click();
+      }
+    });
+    
+    // Save notes to localStorage with password protection
+    async function saveNotes(portName, requirePassword = false) {
+      if (portName) {
+        // Check if notes have changed
+        if (requirePassword && !notesChanged) {
+          return true; // No changes, skip password prompt
+        }
+        
+        if (requirePassword) {
+          const authorized = await showPasswordModal();
+          if (!authorized) {
+            return false;
+          }
+        }
+        localStorage.setItem(`port_notes_${portName}`, notesTextarea.value);
+        notesChanged = false;
+        originalNotes = notesTextarea.value;
+        return true;
+      }
+      return false;
+    }
+    
+    // Track changes to notes
+    notesTextarea.addEventListener('input', function() {
+      notesChanged = (notesTextarea.value !== originalNotes);
+    });
+    
+    // Add click handler to each port item
+    portItems.forEach(item => {
+      item.addEventListener('click', function(e) {
+        // Prevent tooltip from showing on click
+        e.stopPropagation();
+        
+        // Get port name from the text content (first text node only, excluding tooltip)
+        const portName = this.childNodes[0].textContent.trim();
+        
+        // If clicking the same port, toggle off
+        if (currentPort === portName && notesContainer.classList.contains('visible')) {
+          notesContainer.classList.remove('visible');
+          portListContainer.classList.remove('shrunk');
+          containerWrapper.classList.remove('notes-visible');
+          this.classList.remove('active');
+          currentPort = '';
+          return;
+        }
+        
+        // Save current notes before switching (with password)
+        if (currentPort) {
+          saveNotes(currentPort, true);
+        }
+        
+        // Remove active class from all items
+        portItems.forEach(i => i.classList.remove('active'));
+        
+        // Add active class to clicked item
+        this.classList.add('active');
+        
+        // Update current port
+        currentPort = portName;
+        
+        // Update notes title
+        notesTitle.textContent = `${portName} - Notes`;
+        
+        // Show notes container and shrink port list
+        notesContainer.classList.add('visible');
+        portListContainer.classList.add('shrunk');
+        containerWrapper.classList.add('notes-visible');
+        
+        // Load saved notes for this port
+        loadNotes(portName);
+      });
+    });
+    
+    // Save button functionality (could be triggered on blur or manual save)
+    notesTextarea.addEventListener('blur', function() {
+      if (currentPort) {
+        saveNotes(currentPort, true);
+      }
+    });
+  </script>
+  <script src="oneko.js"></script>
+</body>
+</html>

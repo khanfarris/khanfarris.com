@@ -1,0 +1,96 @@
+:root{
+  --bg:#000;               /* deep black */
+  --fg:#c7f0c2;            /* terminal green (text) */
+  --link:#89f58c;          /* link green */
+  --muted:#7fbf87;         /* dim/and symbols */
+  --accent:#a7ffb0;        /* hover */
+  --maxw:720px;
+}
+
+*{ box-sizing:border-box; }
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  margin: 0;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  line-height: 1.6;
+  font-size: 16px;
+  height: 100%;
+}
+
+/* This is the key part */
+body {
+  display: flex;
+  justify-content: center; /* center horizontally */
+  align-items: center;     /* center vertically */
+}
+
+.container {
+  max-width: var(--maxw);
+  padding: 0 16px;
+  text-align: left; /* optional: centers text lines themselves */
+}
+
+.brand{
+  font-weight:700;
+  font-size:28px;
+  margin:0 0 8px;
+  transform: translateX(-40px)
+}
+
+.tree, .tree ul{
+  list-style:none;
+  padding-left:0;
+  margin-left:0;
+}
+
+.tree > li{ margin:12px 0 18px; }
+
+.section{
+  color:var(--fg);
+  font-weight:600;
+}
+
+.tree li ul{
+  margin-top:6px;
+  padding-left:22px;
+  border-left:1px solid #0f2; /* subtle terminal stem */
+}
+
+.tree li ul li{
+  position:relative;
+  margin:6px 0;
+  padding-left:10px;
+}
+
+.tree li ul li::before{
+  content:"•";
+  position:absolute;
+  left:-12px;
+  color:var(--muted);
+}
+
+a{
+  color:var(--link);
+  text-decoration:none;
+  border-bottom:1px dotted rgba(137,245,140,.4);
+}
+
+a:hover{ color:var(--accent); border-bottom-color:transparent; }
+
+.and{ color:var(--muted); }
+
+.footer{
+  margin-top:32px;
+  color:#7aa57c;
+  font-size:14px;
+  opacity:.9;
+  border-top:1px solid rgba(127,191,135,.2);
+  padding-top:12px;
+}
+
+/* make it look nice on phones */
+@media (max-width:560px){
+  .container{ margin-top:24px; }
+  .brand{ font-size:24px; }
+}
