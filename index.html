@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>khanfarr</title>
+  <meta name="description" content="khanfarr — notes, projects, accolades." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Monospace vibe is key; system monospace is fine, but this gives a nice look -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-size: 20px;
+    }
+    
+    .container {
+      max-width: none;
+    }
+    
+    .brand {
+      font-size: 40px !important;
+    }
+    
+    .section {
+      font-size: 24px !important;
+    }
+    
+    .tree li ul li {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1 class="brand">khanfarr</h1>
+
+    <ul class="tree">
+      <li>
+        <span class="section">$ whoami</span>
+        <ul>
+          <li>Farris Khan</li>
+          <li>security / ops tinkerer</li>
+          <li>
+            <a href="#" target="_blank" rel="noopener">github</a>
+            <span class="and"> && </span>
+            <a href="#" target="_blank" rel="noopener">twitter</a>
+            <span class="and"> && </span>
+            <a href="#" target="_blank" rel="noopener">linkedin</a>
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <span class="section">writeups</span>
+        <ul>
+          <!-- swap these for your own posts or links -->
+          <li>2024-07-31 — <a href="#">adopted maps</a></li>
+          <li>2024-07-06 — <a href="#">cs obfuscation for fun and profit</a></li>
+          <li>2024-06-27 — <a href="#">how to setup goad on windows with vmware</a></li>
+          <li><a href="#">See archive…</a></li>
+        </ul>
+      </li>
+
+      <li>
+        <span class="section">knowledge base</span>
+        <ul>
+          <!-- this replaces writeups, cheatsheets, blogs -->
+          <li><a href="ports.html">ports</a></li>
+          <li><a href="protocols.html">protocols</a></li>
+          <li><a href="linux-commands.html">linux commands</a></li>
+          <li><a href="typing-test.html">typing test</a></li>
+          <li>2023 — Security+ (SY0-701)</li>
+          <li>2022 — Azure Fundamentals (AZ-900)</li>
+          <li>…add anything you want here</li>
+        </ul>
+      </li>
+    </ul>
+
+    <footer class="footer">
+      <span>© <span id="year"></span> khanfarr</span>
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+  <script src="oneko.js"></script>
+</body>
+</html>

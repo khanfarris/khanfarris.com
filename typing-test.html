@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>typing test — khanfarr</title>
+  <meta name="description" content="typing test — khanfarr" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-size: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 900px;
+      text-align: center;
+    }
+    
+    .brand {
+      font-size: 40px !important;
+      margin-bottom: 20px;
+    }
+    
+    .test-info {
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+    
+    .test-container {
+      background-color: rgba(0, 0, 0, 0.95);
+      border: 1px solid var(--fg);
+      padding: 40px;
+      margin: 20px 0;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .word-display {
+      font-size: 24px;
+      line-height: 1.8;
+      margin-bottom: 30px;
+      text-align: left;
+      user-select: none;
+    }
+    
+    .word {
+      display: inline-block;
+      margin: 0 8px 10px 0;
+      color: var(--muted);
+    }
+    
+    .word.current {
+      color: var(--fg);
+      text-decoration: underline;
+    }
+    
+    .word.correct {
+      color: var(--link);
+    }
+    
+    .word.incorrect {
+      color: #ff6b6b;
+      text-decoration: line-through;
+    }
+    
+    .input-field {
+      width: 100%;
+      background-color: var(--bg);
+      color: var(--fg);
+      border: 2px solid var(--fg);
+      padding: 15px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 20px;
+      text-align: center;
+    }
+    
+    .input-field:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    .input-field:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .results {
+      display: none;
+      margin-top: 20px;
+    }
+    
+    .results.show {
+      display: block;
+    }
+    
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 30px 0;
+    }
+    
+    .result-item {
+      background-color: rgba(0, 0, 0, 0.95);
+      border: 1px solid var(--fg);
+      padding: 20px;
+    }
+    
+    .result-label {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    
+    .result-value {
+      color: var(--accent);
+      font-size: 36px;
+      font-weight: 600;
+    }
+    
+    .restart-btn {
+      background-color: var(--bg);
+      color: var(--fg);
+      border: 2px solid var(--fg);
+      padding: 12px 30px;
+      cursor: pointer;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+    
+    .restart-btn:hover {
+      background-color: var(--fg);
+      color: var(--bg);
+    }
+    
+    .instructions {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1 class="brand"><a href="index.html" style="text-decoration: none; color: inherit;">khanfarr</a></h1>
+    
+    <div class="test-info">
+      <span id="wordCount">0</span> / 25 words | <span id="timer">0.0</span>s
+    </div>
+
+    <div class="test-container">
+      <div class="word-display" id="wordDisplay"></div>
+      <input 
+        type="text" 
+        class="input-field" 
+        id="inputField" 
+        placeholder="Click here or press any key to start..." 
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </div>
+
+    <div class="results" id="results">
+      <div class="result-grid">
+        <div class="result-item">
+          <div class="result-label">WPM</div>
+          <div class="result-value" id="wpmResult">0</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Accuracy</div>
+          <div class="result-value" id="accuracyResult">0%</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Raw WPM</div>
+          <div class="result-value" id="rawWpmResult">0</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Time</div>
+          <div class="result-value" id="timeResult">0s</div>
+        </div>
+      </div>
+      <button class="restart-btn" onclick="restartTest()">Restart Test</button>
+    </div>
+
+    <div class="instructions">
+      Press Tab + Enter to restart • Esc to go back
+    </div>
+
+    <footer class="footer" style="margin-top: 40px;">
+      <span>© <span id="year"></span> khanfarr</span>
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    
+    // Word bank
+    const wordBank = [
+      'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'I',
+      'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at',
+      'this', 'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 'she',
+      'or', 'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their', 'what',
+      'so', 'up', 'out', 'if', 'about', 'who', 'get', 'which', 'go', 'me',
+      'when', 'make', 'can', 'like', 'time', 'no', 'just', 'him', 'know', 'take',
+      'people', 'into', 'year', 'your', 'good', 'some', 'could', 'them', 'see', 'other',
+      'than', 'then', 'now', 'look', 'only', 'come', 'its', 'over', 'think', 'also',
+      'back', 'after', 'use', 'two', 'how', 'our', 'work', 'first', 'well', 'way',
+      'even', 'new', 'want', 'because', 'any', 'these', 'give', 'day', 'most', 'us'
+    ];
+    
+    let words = [];
+    let currentWordIndex = 0;
+    let startTime = null;
+    let timerInterval = null;
+    let isTestActive = false;
+    let correctWords = 0;
+    let totalChars = 0;
+    let correctChars = 0;
+    
+    const inputField = document.getElementById('inputField');
+    const wordDisplay = document.getElementById('wordDisplay');
+    const wordCountEl = document.getElementById('wordCount');
+    const timerEl = document.getElementById('timer');
+    const resultsEl = document.getElementById('results');
+    
+    // Generate random words
+    function generateWords() {
+      words = [];
+      for (let i = 0; i < 25; i++) {
+        words.push(wordBank[Math.floor(Math.random() * wordBank.length)]);
+      }
+      renderWords();
+    }
+    
+    // Render words on screen
+    function renderWords() {
+      wordDisplay.innerHTML = words.map((word, index) => {
+        let className = 'word';
+        if (index === currentWordIndex) className += ' current';
+        else if (index < currentWordIndex) {
+          className += word === inputField.dataset[`word${index}`] ? ' correct' : ' incorrect';
+        }
+        return `<span class="${className}">${word}</span>`;
+      }).join('');
+    }
+    
+    // Start timer
+    function startTimer() {
+      startTime = Date.now();
+      timerInterval = setInterval(() => {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        timerEl.textContent = elapsed;
+      }, 100);
+    }
+    
+    // Stop timer
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+    
+    // Calculate results
+    function showResults() {
+      stopTimer();
+      const timeElapsed = (Date.now() - startTime) / 1000;
+      const minutes = timeElapsed / 60;
+      
+      // Calculate WPM (correct words / minutes)
+      const wpm = Math.round(correctWords / minutes);
+      
+      // Calculate Raw WPM (all typed chars / 5 / minutes)
+      const rawWpm = Math.round((totalChars / 5) / minutes);
+      
+      // Calculate accuracy
+      const accuracy = Math.round((correctChars / totalChars) * 100);
+      
+      // Display results
+      document.getElementById('wpmResult').textContent = wpm;
+      document.getElementById('rawWpmResult').textContent = rawWpm;
+      document.getElementById('accuracyResult').textContent = accuracy + '%';
+      document.getElementById('timeResult').textContent = timeElapsed.toFixed(1) + 's';
+      
+      resultsEl.classList.add('show');
+      inputField.disabled = true;
+    }
+    
+    // Handle input
+    inputField.addEventListener('input', function(e) {
+      if (!isTestActive) {
+        isTestActive = true;
+        startTimer();
+      }
+      
+      const typedWord = this.value.trim();
+      const currentWord = words[currentWordIndex];
+      
+      // Check if we're on the last word and user completed it
+      if (currentWordIndex === 24 && typedWord === currentWord) {
+        // Last word completed - end test immediately
+        inputField.dataset[`word${currentWordIndex}`] = typedWord;
+        totalChars += typedWord.length;
+        correctWords++;
+        correctChars += typedWord.length;
+        currentWordIndex++;
+        wordCountEl.textContent = currentWordIndex;
+        showResults();
+        return;
+      }
+      
+      // Check if user pressed space (word completed)
+      if (this.value.endsWith(' ')) {
+        const word = typedWord;
+        
+        // Store the typed word
+        inputField.dataset[`word${currentWordIndex}`] = word;
+        
+        // Update stats
+        totalChars += word.length;
+        if (word === currentWord) {
+          correctWords++;
+          correctChars += word.length;
+        } else {
+          // Count matching characters
+          for (let i = 0; i < Math.min(word.length, currentWord.length); i++) {
+            if (word[i] === currentWord[i]) correctChars++;
+          }
+        }
+        
+        // Move to next word
+        currentWordIndex++;
+        wordCountEl.textContent = currentWordIndex;
+        this.value = '';
+        renderWords();
+      }
+    });
+    
+    // Start test on first keypress
+    inputField.addEventListener('focus', function() {
+      if (!isTestActive && currentWordIndex === 0) {
+        this.placeholder = 'Start typing...';
+      }
+    });
+    
+    // Restart test function
+    function restartTest() {
+      currentWordIndex = 0;
+      correctWords = 0;
+      totalChars = 0;
+      correctChars = 0;
+      isTestActive = false;
+      startTime = null;
+      stopTimer();
+      
+      inputField.value = '';
+      inputField.disabled = false;
+      inputField.placeholder = 'Click here or press any key to start...';
+      inputField.dataset = {};
+      
+      wordCountEl.textContent = '0';
+      timerEl.textContent = '0.0';
+      resultsEl.classList.remove('show');
+      
+      generateWords();
+      inputField.focus();
+    }
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      // Tab + Enter to restart
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        document.addEventListener('keydown', function enterListener(e2) {
+          if (e2.key === 'Enter') {
+            restartTest();
+            document.removeEventListener('keydown', enterListener);
+          }
+        }, { once: true });
+      }
+      
+      // Esc to go home
+      if (e.key === 'Escape') {
+        window.location.href = 'index.html';
+      }
+      
+      // Focus input on any key
+      if (!inputField.disabled && document.activeElement !== inputField) {
+        inputField.focus();
+      }
+    });
+    
+    // Initialize
+    generateWords();
+  </script>
+  <script src="oneko.js"></script>
+</body>
+</html>
+

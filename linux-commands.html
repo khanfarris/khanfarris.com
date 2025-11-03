@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>linux commands — khanfarr</title>
+  <meta name="description" content="linux commands — khanfarr" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Monospace vibe is key; system monospace is fine, but this gives a nice look -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+      font-size: 20px;
+    }
+    
+    .container {
+      max-width: none;
+    }
+    
+    .brand {
+      font-size: 40px !important;
+    }
+    
+    .section {
+      font-size: 24px !important;
+    }
+    
+    .tree li ul li {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+    
+    .command-item {
+      position: relative;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    
+    .command-item:hover {
+      color: var(--accent);
+    }
+    
+    .command-item.active {
+      color: var(--link);
+    }
+    
+    .tooltip {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      left: 100%;
+      margin-left: 15px;
+      background-color: rgba(0, 0, 0, 0.95);
+      border: 1px solid var(--fg);
+      padding: 12px;
+      width: 300px;
+      font-size: 14px;
+      line-height: 1.5;
+      z-index: 1000;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    
+    .command-item:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    .tooltip-title {
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 6px;
+      border-bottom: 1px solid var(--fg);
+      padding-bottom: 4px;
+    }
+    
+    .tooltip-field {
+      margin: 4px 0;
+    }
+    
+    .tooltip-field strong {
+      color: var(--link);
+    }
+    
+    .container-wrapper {
+      display: flex;
+      width: 100%;
+      max-width: 1400px;
+      transition: all 0.3s ease;
+      justify-content: center;
+      align-items: flex-start;
+      margin: 0 auto;
+    }
+    
+    .container-wrapper.notes-visible {
+      justify-content: flex-start;
+    }
+    
+    .command-list-container {
+      width: auto;
+      transition: all 0.3s ease;
+      margin: 0 auto;
+    }
+    
+    .command-list-container.shrunk {
+      margin: 0;
+      margin-right: 15px;
+    }
+    
+    .notes-container {
+      position: fixed;
+      right: 500px;
+      top: 150px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .notes-container.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .notes-box {
+      background-color: rgba(0, 0, 0, 0.95);
+      border: 1px solid var(--fg);
+      padding: 20px;
+      width: 600px;
+      max-width: 900px;
+    }
+    
+    .notes-title {
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--fg);
+      padding-bottom: 8px;
+      font-size: 20px;
+    }
+    
+    .notes-textarea {
+      width: 100%;
+      min-height: 400px;
+      background-color: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--fg);
+      padding: 10px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: vertical;
+    }
+    
+    .notes-textarea:focus {
+      outline: 1px solid var(--accent);
+    }
+    
+    /* Password Modal */
+    .password-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .password-modal.show {
+      display: flex;
+    }
+    
+    .password-modal-content {
+      background-color: var(--bg);
+      border: 2px solid var(--fg);
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+    }
+    
+    .password-modal-title {
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    
+    .password-input {
+      width: 100%;
+      background-color: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--fg);
+      padding: 10px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    
+    .password-input:focus {
+      outline: 1px solid var(--accent);
+    }
+    
+    .password-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    
+    .password-button {
+      background-color: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--fg);
+      padding: 8px 16px;
+      cursor: pointer;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 14px;
+    }
+    
+    .password-button:hover {
+      background-color: var(--fg);
+      color: var(--bg);
+    }
+    
+    .password-error {
+      color: #ff6b6b;
+      font-size: 12px;
+      margin-bottom: 10px;
+      display: none;
+    }
+    
+    .password-error.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-wrapper">
+    <div class="command-list-container" id="commandListContainer">
+      <main class="container">
+        <h1 class="brand"><a href="index.html" style="text-decoration: none; color: inherit;">khanfarr</a></h1>
+
+        <ul class="tree">
+          <li>
+            <span class="section">linux commands</span>
+            <ul>
+              <li class="command-item">cat
+                <div class="tooltip">
+                  <div class="tooltip-title">cat - Concatenate and display files</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Display file contents, combine files</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -n (line numbers), -A (show all)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Read-only, safe to use</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Sensitive data exposure when displaying files</div>
+                </div>
+              </li>
+              <li class="command-item">chmod
+                <div class="tooltip">
+                  <div class="tooltip-title">chmod - Change file permissions</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Modify file access permissions</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -R (recursive), +x (add execute)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Critical for security, affects file access</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> 777 permissions, SUID/SGID misuse, world-writable files</div>
+                </div>
+              </li>
+              <li class="command-item">chown
+                <div class="tooltip">
+                  <div class="tooltip-title">chown - Change file ownership</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Change file/directory owner and group</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -R (recursive)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Requires root/sudo, affects access control</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Privilege escalation, unauthorized ownership changes</div>
+                </div>
+              </li>
+              <li class="command-item">find
+                <div class="tooltip">
+                  <div class="tooltip-title">find - Search for files and directories</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Locate files by name, type, permissions</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -name, -type, -perm, -exec</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Useful for hunting SUID files, misconfigurations</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> SUID binaries, world-writable files, sensitive data</div>
+                </div>
+              </li>
+              <li class="command-item">grep
+                <div class="tooltip">
+                  <div class="tooltip-title">grep - Search text patterns</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Search files for patterns, filter output</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -i (case insensitive), -r (recursive), -v (invert)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Hunt for credentials, API keys, sensitive data</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Passwords in config files, hardcoded secrets</div>
+                </div>
+              </li>
+              <li class="command-item">ls
+                <div class="tooltip">
+                  <div class="tooltip-title">ls - List directory contents</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> View files and directories</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -la (all files, long format), -lh (human readable)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Enumerate system, check permissions</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Hidden files (.bashrc, .ssh), unusual permissions</div>
+                </div>
+              </li>
+              <li class="command-item">netstat
+                <div class="tooltip">
+                  <div class="tooltip-title">netstat - Network statistics</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Display network connections, routing tables, ports</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -tulpn (TCP/UDP, listening, programs)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Identify open ports, active connections</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Backdoors, unauthorized listeners, suspicious connections</div>
+                </div>
+              </li>
+              <li class="command-item">ps
+                <div class="tooltip">
+                  <div class="tooltip-title">ps - Process status</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Display running processes</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> aux (all users, detailed), -ef (full format)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Identify malicious processes, privilege escalation</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Suspicious processes, root processes, hidden services</div>
+                </div>
+              </li>
+              <li class="command-item">ssh
+                <div class="tooltip">
+                  <div class="tooltip-title">ssh - Secure Shell</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Remote login, secure file transfer</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -i (identity file), -p (port), -L (local forward)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Encrypted remote access, key-based auth</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Weak keys, authorized_keys tampering, tunneling abuse</div>
+                </div>
+              </li>
+              <li class="command-item">sudo
+                <div class="tooltip">
+                  <div class="tooltip-title">sudo - Execute command as superuser</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Run commands with elevated privileges</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -u (user), -l (list allowed commands)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Critical for privilege management</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> NOPASSWD entries, wildcards in sudoers, privilege escalation</div>
+                </div>
+              </li>
+              <li class="command-item">tail
+                <div class="tooltip">
+                  <div class="tooltip-title">tail - Display end of file</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> View last lines of files, monitor logs</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -f (follow), -n (number of lines)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Monitor log files in real-time</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Authentication failures, error patterns, intrusion attempts</div>
+                </div>
+              </li>
+              <li class="command-item">tcpdump
+                <div class="tooltip">
+                  <div class="tooltip-title">tcpdump - Network packet analyzer</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Capture and analyze network traffic</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -i (interface), -w (write to file), -n (no DNS)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Network forensics, packet capture</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Unencrypted credentials, malicious traffic, C2 beacons</div>
+                </div>
+              </li>
+              <li class="command-item">top
+                <div class="tooltip">
+                  <div class="tooltip-title">top - Display system tasks</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Real-time process monitoring, resource usage</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -u (user), -p (PID)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Identify resource-heavy processes, cryptominers</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> High CPU/memory usage, suspicious processes</div>
+                </div>
+              </li>
+              <li class="command-item">uname
+                <div class="tooltip">
+                  <div class="tooltip-title">uname - System information</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Display system/kernel information</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -a (all info), -r (kernel release)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Identify kernel version for exploit research</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Outdated kernels, known vulnerable versions</div>
+                </div>
+              </li>
+              <li class="command-item">wget
+                <div class="tooltip">
+                  <div class="tooltip-title">wget - Download files from web</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Download files via HTTP/HTTPS/FTP</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -O (output file), -r (recursive)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Download tools, exfiltrate data</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Malware downloads, data exfiltration, unauthorized transfers</div>
+                </div>
+              </li>
+              <li class="command-item">whoami
+                <div class="tooltip">
+                  <div class="tooltip-title">whoami - Display current user</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Show effective username</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> None</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Verify privilege level after escalation</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Unexpected user context, privilege changes</div>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <footer class="footer">
+          <span>© <span id="year"></span> khanfarr</span>
+        </footer>
+      </main>
+    </div>
+
+    <div class="notes-container" id="notesContainer">
+      <div class="notes-box">
+        <div class="notes-title" id="notesTitle">Notes</div>
+        <textarea class="notes-textarea" id="notesTextarea" placeholder="Add your notes here..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Modal -->
+  <div class="password-modal" id="passwordModal">
+    <div class="password-modal-content">
+      <div class="password-modal-title">Enter Password to Save Notes</div>
+      <div class="password-error" id="passwordError">Incorrect password. Please try again.</div>
+      <input type="password" class="password-input" id="passwordInput" placeholder="Password">
+      <div class="password-buttons">
+        <button class="password-button" id="passwordCancel">Cancel</button>
+        <button class="password-button" id="passwordSubmit">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    
+    // Notes functionality
+    const commandItems = document.querySelectorAll('.command-item');
+    const notesContainer = document.getElementById('notesContainer');
+    const notesTitle = document.getElementById('notesTitle');
+    const notesTextarea = document.getElementById('notesTextarea');
+    const commandListContainer = document.getElementById('commandListContainer');
+    const containerWrapper = document.querySelector('.container-wrapper');
+    const passwordModal = document.getElementById('passwordModal');
+    const passwordInput = document.getElementById('passwordInput');
+    const passwordError = document.getElementById('passwordError');
+    const passwordSubmit = document.getElementById('passwordSubmit');
+    const passwordCancel = document.getElementById('passwordCancel');
+    
+    let currentCommand = '';
+    let saveResolve = null;
+    let originalNotes = '';
+    let notesChanged = false;
+    
+    // Load saved notes from localStorage
+    function loadNotes(commandName) {
+      const savedNotes = localStorage.getItem(`command_notes_${commandName}`);
+      if (savedNotes) {
+        notesTextarea.value = savedNotes;
+      } else {
+        notesTextarea.value = '';
+      }
+      originalNotes = notesTextarea.value;
+      notesChanged = false;
+    }
+    
+    // Show password modal
+    function showPasswordModal() {
+      return new Promise((resolve) => {
+        saveResolve = resolve;
+        passwordInput.value = '';
+        passwordError.classList.remove('show');
+        passwordModal.classList.add('show');
+        passwordInput.focus();
+      });
+    }
+    
+    // Hide password modal
+    function hidePasswordModal() {
+      passwordModal.classList.remove('show');
+      passwordError.classList.remove('show');
+    }
+    
+    // Password submit handler
+    passwordSubmit.addEventListener('click', function() {
+      if (passwordInput.value === 'khanfarris') {
+        hidePasswordModal();
+        if (saveResolve) saveResolve(true);
+      } else {
+        passwordError.classList.add('show');
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    });
+    
+    // Password cancel handler
+    passwordCancel.addEventListener('click', function() {
+      hidePasswordModal();
+      if (saveResolve) saveResolve(false);
+    });
+    
+    // Allow Enter key to submit password
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        passwordSubmit.click();
+      }
+    });
+    
+    // Save notes to localStorage with password protection
+    async function saveNotes(commandName, requirePassword = false) {
+      if (commandName) {
+        // Check if notes have changed
+        if (requirePassword && !notesChanged) {
+          return true; // No changes, skip password prompt
+        }
+        
+        if (requirePassword) {
+          const authorized = await showPasswordModal();
+          if (!authorized) {
+            return false;
+          }
+        }
+        localStorage.setItem(`command_notes_${commandName}`, notesTextarea.value);
+        notesChanged = false;
+        originalNotes = notesTextarea.value;
+        return true;
+      }
+      return false;
+    }
+    
+    // Track changes to notes
+    notesTextarea.addEventListener('input', function() {
+      notesChanged = (notesTextarea.value !== originalNotes);
+    });
+    
+    // Add click handler to each command item
+    commandItems.forEach(item => {
+      item.addEventListener('click', function(e) {
+        // Prevent tooltip from showing on click
+        e.stopPropagation();
+        
+        // Get command name from the text content (first text node only, excluding tooltip)
+        const commandName = this.childNodes[0].textContent.trim();
+        
+        // If clicking the same command, toggle off
+        if (currentCommand === commandName && notesContainer.classList.contains('visible')) {
+          notesContainer.classList.remove('visible');
+          commandListContainer.classList.remove('shrunk');
+          containerWrapper.classList.remove('notes-visible');
+          this.classList.remove('active');
+          currentCommand = '';
+          return;
+        }
+        
+        // Save current notes before switching (with password)
+        if (currentCommand) {
+          saveNotes(currentCommand, true);
+        }
+        
+        // Remove active class from all items
+        commandItems.forEach(i => i.classList.remove('active'));
+        
+        // Add active class to clicked item
+        this.classList.add('active');
+        
+        // Update current command
+        currentCommand = commandName;
+        
+        // Update notes title
+        notesTitle.textContent = `${commandName} - Notes`;
+        
+        // Show notes container and shrink command list
+        notesContainer.classList.add('visible');
+        commandListContainer.classList.add('shrunk');
+        containerWrapper.classList.add('notes-visible');
+        
+        // Load saved notes for this command
+        loadNotes(commandName);
+      });
+    });
+    
+    // Save button functionality (could be triggered on blur or manual save)
+    notesTextarea.addEventListener('blur', function() {
+      if (currentCommand) {
+        saveNotes(currentCommand, true);
+      }
+    });
+  </script>
+  <script src="oneko.js"></script>
+</body>
+</html>
+

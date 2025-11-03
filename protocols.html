@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>protocols — khanfarr</title>
+  <meta name="description" content="protocols — khanfarr" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Monospace vibe is key; system monospace is fine, but this gives a nice look -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+      font-size: 20px;
+    }
+    
+    .container {
+      max-width: none;
+    }
+    
+    .brand {
+      font-size: 40px !important;
+    }
+    
+    .section {
+      font-size: 24px !important;
+    }
+    
+    .tree li ul li {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+    
+    .protocol-item {
+      position: relative;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    
+    .protocol-item:hover {
+      color: var(--accent);
+    }
+    
+    .protocol-item.active {
+      color: var(--link);
+    }
+    
+    .tooltip {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      left: 100%;
+      margin-left: 15px;
+      background-color: rgba(0, 0, 0, 0.95);
+      border: 1px solid var(--fg);
+      padding: 12px;
+      width: 300px;
+      font-size: 14px;
+      line-height: 1.5;
+      z-index: 1000;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    
+    .protocol-item:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    .tooltip-title {
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 6px;
+      border-bottom: 1px solid var(--fg);
+      padding-bottom: 4px;
+    }
+    
+    .tooltip-field {
+      margin: 4px 0;
+    }
+    
+    .tooltip-field strong {
+      color: var(--link);
+    }
+    
+    .container-wrapper {
+      display: flex;
+      width: 100%;
+      max-width: 1400px;
+      transition: all 0.3s ease;
+      justify-content: center;
+      align-items: flex-start;
+      margin: 0 auto;
+    }
+    
+    .container-wrapper.notes-visible {
+      justify-content: flex-start;
+    }
+    
+    .protocol-list-container {
+      width: auto;
+      transition: all 0.3s ease;
+      margin: 0 auto;
+    }
+    
+    .protocol-list-container.shrunk {
+      margin: 0;
+      margin-right: 15px;
+    }
+    
+    .notes-container {
+      position: fixed;
+      right: 500px;
+      top: 150px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .notes-container.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .notes-box {
+      background-color: rgba(0, 0, 0, 0.95);
+      border: 1px solid var(--fg);
+      padding: 20px;
+      width: 600px;
+      max-width: 900px;
+    }
+    
+    .notes-title {
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--fg);
+      padding-bottom: 8px;
+      font-size: 20px;
+    }
+    
+    .notes-textarea {
+      width: 100%;
+      min-height: 400px;
+      background-color: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--fg);
+      padding: 10px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: vertical;
+    }
+    
+    .notes-textarea:focus {
+      outline: 1px solid var(--accent);
+    }
+    
+    /* Password Modal */
+    .password-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .password-modal.show {
+      display: flex;
+    }
+    
+    .password-modal-content {
+      background-color: var(--bg);
+      border: 2px solid var(--fg);
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+    }
+    
+    .password-modal-title {
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    
+    .password-input {
+      width: 100%;
+      background-color: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--fg);
+      padding: 10px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    
+    .password-input:focus {
+      outline: 1px solid var(--accent);
+    }
+    
+    .password-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    
+    .password-button {
+      background-color: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--fg);
+      padding: 8px 16px;
+      cursor: pointer;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 14px;
+    }
+    
+    .password-button:hover {
+      background-color: var(--fg);
+      color: var(--bg);
+    }
+    
+    .password-error {
+      color: #ff6b6b;
+      font-size: 12px;
+      margin-bottom: 10px;
+      display: none;
+    }
+    
+    .password-error.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-wrapper">
+    <div class="protocol-list-container" id="protocolListContainer">
+      <main class="container">
+        <h1 class="brand"><a href="index.html" style="text-decoration: none; color: inherit;">khanfarr</a></h1>
+
+        <ul class="tree">
+          <li>
+            <span class="section">protocols</span>
+            <ul>
+              <li class="protocol-item">ARP
+                <div class="tooltip">
+                  <div class="tooltip-title">ARP - Address Resolution Protocol</div>
+                  <div class="tooltip-field"><strong>Layer:</strong> Layer 2 (Data Link)</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Maps IP addresses to MAC addresses</div>
+                  <div class="tooltip-field"><strong>Security:</strong> No authentication, stateless</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> ARP spoofing, MITM attacks, ARP cache poisoning, MAC flooding</div>
+                </div>
+              </li>
+          <li class="protocol-item">BGP - 179
+            <div class="tooltip">
+              <div class="tooltip-title">BGP - Border Gateway Protocol</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Routing protocol for internet backbone</div>
+              <div class="tooltip-field"><strong>Security:</strong> No built-in authentication</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Route hijacking, BGP hijacking, prefix hijacking, route leaks</div>
+            </div>
+          </li>
+          <li class="protocol-item">DHCP - 67, 68
+            <div class="tooltip">
+              <div class="tooltip-title">DHCP - Dynamic Host Configuration Protocol</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Automatically assigns IP addresses to devices</div>
+              <div class="tooltip-field"><strong>Security:</strong> Unauthenticated, vulnerable to spoofing</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Rogue DHCP servers, DHCP starvation, IP conflicts</div>
+            </div>
+          </li>
+          <li class="protocol-item">DNS - 53
+            <div class="tooltip">
+              <div class="tooltip-title">DNS - Domain Name System</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Translates domain names to IP addresses</div>
+              <div class="tooltip-field"><strong>Security:</strong> Unencrypted by default</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> DNS tunneling, cache poisoning, DDoS amplification, NXDOMAIN attacks</div>
+            </div>
+          </li>
+          <li class="protocol-item">FTP - 20, 21
+            <div class="tooltip">
+              <div class="tooltip-title">FTP - File Transfer Protocol</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> File transfers between client and server</div>
+              <div class="tooltip-field"><strong>Security:</strong> Unencrypted credentials and data</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Brute force, credential theft, unauthorized file access</div>
+            </div>
+          </li>
+          <li class="protocol-item">HTTP - 80
+            <div class="tooltip">
+              <div class="tooltip-title">HTTP - Hypertext Transfer Protocol</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Web page communication</div>
+              <div class="tooltip-field"><strong>Security:</strong> Unencrypted, credentials in plaintext</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Credential harvesting, XSS, CSRF, SQL injection, data exfiltration</div>
+            </div>
+          </li>
+          <li class="protocol-item">HTTPS - 443
+            <div class="tooltip">
+              <div class="tooltip-title">HTTPS - HTTP Secure</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Encrypted web communication</div>
+              <div class="tooltip-field"><strong>Security:</strong> TLS/SSL encrypted</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Certificate issues, TLS downgrade, weak ciphers, malware C2</div>
+            </div>
+          </li>
+          <li class="protocol-item">ICMP
+            <div class="tooltip">
+              <div class="tooltip-title">ICMP - Internet Control Message Protocol</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Layer 3 (Network)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Error reporting and network diagnostics</div>
+              <div class="tooltip-field"><strong>Security:</strong> Can be used for reconnaissance</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Ping floods, traceroute scans, ICMP tunneling, Smurf attacks</div>
+            </div>
+          </li>
+          <li class="protocol-item">IPSec
+            <div class="tooltip">
+              <div class="tooltip-title">IPSec - IP Security</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Network (Layer 3)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Secure IP communications, VPN</div>
+              <div class="tooltip-field"><strong>Security:</strong> Encrypted IP packets</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Weak encryption, IKE protocol vulnerabilities, misconfigurations</div>
+            </div>
+          </li>
+          <li class="protocol-item">Kerberos - 88
+            <div class="tooltip">
+              <div class="tooltip-title">Kerberos</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Network authentication protocol</div>
+              <div class="tooltip-field"><strong>Security:</strong> Encrypted tickets, time-bound</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Golden ticket, silver ticket, Kerberoasting, AS-REP roasting</div>
+            </div>
+          </li>
+          <li class="protocol-item">LDAP - 389
+            <div class="tooltip">
+              <div class="tooltip-title">LDAP - Lightweight Directory Access Protocol</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Directory services, authentication</div>
+              <div class="tooltip-field"><strong>Security:</strong> Unencrypted by default</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Null bind attacks, LDAP injection, credential harvesting, enumeration</div>
+            </div>
+          </li>
+          <li class="protocol-item">NAT
+            <div class="tooltip">
+              <div class="tooltip-title">NAT - Network Address Translation</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Layer 3 (Network)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Translates private IPs to public IPs</div>
+              <div class="tooltip-field"><strong>Security:</strong> Hides internal network structure</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> NAT bypass attempts, port exhaustion, source IP obfuscation</div>
+            </div>
+          </li>
+          <li class="protocol-item">NTLM
+            <div class="tooltip">
+              <div class="tooltip-title">NTLM - NT LAN Manager</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Windows authentication protocol</div>
+              <div class="tooltip-field"><strong>Security:</strong> Weak encryption, vulnerable</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Pass-the-hash, NTLM relay, credential dumping, hash cracking</div>
+            </div>
+          </li>
+          <li class="protocol-item">OSPF
+            <div class="tooltip">
+              <div class="tooltip-title">OSPF - Open Shortest Path First</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Network (Layer 3)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Dynamic routing protocol for IP networks</div>
+              <div class="tooltip-field"><strong>Security:</strong> Authentication available but often disabled</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Route injection, LSA flooding, unauthorized router insertion</div>
+            </div>
+          </li>
+          <li class="protocol-item">RDP - 3389
+            <div class="tooltip">
+              <div class="tooltip-title">RDP - Remote Desktop Protocol</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Remote desktop access</div>
+              <div class="tooltip-field"><strong>Security:</strong> Targeted by attackers</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Brute force, BlueKeep, unauthorized access, lateral movement</div>
+            </div>
+          </li>
+          <li class="protocol-item">SMB - 445
+            <div class="tooltip">
+              <div class="tooltip-title">SMB - Server Message Block</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> File sharing, printer access on Windows</div>
+              <div class="tooltip-field"><strong>Security:</strong> Vulnerable to exploits</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> EternalBlue, lateral movement, ransomware, null sessions</div>
+            </div>
+          </li>
+          <li class="protocol-item">SMTP - 25
+            <div class="tooltip">
+              <div class="tooltip-title">SMTP - Simple Mail Transfer Protocol</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Email transmission between servers</div>
+              <div class="tooltip-field"><strong>Security:</strong> Unencrypted by default</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Spam, phishing, email spoofing, relay attacks</div>
+            </div>
+          </li>
+          <li class="protocol-item">SNMP - 161
+            <div class="tooltip">
+              <div class="tooltip-title">SNMP - Simple Network Management Protocol</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Network device monitoring and management</div>
+              <div class="tooltip-field"><strong>Security:</strong> Weak community strings (v1/v2c)</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Default community strings, information disclosure, OID enumeration</div>
+            </div>
+          </li>
+          <li class="protocol-item">SSH - 22
+            <div class="tooltip">
+              <div class="tooltip-title">SSH - Secure Shell</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Application (Layer 7)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Secure remote administration</div>
+              <div class="tooltip-field"><strong>Security:</strong> Encrypted, strong authentication</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Brute force attacks, key compromise, SSH tunneling abuse</div>
+            </div>
+          </li>
+          <li class="protocol-item">STP
+            <div class="tooltip">
+              <div class="tooltip-title">STP - Spanning Tree Protocol</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Data Link (Layer 2)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Prevents network loops in switched networks</div>
+              <div class="tooltip-field"><strong>Security:</strong> No authentication</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Root bridge takeover, BPDU manipulation, DoS attacks</div>
+            </div>
+          </li>
+          <li class="protocol-item">TCP
+            <div class="tooltip">
+              <div class="tooltip-title">TCP - Transmission Control Protocol</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Layer 4 (Transport)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Reliable, connection-oriented data transmission</div>
+              <div class="tooltip-field"><strong>Security:</strong> Connection state tracking</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> SYN floods, TCP hijacking, port scans, connection exhaustion</div>
+            </div>
+          </li>
+          <li class="protocol-item">TLS/SSL
+            <div class="tooltip">
+              <div class="tooltip-title">TLS/SSL - Transport Layer Security</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Session/Presentation (Layers 5-6)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Encrypts application layer protocols</div>
+              <div class="tooltip-field"><strong>Security:</strong> Encrypted communication</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Weak ciphers, certificate validation issues, POODLE, BEAST attacks</div>
+            </div>
+          </li>
+          <li class="protocol-item">UDP
+            <div class="tooltip">
+              <div class="tooltip-title">UDP - User Datagram Protocol</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Layer 4 (Transport)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Fast, connectionless data transmission</div>
+              <div class="tooltip-field"><strong>Security:</strong> No connection state, easily spoofed</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> UDP floods, DNS amplification, spoofed packets</div>
+            </div>
+          </li>
+          <li class="protocol-item">VLAN
+            <div class="tooltip">
+              <div class="tooltip-title">VLAN - Virtual LAN</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Data Link (Layer 2)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Segments network logically</div>
+              <div class="tooltip-field"><strong>Security:</strong> Logical separation</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> VLAN hopping, double tagging, unauthorized VLAN access</div>
+            </div>
+          </li>
+          <li class="protocol-item">VPN
+            <div class="tooltip">
+              <div class="tooltip-title">VPN - Virtual Private Network</div>
+              <div class="tooltip-field"><strong>Layer:</strong> Network (Layer 3)</div>
+              <div class="tooltip-field"><strong>Usage:</strong> Creates secure tunnel over public network</div>
+              <div class="tooltip-field"><strong>Security:</strong> Encrypted tunnel</div>
+              <div class="tooltip-field"><strong>Watch for:</strong> Unauthorized VPN access, split tunneling abuse, VPN leaks</div>
+            </div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+        <footer class="footer">
+          <span>© <span id="year"></span> khanfarr</span>
+        </footer>
+      </main>
+    </div>
+
+    <div class="notes-container" id="notesContainer">
+      <div class="notes-box">
+        <div class="notes-title" id="notesTitle">Notes</div>
+        <textarea class="notes-textarea" id="notesTextarea" placeholder="Add your notes here..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Modal -->
+  <div class="password-modal" id="passwordModal">
+    <div class="password-modal-content">
+      <div class="password-modal-title">Enter Password to Save Notes</div>
+      <div class="password-error" id="passwordError">Incorrect password. Please try again.</div>
+      <input type="password" class="password-input" id="passwordInput" placeholder="Password">
+      <div class="password-buttons">
+        <button class="password-button" id="passwordCancel">Cancel</button>
+        <button class="password-button" id="passwordSubmit">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    
+    // Notes functionality
+    const protocolItems = document.querySelectorAll('.protocol-item');
+    const notesContainer = document.getElementById('notesContainer');
+    const notesTitle = document.getElementById('notesTitle');
+    const notesTextarea = document.getElementById('notesTextarea');
+    const protocolListContainer = document.getElementById('protocolListContainer');
+    const containerWrapper = document.querySelector('.container-wrapper');
+    const passwordModal = document.getElementById('passwordModal');
+    const passwordInput = document.getElementById('passwordInput');
+    const passwordError = document.getElementById('passwordError');
+    const passwordSubmit = document.getElementById('passwordSubmit');
+    const passwordCancel = document.getElementById('passwordCancel');
+    
+    let currentProtocol = '';
+    let saveResolve = null;
+    let originalNotes = '';
+    let notesChanged = false;
+    
+    // Load saved notes from localStorage
+    function loadNotes(protocolName) {
+      const savedNotes = localStorage.getItem(`notes_${protocolName}`);
+      if (savedNotes) {
+        notesTextarea.value = savedNotes;
+      } else {
+        notesTextarea.value = '';
+      }
+      originalNotes = notesTextarea.value;
+      notesChanged = false;
+    }
+    
+    // Show password modal
+    function showPasswordModal() {
+      return new Promise((resolve) => {
+        saveResolve = resolve;
+        passwordInput.value = '';
+        passwordError.classList.remove('show');
+        passwordModal.classList.add('show');
+        passwordInput.focus();
+      });
+    }
+    
+    // Hide password modal
+    function hidePasswordModal() {
+      passwordModal.classList.remove('show');
+      passwordError.classList.remove('show');
+    }
+    
+    // Password submit handler
+    passwordSubmit.addEventListener('click', function() {
+      if (passwordInput.value === 'khanfarris') {
+        hidePasswordModal();
+        if (saveResolve) saveResolve(true);
+      } else {
+        passwordError.classList.add('show');
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    });
+    
+    // Password cancel handler
+    passwordCancel.addEventListener('click', function() {
+      hidePasswordModal();
+      if (saveResolve) saveResolve(false);
+    });
+    
+    // Allow Enter key to submit password
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        passwordSubmit.click();
+      }
+    });
+    
+    // Save notes to localStorage with password protection
+    async function saveNotes(protocolName, requirePassword = false) {
+      if (protocolName) {
+        // Check if notes have changed
+        if (requirePassword && !notesChanged) {
+          return true; // No changes, skip password prompt
+        }
+        
+        if (requirePassword) {
+          const authorized = await showPasswordModal();
+          if (!authorized) {
+            return false;
+          }
+        }
+        localStorage.setItem(`notes_${protocolName}`, notesTextarea.value);
+        notesChanged = false;
+        originalNotes = notesTextarea.value;
+        return true;
+      }
+      return false;
+    }
+    
+    // Track changes to notes
+    notesTextarea.addEventListener('input', function() {
+      notesChanged = (notesTextarea.value !== originalNotes);
+    });
+    
+    // Add click handler to each protocol item
+    protocolItems.forEach(item => {
+      item.addEventListener('click', function(e) {
+        // Prevent tooltip from showing on click
+        e.stopPropagation();
+        
+        // Get protocol name from the text content (first text node only, excluding tooltip)
+        const protocolName = this.childNodes[0].textContent.split(' - ')[0].trim();
+        
+        // If clicking the same protocol, toggle off
+        if (currentProtocol === protocolName && notesContainer.classList.contains('visible')) {
+          notesContainer.classList.remove('visible');
+          protocolListContainer.classList.remove('shrunk');
+          containerWrapper.classList.remove('notes-visible');
+          this.classList.remove('active');
+          currentProtocol = '';
+          return;
+        }
+        
+        // Save current notes before switching (with password)
+        if (currentProtocol) {
+          saveNotes(currentProtocol, true);
+        }
+        
+        // Remove active class from all items
+        protocolItems.forEach(i => i.classList.remove('active'));
+        
+        // Add active class to clicked item
+        this.classList.add('active');
+        
+        // Update current protocol
+        currentProtocol = protocolName;
+        
+        // Update notes title
+        notesTitle.textContent = `${protocolName} - Notes`;
+        
+        // Show notes container and shrink protocol list
+        notesContainer.classList.add('visible');
+        protocolListContainer.classList.add('shrunk');
+        containerWrapper.classList.add('notes-visible');
+        
+        // Load saved notes for this protocol
+        loadNotes(protocolName);
+      });
+    });
+    
+    // Save button functionality (could be triggered on blur or manual save)
+    notesTextarea.addEventListener('blur', function() {
+      if (currentProtocol) {
+        saveNotes(currentProtocol, true);
+      }
+    });
+  </script>
+  <script src="oneko.js"></script>
+</body>
+</html>
+
