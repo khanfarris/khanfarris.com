@@ -279,6 +279,15 @@
                   <div class="tooltip-field"><strong>Watch for:</strong> Privilege escalation, unauthorized ownership changes</div>
                 </div>
               </li>
+              <li class="command-item">curl
+                <div class="tooltip">
+                  <div class="tooltip-title">curl - Transfer data from/to server</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> HTTP requests, API testing, file downloads</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -X (method), -H (header), -d (data), -o (output)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Test APIs, download payloads, exfiltrate data</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Data exfiltration, malware downloads, C2 communication</div>
+                </div>
+              </li>
               <li class="command-item">find
                 <div class="tooltip">
                   <div class="tooltip-title">find - Search for files and directories</div>
@@ -286,6 +295,15 @@
                   <div class="tooltip-field"><strong>Common flags:</strong> -name, -type, -perm, -exec</div>
                   <div class="tooltip-field"><strong>Security:</strong> Useful for hunting SUID files, misconfigurations</div>
                   <div class="tooltip-field"><strong>Watch for:</strong> SUID binaries, world-writable files, sensitive data</div>
+                </div>
+              </li>
+              <li class="command-item">gcc
+                <div class="tooltip">
+                  <div class="tooltip-title">gcc - GNU C Compiler</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Compile C/C++ programs</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -o (output), -Wall (warnings), -g (debug)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Compile exploits, build binaries for privilege escalation</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Suspicious compilations, exploit development, backdoor creation</div>
                 </div>
               </li>
               <li class="command-item">grep
@@ -304,6 +322,15 @@
                   <div class="tooltip-field"><strong>Common flags:</strong> -la (all files, long format), -lh (human readable)</div>
                   <div class="tooltip-field"><strong>Security:</strong> Enumerate system, check permissions</div>
                   <div class="tooltip-field"><strong>Watch for:</strong> Hidden files (.bashrc, .ssh), unusual permissions</div>
+                </div>
+              </li>
+              <li class="command-item">netcat
+                <div class="tooltip">
+                  <div class="tooltip-title">netcat (nc) - Network Swiss Army knife</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Port scanning, file transfer, reverse shells</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -l (listen), -v (verbose), -p (port), -e (execute)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Create reverse shells, port scanning, data transfer</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Reverse shells, backdoors, unauthorized connections, data exfiltration</div>
                 </div>
               </li>
               <li class="command-item">netstat
@@ -385,6 +412,15 @@
                   <div class="tooltip-field"><strong>Common flags:</strong> -O (output file), -r (recursive)</div>
                   <div class="tooltip-field"><strong>Security:</strong> Download tools, exfiltrate data</div>
                   <div class="tooltip-field"><strong>Watch for:</strong> Malware downloads, data exfiltration, unauthorized transfers</div>
+                </div>
+              </li>
+              <li class="command-item">which
+                <div class="tooltip">
+                  <div class="tooltip-title">which - Locate command executable</div>
+                  <div class="tooltip-field"><strong>Usage:</strong> Show full path of commands</div>
+                  <div class="tooltip-field"><strong>Common flags:</strong> -a (all occurrences)</div>
+                  <div class="tooltip-field"><strong>Security:</strong> Verify command locations, detect PATH hijacking</div>
+                  <div class="tooltip-field"><strong>Watch for:</strong> Modified PATH, malicious binaries in unexpected locations</div>
                 </div>
               </li>
               <li class="command-item">whoami

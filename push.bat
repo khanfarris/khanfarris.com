@@ -11,6 +11,6 @@ echo Pushing to GitHub...
 git push
 
 echo.
-echo Done! Your website is now live at khanfarris.com
+echo Success! Changes have been pushed to khanfarris.com
 pause
 
