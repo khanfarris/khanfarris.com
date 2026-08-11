@@ -277,15 +277,17 @@
       stopTimer();
       const timeElapsed = (Date.now() - startTime) / 1000;
       const minutes = timeElapsed / 60;
-      
-      // Calculate WPM (correct words / minutes)
-      const wpm = Math.round(correctWords / minutes);
-      
-      // Calculate Raw WPM (all typed chars / 5 / minutes)
-      const rawWpm = Math.round((totalChars / 5) / minutes);
-      
+
+      // Both WPM figures use the standard "1 word = 5 characters" convention,
+      // so they share the same unit and Net WPM can never exceed Raw WPM.
+      // Raw WPM = every character typed / 5 / minutes.
+      const rawWpm = totalChars > 0 ? Math.round((totalChars / 5) / minutes) : 0;
+
+      // Net WPM = only correctly typed characters / 5 / minutes.
+      const wpm = totalChars > 0 ? Math.round((correctChars / 5) / minutes) : 0;
+
       // Calculate accuracy
-      const accuracy = Math.round((correctChars / totalChars) * 100);
+      const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 0;
       
       // Display results
       document.getElementById('wpmResult').textContent = wpm;
