@@ -238,7 +238,11 @@
     function generateWords() {
       words = [];
       for (let i = 0; i < 25; i++) {
-        words.push(wordBank[Math.floor(Math.random() * wordBank.length)]);
+        let next;
+        do {
+          next = wordBank[Math.floor(Math.random() * wordBank.length)];
+        } while (next === words[i - 1]); // no two identical words in a row
+        words.push(next);
       }
       renderWords();
     }
