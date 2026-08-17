@@ -91,6 +91,9 @@ a:hover{ color:var(--accent); border-bottom-color:transparent; }
 
 /* make it look nice on phones */
 @media (max-width:560px){
-  .container{ margin-top:24px; }
-  .brand{ font-size:24px; }
+  /* top-align so tall content never gets clipped above the viewport */
+  body{ align-items:flex-start; }
+  .container{ margin-top:24px; padding:0 16px; }
+  /* the -40px nudge pushes the title off the left edge on narrow screens */
+  .brand{ font-size:24px; transform:none; }
 }
