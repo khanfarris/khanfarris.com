@@ -1,97 +1,248 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>khanfarris</title>
-  <meta name="description" content="khanfarris — notes, projects, accolades." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Monospace vibe is key; system monospace is fine, but this gives a nice look -->
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      font-size: 20px;
-    }
-    
-    .container {
-      max-width: none;
-    }
-    
-    .brand {
-      font-size: 40px !important;
-    }
-    
-    .section {
-      font-size: 24px !important;
-    }
-    
-    .tree li ul li {
-      font-size: 18px;
-      margin: 10px 0;
-    }
-
-    @media (max-width: 560px) {
-      body { font-size: 16px; align-items: flex-start; }
-      .container { max-width: 100%; padding: 0 16px; }
-      .brand { font-size: 28px !important; transform: none; }
-      .section { font-size: 19px !important; }
-      .tree li ul li { font-size: 15px; margin: 8px 0; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Farris Khan — security / ops tinkerer</title>
+<meta name="description" content="Farris Khan's personal lab. Security investigations, field notes, and hands-on reference tools.">
+<meta name="theme-color" content="#080c09">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css">
+<script src="lab.js" defer>
+</script>
 </head>
-<body>
-  <main class="container">
-    <h1 class="brand">khanfarris</h1>
-
-    <ul class="tree">
-      <li>
-        <span class="section">$ whoami</span>
-        <ul>
-          <li>Farris Khan</li>
-          <li>security / ops tinkerer</li>
-          <li>
-            <a href="#" target="_blank" rel="noopener">github</a>
-            <span class="and"> && </span>
-            <a href="#" target="_blank" rel="noopener">twitter</a>
-            <span class="and"> && </span>
-            <a href="#" target="_blank" rel="noopener">linkedin</a>
-          </li>
-        </ul>
-      </li>
-
-      <li>
-        <span class="section">writeups</span>
-        <ul>
-          <li>2026-08-10 — <a href="lifx-pentest.html">pwning my light bulbs</a></li>
-          <li>2026-08-10 — <a href="samsung-tv-pentest.html">pwning my TV</a></li>
-        </ul>
-      </li>
-
-      <li>
-        <span class="section">knowledge base</span>
-        <ul>
-          <!-- this replaces writeups, cheatsheets, blogs -->
-          <li><a href="ports.html">ports</a></li>
-          <li><a href="protocols.html">protocols</a></li>
-          <li><a href="linux-commands.html">linux commands</a></li>
-          <li><a href="typing-test.html">typing test</a></li>
-          <li>2023 — Security+ (SY0-701)</li>
-          <li>2022 — Azure Fundamentals (AZ-900)</li>
-          <li>…add anything you want here</li>
-        </ul>
-      </li>
-    </ul>
-
-    <footer class="footer">
-      <span>© <span id="year"></span> khanfarris</span>
-    </footer>
-  </main>
-
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
-  <script src="oneko.js"></script>
+<body class="lab-home">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header wrap">
+<a class="wordmark" href="index.html">
+<span class="brand-mark">[k/f]</span> khanfarris<span class="accent">_</span>
+</a>
+<nav aria-label="Main navigation">
+<a href="#investigations">Writeups</a>
+<a href="#knowledge">Knowledge base</a>
+<a href="#about">Whoami</a>
+</nav>
+<button class="command-trigger" data-command>⌕ <span>Jump to</span> <kbd>Ctrl K</kbd>
+</button>
+</header>
+<main id="main" class="wrap">
+<section class="hero" aria-labelledby="intro-title">
+<div class="intro">
+<div class="eyebrow">
+<span class="status-dot">
+</span> PERSONAL LAB / FIELD NOTES</div>
+<p class="shell-line">
+<span>visitor@khanfarris</span>:~$ whoami</p>
+<h1 id="intro-title">Farris Khan<span class="accent">.</span>
+</h1>
+<p class="role">security / ops tinkerer</p>
+<p class="intro-copy">Taking things apart.<br>Figuring out what talks to what.<br>Writing down what I find.</p>
+<a class="primary-link" href="#investigations">Explore the investigations <span>↗</span>
+</a>
+<div class="hero-foot">
+<span>02 investigations</span>
+<span>04 reference tools</span>
+<span>∞ curiosity</span>
+</div>
+</div>
+<section class="topology" aria-labelledby="topology-title">
+<div class="panel-bar">
+<h2 id="topology-title">01 / THE HOME LAB</h2>
+<span>INTERACTIVE MAP</span>
+</div>
+<div class="network-map">
+<svg class="network-lines" viewBox="0 0 600 340" preserveAspectRatio="none" aria-hidden="true">
+<path d="M108 170 H290 M290 170 V88 H480 M290 170 V262 H480"/>
+<circle class="packet" r="3">
+<animateMotion dur="5s" repeatCount="indefinite" path="M108 170 H290 V88 H480"/>
+</circle>
+<circle class="packet" r="3">
+<animateMotion dur="6s" repeatCount="indefinite" path="M108 170 H290 V262 H480"/>
+</circle>
+</svg>
+<span class="map-coordinate">LOCAL NETWORK / SCHEMATIC</span>
+<button class="map-node node-host" data-node="host" aria-pressed="false">
+<span class="node-symbol">&gt;_</span>
+<strong>Kali Linux</strong>
+<small>the workbench</small>
+</button>
+<span class="junction" aria-hidden="true">+</span>
+<button class="map-node node-bulb" data-node="bulb" aria-pressed="true">
+<span class="node-symbol">◉</span>
+<strong>LIFX bulb</strong>
+<small>UDP / 56700</small>
+</button>
+<button class="map-node node-tv" data-node="tv" aria-pressed="false">
+<span class="node-symbol">▣</span>
+<strong>Samsung TV</strong>
+<small>TCP / 8001 · 8002</small>
+</button>
+<span class="map-hint">SELECT A NODE TO INSPECT ↗</span>
+</div>
+<div class="node-detail" aria-live="polite">
+<div>
+<span class="eyebrow" id="node-tag">DEVICE 01 / LIFX</span>
+<h3 id="node-title">A light bulb with an open door.</h3>
+<p id="node-copy">A local control protocol. No credentials required. Follow the packets from discovery to control.</p>
+</div>
+<a id="node-link" href="lifx-pentest.html" aria-label="Read the LIFX investigation">↗</a>
+</div>
+<div class="panel-bottom">
+<span>
+<span class="status-dot">
+</span> Based on the writeups</span>
+<span>Illustrative · no live scanning</span>
+</div>
+</section>
+</section>
+<section id="investigations" class="content-section" aria-labelledby="investigations-title">
+<div class="section-heading">
+<div>
+<span class="eyebrow">01 / FOLLOW THE EVIDENCE</span>
+<h2 id="investigations-title">Field investigations<span class="accent">_</span>
+</h2>
+</div>
+<span class="section-aside">Real devices. My own network.</span>
+</div>
+<div class="project-grid">
+<a class="project" href="lifx-pentest.html">
+<div class="project-top">
+<span>CASE / 001</span>
+<span>2026-08-10</span>
+<span class="project-arrow">↗</span>
+</div>
+<div class="project-visual" aria-hidden="true">
+<span class="big-glyph">◉</span>
+<div class="signal-code">DISCOVER<br>↳ UDP 56700<br>↳ NO CREDENTIALS</div>
+</div>
+<span class="tag">IoT / LOCAL CONTROL</span>
+<h3>pwning my light bulbs</h3>
+<p>Finding and controlling my LIFX smart bulbs on my own LAN with Kali Linux — no credentials required.</p>
+<div class="project-bottom">
+<span>Discovery → protocol → control</span>
+<span>Read investigation ↗</span>
+</div>
+</a>
+<a class="project" href="samsung-tv-pentest.html">
+<div class="project-top">
+<span>CASE / 002</span>
+<span>2026-08-10</span>
+<span class="project-arrow">↗</span>
+</div>
+<div class="project-visual tv-visual" aria-hidden="true">
+<span class="big-glyph">▣</span>
+<div class="signal-code">ENUMERATE<br>↳ TCP 8001 / 8002<br>↳ QUESTION THE RESULTS</div>
+</div>
+<span class="tag">IoT / ATTACK SURFACE</span>
+<h3>pwning my TV</h3>
+<p>Probing my Samsung TU700D on my own LAN — and why an empty searchsploit doesn't mean secure.</p>
+<div class="project-bottom">
+<span>Enumeration → API → analysis</span>
+<span>Read investigation ↗</span>
+</div>
+</a>
+</div>
+</section>
+<section id="knowledge" class="content-section" aria-labelledby="knowledge-title">
+<div class="section-heading">
+<div>
+<span class="eyebrow">02 / KEEP THE USEFUL THINGS CLOSE</span>
+<h2 id="knowledge-title">Knowledge base<span class="accent">_</span>
+</h2>
+</div>
+<span class="section-aside">A workbench, always in progress.</span>
+</div>
+<div class="tool-list">
+<a href="ports.html">
+<span class="tool-number">01</span>
+<h3>ports</h3>
+<p>Know what’s listening.</p>
+<span class="tool-type">NETWORK REFERENCE</span>
+<span>↗</span>
+</a>
+<a href="protocols.html">
+<span class="tool-number">02</span>
+<h3>protocols</h3>
+<p>Understand the conversation.</p>
+<span class="tool-type">PROTOCOL REFERENCE</span>
+<span>↗</span>
+</a>
+<a href="linux-commands.html">
+<span class="tool-number">03</span>
+<h3>linux commands</h3>
+<p>Less memorizing. More doing.</p>
+<span class="tool-type">COMMAND REFERENCE</span>
+<span>↗</span>
+</a>
+<a href="typing-test.html">
+<span class="tool-number">04</span>
+<h3>typing test</h3>
+<p>Put your fingers to work.</p>
+<span class="tool-type">INTERACTIVE TOOL</span>
+<span>↗</span>
+</a>
+</div>
+</section>
+<section class="bottom-grid content-section" id="about">
+<div class="about">
+<span class="eyebrow">03 / WHOAMI</span>
+<h2>Curiosity is the common thread.</h2>
+<p>Farris Khan. Security / ops tinkerer.<br>A place for notes, projects, and the things I learn along the way.</p>
+<div class="credentials">
+<div>
+<strong>Microsoft Certified: Security Operations Analyst Associate</strong>
+<span>SC-200 · In Progress</span>
+</div>
+<div>
+<strong>Microsoft Certified: Azure Administrator Associate</strong>
+<span>AZ-104 · In Progress</span>
+</div>
+</div>
+<div class="socials" aria-label="Social profiles">github <span>·</span> twitter <span>·</span> linkedin <small>profile links coming soon</small>
+</div>
+</div>
+<section class="terminal" aria-labelledby="terminal-title">
+<div class="panel-bar">
+<h2 id="terminal-title">~/ EXPLORE THE SITE</h2>
+<span>LOCAL SHELL</span>
+</div>
+<div class="terminal-body">
+<div id="terminal-output" role="log" aria-label="Terminal output">
+<p>
+<span class="accent">Welcome, visitor.</span>
+<br>A tiny shell for a curious mind.<br>Try <strong>help</strong>, <strong>ls</strong>, <strong>whoami</strong>, or <strong>cat</strong>.</p>
+</div>
+<form id="terminal-form" autocomplete="off">
+<label for="terminal-input">
+<span class="accent">visitor:~$</span>
+<span class="sr-only">Enter a site command</span>
+</label>
+<input id="terminal-input" name="command" placeholder="help" spellcheck="false" maxlength="120">
+<button type="submit" aria-label="Run command">↵</button>
+</form>
+</div>
+<div class="panel-bottom">Site navigation only. Commands run in your browser.</div>
+</section>
+</section>
+</main>
+<footer class="site-footer wrap">
+<span>© <span id="year">2026</span> khanfarris</span>
+<button id="cat-toggle" aria-pressed="true">Companion: on</button>
+<a href="#main">Back to top ↑</a>
+</footer>
+<dialog id="command-dialog" aria-labelledby="command-title">
+<div class="command-heading">
+<h2 id="command-title">Where to?</h2>
+<button id="close-command" aria-label="Close command menu">Esc</button>
+</div>
+<label class="sr-only" for="command-search">Search pages</label>
+<input id="command-search" type="search" placeholder="Search writeups, tools, or commands…" autocomplete="off">
+<div id="command-results">
+</div>
+<p class="command-help">↑ ↓ navigate <span>↵ open</span> <span>esc close</span>
+</p>
+</dialog>
 </body>
 </html>

@@ -162,8 +162,12 @@
       .restart-btn { width: 100%; }
     }
   </style>
+  <link rel="stylesheet" href="lab.css">
+  <link rel="stylesheet" href="reading.css">
+  <script src="reading.js" defer></script>
+  <script src="lab.js" defer></script>
 </head>
-<body>
+<body class="lab-page">
   <main class="container">
     <h1 class="brand"><a href="index.html" style="text-decoration: none; color: inherit;">khanfarris</a></h1>
     
@@ -385,7 +389,7 @@
       inputField.value = '';
       inputField.disabled = false;
       inputField.placeholder = 'Click here or press any key to start...';
-      inputField.dataset = {};
+      Object.keys(inputField.dataset).forEach(key => delete inputField.dataset[key]);
       
       wordCountEl.textContent = '0';
       timerEl.textContent = '0.0';
@@ -397,11 +401,12 @@
     
     // Keyboard shortcuts
     document.addEventListener('keydown', function(e) {
+      if (document.querySelector('dialog[open]') || e.ctrlKey || e.metaKey || e.altKey) return;
       // Tab + Enter to restart
-      if (e.key === 'Tab') {
-        e.preventDefault();
+      if (e.key === 'Tab' && document.activeElement === inputField && !e.shiftKey) {
         document.addEventListener('keydown', function enterListener(e2) {
           if (e2.key === 'Enter') {
+            e2.preventDefault();
             restartTest();
             document.removeEventListener('keydown', enterListener);
           }
@@ -414,7 +419,7 @@
       }
       
       // Focus input on any key
-      if (!inputField.disabled && document.activeElement !== inputField) {
+      if (!inputField.disabled && document.activeElement === document.body && e.key.length === 1) {
         inputField.focus();
       }
     });
@@ -425,4 +430,3 @@
   <script src="oneko.js"></script>
 </body>
 </html>
-
