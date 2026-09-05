@@ -45,7 +45,7 @@
       document.querySelector('#review-heading').textContent=page.name;
       question.textContent=page.question;answer.open=false;answer.hidden=false;
       answer.querySelector('p').textContent=page.answer;link.href=page.url;
-      button.textContent='Next connection →';
+      button.textContent='Next question →';
     });
   }
   document.querySelectorAll('.table-scroll').forEach(box=>{

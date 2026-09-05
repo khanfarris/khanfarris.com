@@ -3,201 +3,271 @@ window.knowledgePages = [
   {
     "name": "Private IPv4 & NAT",
     "url": "kb-private-addressing.html",
-    "type": "Study note",
-    "keywords": "Networking Concept study Private addressing and public internet access are separate decisions. A 10.x address is just as private as a 192.168.x address. Creating another internal network does not automatically create another public IP.",
+    "type": "Concept",
+    "keywords": "Networking Concept study A private IP identifies a device inside a network. NAT lets devices using private addresses communicate through an internet-facing address. ",
     "slug": "private-addressing",
     "category": "Networking",
-    "question": "Must 10.0.0.0/24 and 192.168.20.0/24 use different public IPs?",
-    "answer": "No. Both private subnets may share a NAT egress address. Internal segmentation and public-address allocation are separate design choices."
+    "question": "Do a staff VLAN and a guest VLAN need separate public IP addresses?",
+    "answer": "No. They can use different private subnets and share a public address through PAT. Their separation depends on VLAN configuration and the rules controlling traffic between them, not on having different public IPs."
   },
   {
-    "name": "IPv4 subnet boundaries",
+    "name": "Subnetting",
     "url": "kb-subnetting.html",
-    "type": "Study note",
-    "keywords": "Networking Practiced calculations Separate total address count from the increment in the changing octet. Derive every boundary from the network address. A /29 contains eight total addresses. A /21 contains 2,048 total addresses but advances by eight in the third octet. Those numbers describe different things.",
+    "type": "Concept",
+    "keywords": "Networking Practiced calculations Subnetting divides an IP address range into smaller networks. The subnet mask tells a device which addresses are local and which need a router. ",
     "slug": "subnetting",
     "category": "Networking",
-    "question": "For 172.19.155.200/18, find the mask, network, broadcast, and ordinary usable capacity.",
-    "answer": "Mask 255.255.192.0; increment 64 in the third octet; network 172.19.128.0; broadcast 172.19.191.255; usable range 172.19.128.1–172.19.191.254; capacity 16,382. The next network begins at 172.19.192.0."
+    "question": "Find the network, broadcast, mask, and ordinary usable capacity of 172.19.155.200/18.",
+    "answer": "The mask is 255.255.192.0. The increment is 64 in the third octet, so 155 sits in 128–191. Network: 172.19.128.0. Broadcast: 172.19.191.255. Usable range: 172.19.128.1–172.19.191.254, giving 16,382 addresses."
   },
   {
-    "name": "VLSM address planning",
+    "name": "VLSM",
     "url": "kb-vlsm.html",
-    "type": "Study note",
-    "keywords": "Networking Practiced calculations Size each subnet for its requirement, allocate on valid boundaries, and prevent overlaps inside the parent prefix. The department exercises became consistent when the largest block was placed first and each next allocation began after the previous broadcast.",
+    "type": "Concept",
+    "keywords": "Networking Practiced calculations Variable Length Subnet Masking gives each subnet a size that fits its needs, instead of giving every department the same-sized block. ",
     "slug": "vlsm",
     "category": "Networking",
-    "question": "Are .224–.237 the usable addresses in 10.60.24.224/28?",
-    "answer": "No. .224 is the network, .239 is the broadcast, and .225–.238 are usable. This block has 16 total addresses and 14 ordinary usable addresses."
+    "question": "Why can’t 50 engineering devices use a /27, and what else should you count before choosing a /26?",
+    "answer": "A /27 has only 30 ordinary usable addresses. A /26 has 62. Count the gateway, other infrastructure, and expected growth as well as the 50 devices. Ensure the chosen block starts on a valid boundary and does not overlap another subnet."
   },
   {
-    "name": "VLANs & enforcement boundaries",
+    "name": "VLANs",
     "url": "kb-vlans.html",
-    "type": "Study note",
-    "keywords": "Networking Concept study A VLAN separates Layer 2 broadcast domains. Security policy must control the routed paths between them. A logical grouping of ports describes the configuration. A separate broadcast domain explains the result and the opportunity to enforce inter-segment policy.",
+    "type": "Concept",
+    "keywords": "Networking Concept study A VLAN makes one physical switch behave like several separate local networks. Devices share a local broadcast network only when their ports belong to the same VLAN. ",
     "slug": "vlans",
     "category": "Networking",
-    "question": "Does creating a guest VLAN guarantee that guests cannot reach a server VLAN?",
-    "answer": "No. The routed path and its ACL or firewall rules determine allowed access. Verify the enforcement point and test both permitted and denied flows."
+    "question": "A guest VLAN exists, but guests can still open the file server. What would you investigate?",
+    "answer": "Check that the guest is actually on the guest VLAN, then inspect routing and firewall or ACL rules between guests and servers. Separate VLANs alone do not guarantee a deny policy. Verify the exact service and both allowed and blocked paths."
   },
   {
-    "name": "DNS: names versus reachability",
+    "name": "DNS",
     "url": "kb-dns.html",
-    "type": "Study note",
-    "keywords": "Networking Scenario study Test name resolution separately from the ability to reach an IP address or service. An active remote-support session during a website outage proves some connectivity remains. It narrows the investigation without proving that every network dependency is healthy.",
+    "type": "Concept",
+    "keywords": "Networking Scenario study DNS translates names such as portal.example.com into information computers can use, often an IP address. It helps find a destination; it does not establish the connection. ",
     "slug": "dns",
     "category": "Networking",
-    "question": "Remote support works, but users report that websites fail. Is DNS definitely broken?",
-    "answer": "No. Existing connectivity is a clue. Query a failing name through the intended resolver and separately test the required service path, then compare scope and recent changes."
+    "question": "A name resolves to the expected IP, but the website still fails. What has DNS proved?",
+    "answer": "It has provided the expected address for that lookup. It has not proved that the service port is reachable, the TLS handshake works, or the application is healthy. Test those separately and compare the scope of affected users."
   },
   {
-    "name": "SentinelOne: detection to response",
-    "url": "kb-sentinelone.html",
-    "type": "Study note",
-    "keywords": "Security operations Concept study An endpoint alert becomes actionable when the process context and the response action are understood. A detection policy is more than a list of known bad files. The distinction between quarantining a file and isolating a host changes what containment actually achieves.",
-    "slug": "sentinelone",
-    "category": "Security operations",
-    "question": "Does quarantining a suspicious executable isolate the workstation from the network?",
-    "answer": "No. File quarantine and host network isolation have different scopes. Confirm which action is required and verify its resulting state."
+    "name": "DHCP",
+    "url": "kb-dhcp.html",
+    "type": "Concept",
+    "keywords": "Networking Concept study DHCP automatically gives a device an IP address and the network settings it needs. The address is borrowed for a lease period, rather than manually typed into every computer. ",
+    "slug": "dhcp",
+    "category": "Networking",
+    "question": "Devices on one new VLAN get 169.254 addresses, while other VLANs work. What would you check?",
+    "answer": "Confirm the clients are using DHCP and are on the intended VLAN. Check that VLAN’s scope, available addresses, gateway relay, and path to the DHCP server. A failure limited to one VLAN points toward its configuration or path, though the address alone does not prove the cause."
   },
   {
-    "name": "Blackpoint: MDR is a service",
+    "name": "Syslog",
+    "url": "kb-syslog.html",
+    "type": "Concept",
+    "keywords": "Cloud & telemetry Concept study Syslog is a common way for devices and applications to send event messages to a central place. Instead of opening every firewall or server, an analyst can review their messages together. ",
+    "slug": "syslog",
+    "category": "Cloud & telemetry",
+    "question": "A firewall shows a local informational deny event, but the collector only receives warning and more urgent events. Why is your search empty?",
+    "answer": "Informational is severity 6; warning is 4. A threshold that includes only 0–4 excludes that deny. Check the forwarding filter and collection path before concluding that the event did not happen. The sender’s severity is not an analyst’s final threat assessment."
+  },
+  {
+    "name": "EDR, MDR, and XDR",
     "url": "kb-mdr.html",
-    "type": "Study note",
-    "keywords": "Security operations Concept study Distinguish the technology collecting evidence from the people and service responsible for investigating and responding. EDR, SIEM, and MDR describe different roles. A managed detection service cannot be understood simply as another name for a log dashboard.",
+    "type": "Concept",
+    "keywords": "Security operations Concept study EDR watches devices. XDR brings signals from several security areas together. MDR provides people and processes to investigate and respond using those tools. ",
     "slug": "mdr",
     "category": "Security operations",
-    "question": "Does installing an EDR agent mean an organization now has MDR?",
-    "answer": "No. MDR adds a managed operational service. The responsible team, coverage, escalation arrangements, and response authority must be established."
+    "question": "Why would an organization use SentinelOne and Blackpoint together instead of choosing only one?",
+    "answer": "SentinelOne supplies endpoint visibility and response controls. With the supported integration and coverage configured, Blackpoint can provide continuous monitoring, investigation, and response around those alerts and its other evidence. The organization still coordinates business impact, remediation, and follow-up. XDR can add broader correlation across security areas."
   },
   {
-    "name": "Syslog: transport is not correlation",
-    "url": "kb-syslog.html",
-    "type": "Study note",
-    "keywords": "Security operations Concept study Forwarding an event makes it available elsewhere; parsing and correlation make it useful to an investigation. A process alert and a firewall block can become one investigative story when a central platform receives usable fields and links the evidence.",
-    "slug": "syslog",
+    "name": "SentinelOne",
+    "url": "kb-sentinelone.html",
+    "type": "Tool guide",
+    "keywords": "Security operations Tool study SentinelOne’s console lets you inspect protected devices, investigate detections through Storyline, and check or perform response actions on the affected endpoint. Storyline Deep Visibility quarantine isolate EDR",
+    "slug": "sentinelone",
     "category": "Security operations",
-    "question": "A sender reports a successful test. Is the integration ready for investigation?",
-    "answer": "Not yet. Find the event at the receiver and verify its timestamp, source, parsed fields, and coverage of the intended event types."
+    "question": "A threat says “resolved,” but the endpoint has been offline since before isolation was requested. What do you verify?",
+    "answer": "Verify the isolation action’s result and the device’s current connectivity, not just the alert’s workflow status. Check last contact and pending or failed actions. Coordinate the next containment step with the incident owner and document the uncertainty."
   },
   {
-    "name": "Timus: access to a resource",
-    "url": "kb-timus.html",
-    "type": "Study note",
-    "keywords": "Identity & access Concept study Network reachability, authentication, and authorization are separate checks in an access decision. A home PC cannot automatically browse another PC's files simply because both share a network. That distinction explains why a VPN, ZTNA, and a virtual desktop are different.",
-    "slug": "timus",
-    "category": "Identity & access",
-    "question": "If a user connects through an approved access service, must a file share open?",
-    "answer": "No. The resource must be reachable, the identity must authenticate, and the share and underlying file permissions must authorize access."
-  },
-  {
-    "name": "Email authentication & alignment",
-    "url": "kb-email-auth.html",
-    "type": "Study note",
-    "keywords": "Security operations Scenario study An authenticated sending domain does not prove that an email's request is legitimate. A lookalike domain may pass its own authentication. A compromised real mailbox may also send authenticated mail. Both explain why “pass” is not a verdict.",
-    "slug": "email-auth",
+    "name": "Blackpoint",
+    "url": "kb-blackpoint.html",
+    "type": "Tool guide",
+    "keywords": "Security operations Tool study Blackpoint’s CompassOne platform gives a customer team visibility into protected assets, security findings, and the work performed by Blackpoint’s response service. ",
+    "slug": "blackpoint",
     "category": "Security operations",
-    "question": "A CEO payment request passes DMARC. Is it safe to approve?",
-    "answer": "No. A lookalike domain or compromised legitimate account can send authenticated mail. Check the actual domain and verify the request through an established independent channel."
+    "question": "Blackpoint reports successful containment. Why might the customer ticket still need work?",
+    "answer": "Containment stops or limits the threat. The customer may still need remediation, account investigation, service recovery, and communication. Read the provider’s evidence, confirm the action outcome, and assign the remaining work before closing the ticket."
   },
   {
-    "name": "BEC: verify before payment",
-    "url": "kb-bec.html",
-    "type": "Study note",
-    "keywords": "Security operations Scenario study Break the attacker's communication path when validating a sensitive business request. Replying to the suspicious CEO email asks the same potentially compromised channel to vouch for itself. A known phone number provides a separate verification path.",
-    "slug": "bec",
+    "name": "SIEM",
+    "url": "kb-siem.html",
+    "type": "Concept",
+    "keywords": "Security operations Concept study A SIEM collects searchable security data from different systems and applies detection rules. It helps an analyst investigate a sequence of events across the environment. ",
+    "slug": "siem",
     "category": "Security operations",
-    "question": "What is the first verification step for an unexpected urgent transfer request?",
-    "answer": "Pause the transaction and contact the supposed requester through an established independent channel. Preserve the message and investigate the technical evidence alongside the business verification."
+    "question": "How can a SIEM contain logs without producing an alert about those logs?",
+    "answer": "Collection and detection are separate. The source may be sending events successfully while no enabled rule matches the behavior, its threshold is not reached, or its query looks in the wrong table or time range. Check the raw events before changing the detection."
   },
   {
-    "name": "Risky sign-ins: evidence before verdict",
-    "url": "kb-identity.html",
-    "type": "Study note",
-    "keywords": "Identity & access Scenario study Treat a risk signal as a hypothesis, then choose a proportionate response using confidence and active harm. Impossible travel can reflect a VPN. Conversely, “always confirm before containing” is too rigid when strong evidence indicates an attack is still causing harm.",
-    "slug": "identity",
-    "category": "Identity & access",
-    "question": "Should every impossible-travel alert immediately trigger a password reset?",
-    "answer": "No. Correlate the signal with authentication, device, application, and user context. Escalate or contain promptly when confidence and active harm justify it, within the incident runbook."
-  },
-  {
-    "name": "Windows Server & domain authentication",
-    "url": "kb-windows-domain.html",
-    "type": "Study note",
-    "keywords": "Identity & access Concept study An operating system, a server role, and an authorization decision are different layers. Windows Server does not automatically mean domain controller. Logging on to a domain and receiving access to a particular file are also separate events.",
-    "slug": "windows-domain",
-    "category": "Identity & access",
-    "question": "A machine runs Windows Server. Does that prove it authenticates domain users?",
-    "answer": "No. Its configured roles must be identified. Windows Server can host many workloads; a domain controller specifically provides AD DS domain functions."
-  },
-  {
-    "name": "File shares: a path is not permission",
-    "url": "kb-file-shares.html",
-    "type": "Study note",
-    "keywords": "Identity & access Concept study A mapped drive is a convenient reference to a resource, not the server or the access control protecting it. A drive letter, a file-server role, a NAS appliance, and the host running that service describe different parts of the same access path.",
-    "slug": "file-shares",
-    "category": "Identity & access",
-    "question": "Does assigning a user a mapped drive letter grant access to its files?",
-    "answer": "No. The mapping references a location. Network reachability, authentication, and the effective share and file permissions still govern access."
-  },
-  {
-    "name": "Azure NSGs: policy along the path",
-    "url": "kb-nsg.html",
-    "type": "Study note",
-    "keywords": "Cloud & telemetry Lab application Cloud network rules and the guest operating system's firewall are separate enforcement points. The honeypot lab changed both an Azure NSG and Windows Firewall. Opening one layer does not automatically change the other.",
-    "slug": "nsg",
-    "category": "Cloud & telemetry",
-    "question": "An NSG permits the intended connection, but it still fails. What remains to check?",
-    "answer": "Other applicable NSGs, routing, the guest firewall, and the listening service. An allow at one point does not establish an end-to-end permitted and working path."
-  },
-  {
-    "name": "Sentinel: follow the event pipeline",
+    "name": "Microsoft Sentinel",
     "url": "kb-sentinel.html",
-    "type": "Study note",
-    "keywords": "Cloud & telemetry Lab application Troubleshoot collection from the original event through the agent and collection rules to the queryable workspace. Checking Event Viewer still matters even when a connector is configured. It establishes whether the event exists before investigating its journey into Sentinel.",
+    "type": "Tool guide",
+    "keywords": "Cloud & telemetry Lab application Microsoft Sentinel lets you connect security data, query it with KQL, investigate incidents, and build workbooks and detection rules around the connected data. Sentinel AMA DCR LAW Log Analytics",
     "slug": "sentinel",
     "category": "Cloud & telemetry",
-    "question": "A Sentinel query returns no failed logons. Does that prove no failed logons occurred?",
-    "answer": "No. First verify source events, collection scope and health, destination table, time window, and filters. An empty result describes the query result, not necessarily the underlying activity."
+    "question": "A known failed logon exists in Event Viewer but is absent from Sentinel. What would you check next?",
+    "answer": "Check AMA health, the machine’s DCR association, the selected event collection, and the destination workspace. Then verify SecurityEvent, your access, the time range, and ingestion delay. The local event confirms generation; it does not prove collection succeeded."
   },
   {
-    "name": "Windows logons: correlate the session",
+    "name": "Timus",
+    "url": "kb-timus.html",
+    "type": "Tool guide",
+    "keywords": "Identity & access Tool study Timus Manager is the web console for administering users, devices, sites, and access policies. Timus Connect is the client application employees use to connect through the configured service. ",
+    "slug": "timus",
+    "category": "Identity & access",
+    "question": "An employee is connected in Timus Connect but cannot use one internal application. What details make the ticket actionable?",
+    "answer": "Record the customer, signed-in user, device, site, application hostname, destination port, time, and error. Review the matching policy decision, team and profile, then check DNS and the destination service. Connection status alone does not show that this application is permitted."
+  },
+  {
+    "name": "ZTNA / SASE",
+    "url": "kb-ztna-sase.html",
+    "type": "Concept",
+    "keywords": "Identity & access Concept study ZTNA checks who is requesting access and the conditions of that request before allowing a path to a resource. SASE combines secure access with wider networking and security services. ",
+    "slug": "ztna-sase",
+    "category": "Identity & access",
+    "question": "Why does successful MFA not guarantee that an employee can open a private file share?",
+    "answer": "MFA satisfies an authentication requirement. The device and request must also meet the access policy, the private server must be reachable through an approved path, and the user must have permission on the share and files."
+  },
+  {
+    "name": "Email authentication",
+    "url": "kb-email-auth.html",
+    "type": "Concept",
+    "keywords": "Security operations Scenario study SPF, DKIM, and DMARC help check whether a message is authorized to use a domain. They do not prove that the sender is honest or that the request is safe. ",
+    "slug": "email-auth",
+    "category": "Security operations",
+    "question": "Why can a lookalike domain pass DMARC?",
+    "answer": "The attacker can configure valid SPF and DKIM for the domain they own, aligned with that domain’s From address. DMARC checks domain authorization, not whether the domain is the real company or whether the payment request is legitimate."
+  },
+  {
+    "name": "Business email compromise",
+    "url": "kb-bec.html",
+    "type": "Concept",
+    "keywords": "Security operations Scenario study Business email compromise is a scam that uses a believable business conversation to trick someone into sending money, sharing information, or changing an important process. ",
+    "slug": "bec",
+    "category": "Security operations",
+    "question": "A supplier’s email passes DMARC and asks for new bank details. Is it safe to approve the change?",
+    "answer": "No. A compromised supplier mailbox or a lookalike domain can pass authentication. Pause the change, verify it through an existing trusted contact method, and investigate the message and any user interaction. Escalate promptly if money or sensitive information has already been sent."
+  },
+  {
+    "name": "Risky sign-ins",
+    "url": "kb-identity.html",
+    "type": "Concept",
+    "keywords": "Identity & access Scenario study A risky sign-in is an authentication event with signals that deserve investigation. The signal helps prioritize work; the surrounding evidence determines whether an account is compromised. ",
+    "slug": "identity",
+    "category": "Identity & access",
+    "question": "Two successful sign-ins appear far apart within minutes. What would make you more or less concerned?",
+    "answer": "Compare known VPN or proxy use, device and client details, authentication and policy results, and subsequent activity. A user-confirmed VPN with expected behavior may explain the location shift. Unexpected MFA changes, mailbox forwarding, or unfamiliar resource access increase concern and may justify prompt containment under the response plan."
+  },
+  {
+    "name": "Active Directory",
+    "url": "kb-windows-domain.html",
+    "type": "Concept",
+    "keywords": "Identity & access Concept study Active Directory Domain Services keeps a shared directory of users, computers, and groups. Domain controllers use it to support domain authentication and centralized administration. ",
+    "slug": "windows-domain",
+    "category": "Identity & access",
+    "question": "Does every Windows Server machine validate domain logons?",
+    "answer": "No. Windows Server can host many roles. Domain controllers running AD DS provide domain authentication services. A server used only for file sharing or an application is not automatically a domain controller."
+  },
+  {
+    "name": "Windows Server",
+    "url": "kb-windows-server.html",
+    "type": "Tool guide",
+    "keywords": "Identity & access Tool study Windows Server is Microsoft’s operating system for shared services such as domains, DNS, DHCP, files, and applications. Start by identifying the role a server performs and who depends on it. ",
+    "slug": "windows-server",
+    "category": "Identity & access",
+    "question": "A service is stopped in Services. Does that prove it caused the outage?",
+    "answer": "No. Some services normally start only when needed or are not used by this server’s role. Compare the affected function with its dependencies, configured startup behavior, recent events, and a known-good baseline before changing the service."
+  },
+  {
+    "name": "File shares",
+    "url": "kb-file-shares.html",
+    "type": "Concept",
+    "keywords": "Identity & access Concept study A file share lets other computers access a folder over the network. The network path finds the server and share; the user’s permissions decide what they can do there. ",
+    "slug": "file-shares",
+    "category": "Identity & access",
+    "question": "Z: disappeared, but the expected UNC path opens successfully. What is your next focus?",
+    "answer": "The server path and this user’s basic access work. Investigate the drive mapping, sign-in script, Group Policy, or device-management configuration that should create Z:. Also check whether the problem is limited to one session or device."
+  },
+  {
+    "name": "Microsoft 365",
+    "url": "kb-m365.html",
+    "type": "Ecosystem guide",
+    "keywords": "Identity & access Concept study Microsoft 365 combines work applications with identity, device management, and security services. Entra identifies users, Intune manages devices, Defender investigates threats, and Conditional Access controls sign-ins. ",
+    "slug": "m365",
+    "category": "Identity & access",
+    "question": "A user knows their password and passes MFA but is blocked because their device is noncompliant. Which tools help you investigate?",
+    "answer": "Use Entra sign-in logs to identify the Conditional Access policy and failed requirement. Use Intune to inspect that device’s compliance details and check-in state. If an integrated Defender device-risk signal is involved, investigate the threat there. Fix and verify the cause rather than broadly disabling the policy."
+  },
+  {
+    "name": "Azure NSGs",
+    "url": "kb-nsg.html",
+    "type": "Tool guide",
+    "keywords": "Cloud & telemetry Lab application An Azure Network Security Group is a set of traffic-filtering rules attached to a subnet, a network interface, or both. It can allow or block a VM’s network traffic before that traffic reaches Windows. ",
+    "slug": "nsg",
+    "category": "Cloud & telemetry",
+    "question": "An NSG permits RDP, but the VM still cannot be reached. What other checks matter?",
+    "answer": "Check every applicable NSG, effective routes, the actual source and destination, Windows Firewall, and whether Remote Desktop is listening. Allowing traffic through one checkpoint does not make the whole path work. Use a new connection when verifying changed rules."
+  },
+  {
+    "name": "Windows events",
     "url": "kb-windows-events.html",
-    "type": "Study note",
-    "keywords": "Cloud & telemetry Lab application An event ID identifies an event type; account, logon context, and related records determine its investigative meaning. Event 4672 initially looked like a privilege-escalation verdict. It actually records special privileges assigned to a new logon and needs context.",
+    "type": "Concept",
+    "keywords": "Cloud & telemetry Lab application Windows event logs record activity on a computer. Event IDs tell you what kind of event was recorded; the event’s fields explain who, where, when, and how. ",
     "slug": "windows-events",
     "category": "Cloud & telemetry",
-    "question": "Does event 4672 alone confirm privilege escalation?",
-    "answer": "No. It records special privileges assigned to a new logon. Correlate the account, host, session, and surrounding activity to decide whether that privileged logon was expected."
+    "question": "A 4624 is followed by a 4672 with the same Logon ID on one host. Does that prove privilege escalation?",
+    "answer": "No. It shows a successful logon and sensitive privileges assigned to that session. This can be normal for an administrative or system account. Check the account, logon type, source, time, expected role, and subsequent actions to decide whether the activity is suspicious."
   },
   {
-    "name": "KQL enrichment: match the schema",
+    "name": "KQL",
     "url": "kb-kql-enrichment.html",
-    "type": "Study note",
-    "keywords": "Cloud & telemetry Lab application A lookup can only enrich events when the query references a real data source with the expected columns and compatible values. Changing from a watchlist to external CSV data did not automatically update the workbook's query. The missing network-column error exposed the dependency underneath the map.",
+    "type": "Tool guide",
+    "keywords": "Cloud & telemetry Lab application Kusto Query Language lets you ask questions of tables of data. Each pipe passes the previous result into another step, such as filtering rows or counting events. ",
     "slug": "kql-enrichment",
     "category": "Cloud & telemetry",
-    "question": "The standalone enrichment query works, but the workbook still reports a missing watchlist. Why?",
-    "answer": "The workbook may still execute its original _GetWatchlist query. Check and update the consumer's data-source reference, then verify the columns it expects."
+    "question": "Why would ipv4_lookup fail when the reference table has a column called Network but the query uses network?",
+    "answer": "KQL column names are case-sensitive. The query must name the actual reference-side range column and the event-side IP column. Inspect the schema and test a small result before troubleshooting the map that consumes it."
   },
   {
-    "name": "TLS: encryption above transport",
+    "name": "TLS",
     "url": "kb-tls.html",
-    "type": "Study note",
-    "keywords": "Networking Concept study Reliable delivery and cryptographic protection solve different problems. TCP's reliability and checksums do not make HTTP confidential. TLS supplies security properties that the IP and TCP layers do not provide by themselves.",
+    "type": "Concept",
+    "keywords": "Networking Concept study TLS protects data in transit by encrypting it and checking that it has not been changed. In a normal HTTPS connection, it also helps the browser verify the server’s identity. ",
     "slug": "tls",
     "category": "Networking",
-    "question": "Does a valid TCP checksum prove the HTTP content was not maliciously altered?",
-    "answer": "No. TCP checksums address accidental transmission corruption, not adversarial integrity or identity. TLS provides cryptographic protections when correctly negotiated and validated."
+    "question": "A site has a valid HTTPS certificate. Does that mean the site’s content is trustworthy?",
+    "answer": "No. A valid certificate helps authenticate the connection to that hostname and protect data in transit. An attacker can obtain a valid certificate for a domain they control, and a legitimate site can also be compromised."
   },
   {
-    "name": "Wireshark: identify the conversation",
+    "name": "TCP",
+    "url": "kb-tcp.html",
+    "type": "Concept",
+    "keywords": "Networking Concept study TCP carries an ordered stream of bytes between two endpoints. It tracks delivery and retransmits missing data so applications do not have to handle ordinary packet loss themselves. ",
+    "slug": "tcp",
+    "category": "Networking",
+    "question": "A TCP segment starts at sequence 1000 and carries 100 data bytes. Is tcp.stream == 1100 the way to find the next bytes?",
+    "answer": "No. Sequence 1100 would describe the next data-byte position in this simplified example. tcp.stream is Wireshark’s separate identifier for the whole connection. Filter the right stream, then inspect sequence and acknowledgement numbers inside it."
+  },
+  {
+    "name": "Wireshark",
     "url": "kb-tcp-streams.html",
-    "type": "Study note",
-    "keywords": "Networking Concept study A packet's stream label, sequence number, and header offset describe different coordinates. A TCP stream index groups a connection in the capture. It is not the packet's position in that connection, and a browser tab is not a reliable one-to-one connection identifier.",
+    "type": "Tool guide",
+    "keywords": "Networking Tool study Wireshark lets you inspect a packet capture, filter the traffic you see, and follow individual conversations. Its three main panes show packets, decoded fields, and the corresponding bytes. ",
     "slug": "tcp-streams",
     "category": "Networking",
-    "question": "Does tcp.stream == 4 mean the fourth packet from the fourth browser tab?",
-    "answer": "No. It selects Wireshark's TCP conversation index 4 in that capture. Packet order, sequence numbers, and browser tabs are separate concepts."
+    "question": "What is the difference between offset 0x16 and a byte with value 0x80 in the packet bytes pane?",
+    "answer": "Offset 0x16 is a position 22 bytes from the beginning of the displayed byte source. A byte value of 0x80 represents the number 128 at its position. Select the corresponding decoded field to learn what those bytes mean in the protocol."
   }
 ];
