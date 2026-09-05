@@ -1,0 +1,503 @@
+{
+  "refs": {
+    "ip": [
+      "RFC 1918 — Private address space",
+      "https://www.rfc-editor.org/rfc/rfc1918"
+    ],
+    "subnet": [
+      "Cisco — IPv4 addressing and subnetting",
+      "https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13788-3.html"
+    ],
+    "p31": [
+      "RFC 3021 — IPv4 /31 links",
+      "https://www.rfc-editor.org/rfc/rfc3021"
+    ],
+    "dns": [
+      "Microsoft — Troubleshooting DNS clients",
+      "https://learn.microsoft.com/en-us/windows-server/networking/dns/troubleshoot/troubleshoot-dns-client"
+    ],
+    "edr": [
+      "SentinelOne — Endpoint protection",
+      "https://www.sentinelone.com/platform/endpoint-protection-platform/"
+    ],
+    "behavior": [
+      "SentinelOne — Behavioral detection and Storyline",
+      "https://www.sentinelone.com/blog/decrypting-sentinelone-detection-the-behavioral-ai-engine-in-real-time-cwpp/"
+    ],
+    "mdr": [
+      "Blackpoint — Managed detection and response",
+      "https://blackpointcyber.com/platform/managed-detection-and-response/"
+    ],
+    "mdrEDR": [
+      "Blackpoint — Managed EDR",
+      "https://blackpointcyber.com/why-blackpoint/managed-edr/"
+    ],
+    "syslog": [
+      "RFC 5424 — Syslog",
+      "https://www.rfc-editor.org/rfc/rfc5424"
+    ],
+    "syslogTLS": [
+      "RFC 5425 — Syslog over TLS",
+      "https://www.rfc-editor.org/rfc/rfc5425"
+    ],
+    "timus": [
+      "Timus — Zero Trust Network Access",
+      "https://www.timusnetworks.com/ztna/"
+    ],
+    "ca": [
+      "Microsoft — Conditional Access",
+      "https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview"
+    ],
+    "privateAccess": [
+      "Microsoft — Entra Private Access",
+      "https://learn.microsoft.com/en-us/entra/global-secure-access/concept-private-access"
+    ],
+    "dmarc": [
+      "Microsoft — DMARC and alignment",
+      "https://learn.microsoft.com/en-us/defender-office-365/email-authentication-dmarc-configure"
+    ],
+    "bec": [
+      "FBI — Business email compromise",
+      "https://www.fbi.gov/how-we-can-help-you/common-frauds-and-scams/business-email-compromise"
+    ],
+    "risk": [
+      "Microsoft — Identity risk detections",
+      "https://learn.microsoft.com/en-us/entra/id-protection/concept-identity-protection-risks"
+    ],
+    "kerberos": [
+      "Microsoft — Kerberos authentication",
+      "https://learn.microsoft.com/en-us/windows-server/security/kerberos/kerberos-authentication-overview"
+    ],
+    "smb": [
+      "Microsoft — SMB file sharing",
+      "https://learn.microsoft.com/en-us/windows-server/storage/file-server/file-server-smb-overview"
+    ],
+    "nsg": [
+      "Microsoft — Network security groups",
+      "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+    ],
+    "nsgOrder": [
+      "Microsoft — NSG traffic evaluation",
+      "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-group-how-it-works"
+    ],
+    "ama": [
+      "Microsoft — Windows events via AMA",
+      "https://learn.microsoft.com/en-us/azure/sentinel/connect-services-windows-based"
+    ],
+    "e4624": [
+      "Microsoft — Successful logon: 4624",
+      "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4624"
+    ],
+    "e4625": [
+      "Microsoft — Failed logon: 4625",
+      "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4625"
+    ],
+    "e4672": [
+      "Microsoft — Special privileges: 4672",
+      "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4672"
+    ],
+    "lookup": [
+      "Microsoft — ipv4_lookup",
+      "https://learn.microsoft.com/en-us/kusto/query/ipv4-lookup-plugin"
+    ],
+    "tls": [
+      "RFC 9325 — Secure use of TLS",
+      "https://www.rfc-editor.org/rfc/rfc9325.html"
+    ],
+    "tcp": [
+      "RFC 9293 — TCP",
+      "https://www.rfc-editor.org/rfc/rfc9293.html"
+    ],
+    "wireshark": [
+      "Wireshark — TCP display fields",
+      "https://www.wireshark.org/docs/dfref/t/tcp.html"
+    ],
+    "vlan": [
+      "Cisco — Inter-VLAN routing and access rules",
+      "https://www.cisco.com/c/en/us/support/docs/smb/routers/cisco-rv-series-small-business-routers/1393-Inter-VLAN-Routing-with-Targeted-ACL-Restrictions.html"
+    ],
+    "external": [
+      "Microsoft — externaldata operator",
+      "https://learn.microsoft.com/en-us/kusto/query/externaldata-operator"
+    ]
+  },
+  "articles": [
+    {
+      "slug": "private-addressing",
+      "title": "Private IPv4 & NAT",
+      "category": "Networking",
+      "basis": "Concept study",
+      "principle": "Private addressing and public internet access are separate decisions.",
+      "connection": "A 10.x address is just as private as a 192.168.x address. Creating another internal network does not automatically create another public IP.",
+      "body": "<h2>Recognizing the address scope</h2><p>RFC 1918 reserves <code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, and <code>192.168.0.0/16</code> for private IPv4 networks. A workstation using <code>10.0.0.25</code> is not publicly addressed merely because its address differs from a familiar home-router range. The network administrator or router configuration determines which private subnet is used.</p><p>Only 172.16 through 172.31 falls within the private 172.16/12 block. Likewise, <code>196.168.x.x</code> is not interchangeable with <code>192.168.x.x</code>. An address outside RFC 1918 is not automatically globally usable: loopback, link-local, documentation, and other special-purpose ranges also exist.</p><h2>Following a connection through NAT</h2><p>In a common office design, a workstation sends internet-bound traffic to its gateway. Network Address Translation rewrites the private source address to an address used on the external path. Port Address Translation also tracks ports, allowing multiple internal connections to share a public address. Replies are matched to translation state and returned to the appropriate internal endpoint.</p><pre><code>Workstation         Gateway / NAT         External service\n10.0.0.25:53010  →   public address:port →  service:443</code></pre><p>The public IPv4 address belongs to the internet-facing path, which may also include an upstream provider's translation. Local interface configuration alone does not necessarily show the address an external service sees.</p><h2>Connecting addressing to segmentation</h2><p>Two VLANs can use different private subnets while sharing one internet egress address. VLAN membership, IP subnet membership, and NAT policy answer different questions. An organization may deliberately configure different public egress addresses, but adding a VLAN does not allocate one.</p><h2>Security implication</h2><p>NAT translates addressing; it does not replace firewall policy. A compromised workstation can initiate outbound traffic through NAT. An analyst still needs permitted-path rules and endpoint or network evidence to judge that traffic. IPv6 must be considered separately rather than assumed to follow the same IPv4 NAT arrangement.</p>",
+      "question": "Must 10.0.0.0/24 and 192.168.20.0/24 use different public IPs?",
+      "answer": "No. Both private subnets may share a NAT egress address. Internal segmentation and public-address allocation are separate design choices.",
+      "sources": [
+        "ip"
+      ],
+      "related": [
+        "vlans",
+        "subnetting"
+      ]
+    },
+    {
+      "slug": "subnetting",
+      "title": "IPv4 subnet boundaries",
+      "category": "Networking",
+      "basis": "Practiced calculations",
+      "principle": "Separate total address count from the increment in the changing octet. Derive every boundary from the network address.",
+      "connection": "A /29 contains eight total addresses. A /21 contains 2,048 total addresses but advances by eight in the third octet. Those numbers describe different things.",
+      "body": "<h2>Bits, values, and host capacity</h2><p>An IPv4 address contains 32 bits. A /28 prefix reserves 28 network bits and leaves four host bits. A subnet mask has ones in the network positions and zeros in the host positions. An octet contains eight bits and 256 possible values, numbered 0 through 255. Zero is a number, not “null”; an octet does not contain 256 bits.</p><div class=\"formula\">Host bits = 32 − prefix<br>Total addresses = 2<sup>host bits</sup><br>Ordinary IPv4 subnet host capacity = total addresses − 2</div><p>The subtraction reserves the all-zero host value for the network and the all-one host value for broadcast. It works regardless of the octet boundary for ordinary IPv4 broadcast subnets. It is <strong>not universal</strong>: /31 point-to-point links can use both addresses, while /32 denotes one address. Cloud-platform reservations can further reduce assignable capacity.</p><h2>Worked example: 192.168.204.30/28</h2><ol><li>Host bits: <code>32 − 28 = 4</code>. Total addresses: 16. Ordinary usable capacity: 14.</li><li>Mask: <code>11111111.11111111.11111111.11110000</code> = <code>255.255.255.240</code>.</li><li>Fourth-octet increment: <code>256 − 240 = 16</code>.</li><li>The greatest multiple of 16 not exceeding 30 is 16. Network: <code>192.168.204.16</code>.</li><li>The next block starts at .32. Broadcast is one address earlier: <code>192.168.204.31</code>.</li><li>Usable range: <code>192.168.204.17–192.168.204.30</code>.</li></ol><h2>When the mask changes in the third octet</h2><p>For <code>10.50.132.75/21</code>, 11 host bits give 2,048 total addresses and 2,046 ordinary usable addresses. The mask is <code>255.255.248.0</code>. The third-octet increment is <code>256 − 248 = 8</code>, not 2,048.</p><p>The block containing 132 begins at 128 and ends at 135. Network: <code>10.50.128.0</code>. Broadcast: <code>10.50.135.255</code>. Host range: <code>10.50.128.1–10.50.135.254</code>. All host bits are zero at the network boundary and one at the broadcast boundary, explaining the last octet's 0 and 255.</p><h2>Checks that prevent repeat errors</h2><ul><li>The increment is <code>256 − mask octet</code> in the partially masked octet. There are 256 possible octet values, although 255 is the largest.</li><li>Calculate broadcast from the network boundary, not the original host octet: <code>128 + 8 − 1 = 135</code>.</li><li>For <code>10.0.0.150/28</code>, network .144 has broadcast .159. Address .160 starts the next subnet.</li><li>A /26 has six host bits. The prefix is 26, not six.</li></ul>",
+      "question": "For 172.19.155.200/18, find the mask, network, broadcast, and ordinary usable capacity.",
+      "answer": "Mask 255.255.192.0; increment 64 in the third octet; network 172.19.128.0; broadcast 172.19.191.255; usable range 172.19.128.1–172.19.191.254; capacity 16,382. The next network begins at 172.19.192.0.",
+      "sources": [
+        "subnet",
+        "p31"
+      ],
+      "related": [
+        "vlsm",
+        "vlans"
+      ]
+    },
+    {
+      "slug": "vlsm",
+      "title": "VLSM address planning",
+      "category": "Networking",
+      "basis": "Practiced calculations",
+      "principle": "Size each subnet for its requirement, allocate on valid boundaries, and prevent overlaps inside the parent prefix.",
+      "connection": "The department exercises became consistent when the largest block was placed first and each next allocation began after the previous broadcast.",
+      "body": "<h2>From host requirements to prefixes</h2><p>Variable Length Subnet Masking uses different prefix lengths within an address plan. For ordinary IPv4 broadcast subnets, choose the smallest host-bit count <code>h</code> satisfying <code>2^h − 2 ≥ required addresses</code>. The prefix is <code>32 − h</code>. A real design counts gateways and infrastructure as well as end devices and leaves suitable growth capacity.</p><p>For 100 warehouse devices, six host bits provide only 62 usable addresses. Seven provide 126, making /25 a candidate if the remaining capacity covers infrastructure and growth. For 50 engineering devices, /26 provides 62. Capacity calculations do not themselves configure a switch or enforce security policy.</p><h2>Worked plan: 10.60.24.0/24</h2><div class=\"table-scroll\"><table><thead><tr><th>Department</th><th>Devices</th><th>Subnet</th><th>Usable range</th><th>Broadcast</th></tr></thead><tbody><tr><td>Warehouse</td><td>100</td><td>10.60.24.0/25</td><td>.1–.126</td><td>.127</td></tr><tr><td>Engineering</td><td>50</td><td>10.60.24.128/26</td><td>.129–.190</td><td>.191</td></tr><tr><td>Sales</td><td>28</td><td>10.60.24.192/27</td><td>.193–.222</td><td>.223</td></tr><tr><td>Kiosks</td><td>12</td><td>10.60.24.224/28</td><td>.225–.238</td><td>.239</td></tr></tbody></table></div><p>Abbreviated addresses retain <code>10.60.24</code>. The remaining <code>10.60.24.240/28</code> is unallocated. Usable ranges describe available host addresses, not a requirement to assign every address.</p><h2>Why allocation order helps</h2><p>Largest-first allocation is a reliable planning method, not a protocol requirement. It reduces the risk of leaving gaps too small or incorrectly aligned for larger subnets. A /26 must start on a 64-address boundary; an arbitrary unused host address is not a valid starting point.</p><p>A child subnet can begin at the same address as its parent. <code>10.60.24.0/24</code> describes 256 addresses; <code>10.60.24.0/25</code> describes the first 128. The prefix is part of the network identity. The parent represents the enclosing allocation, not an extra workstation network competing for those addresses.</p><h2>Address plan versus implementation</h2><p>A deployment needs Layer 3 interfaces or gateways, endpoint addressing, and routes. VLAN access and trunk configuration must carry the intended segments. Firewall or ACL policy controls communication between them. Correct arithmetic is necessary, but it does not establish that those controls exist.</p>",
+      "question": "Are .224–.237 the usable addresses in 10.60.24.224/28?",
+      "answer": "No. .224 is the network, .239 is the broadcast, and .225–.238 are usable. This block has 16 total addresses and 14 ordinary usable addresses.",
+      "sources": [
+        "subnet",
+        "p31"
+      ],
+      "related": [
+        "subnetting",
+        "vlans"
+      ]
+    },
+    {
+      "slug": "vlans",
+      "title": "VLANs & enforcement boundaries",
+      "category": "Networking",
+      "basis": "Concept study",
+      "principle": "A VLAN separates Layer 2 broadcast domains. Security policy must control the routed paths between them.",
+      "connection": "A logical grouping of ports describes the configuration. A separate broadcast domain explains the result and the opportunity to enforce inter-segment policy.",
+      "body": "<h2>Logical separation on shared hardware</h2><p>A VLAN groups endpoints into a Layer 2 broadcast domain on shared switching infrastructure. An ordinary access port places an endpoint's traffic into one VLAN. A trunk carries multiple VLANs between network devices, commonly using 802.1Q tags. Native-VLAN and tagging behavior depend on configuration.</p><p>VLANs can span switches. Two devices may use the same switch chassis while remaining logically separated; conversely, one VLAN may extend across several switches.</p><h2>VLAN versus subnet</h2><p>A VLAN is a Layer 2 concept. An IP subnet is a Layer 3 addressing concept. A conventional routed design assigns a distinct subnet to each VLAN. Creating a VLAN does not calculate a prefix, assign endpoint addresses, or create a gateway. Choosing a different IP range alone does not create a VLAN.</p><p>Workstations might use VLAN 10 and <code>192.168.10.0/24</code>; guests might use VLAN 20 and <code>192.168.20.0/24</code>. Both can share an internet egress address through NAT. A VLAN does not require private addressing, and its identifier says nothing about public-address allocation.</p><h2>Where enforcement happens</h2><p>Traffic switched directly within a VLAN does not ordinarily traverse the internet-edge firewall. That firewall cannot apply policy to packets it never receives. In a routed inter-VLAN design, traffic crosses a Layer 3 interface, where an ACL or an in-path firewall can permit required services and deny unnecessary access.</p><div class=\"flow-diagram\"><span>Guest VLAN</span><span>→</span><span>Routing + access policy</span><span>→</span><span>Server VLAN</span></div><p>Routing on a Layer 3 switch does not automatically place a separate firewall in the path. Verify the actual route and applied controls. VLANs with unrestricted inter-VLAN routing separate broadcasts without delivering the intended application-access restrictions.</p><h2>How a DMZ fits</h2><p>A DMZ is a design for placing public-facing services in a controlled segment. It may use a VLAN and firewall rules. Internet users can reach an exposed web service without receiving general access to internal workstations. If the web service requires an internal database, permit only its required source, destination, and service. The VLAN creates the segment; policy governs its paths; “DMZ” describes its purpose.</p>",
+      "question": "Does creating a guest VLAN guarantee that guests cannot reach a server VLAN?",
+      "answer": "No. The routed path and its ACL or firewall rules determine allowed access. Verify the enforcement point and test both permitted and denied flows.",
+      "sources": [
+        "vlan",
+        "subnet"
+      ],
+      "related": [
+        "vlsm",
+        "nsg"
+      ]
+    },
+    {
+      "slug": "dns",
+      "title": "DNS: names versus reachability",
+      "category": "Networking",
+      "basis": "Scenario study",
+      "principle": "Test name resolution separately from the ability to reach an IP address or service.",
+      "connection": "An active remote-support session during a website outage proves some connectivity remains. It narrows the investigation without proving that every network dependency is healthy.",
+      "body": "<h2>Follow the contradiction</h2><p>DNS resolves names into records used to locate services, including IP addresses. A user opening a website by name depends on resolution before a new connection reaches the intended destination. A DNS failure can therefore resemble a broad internet outage.</p><p>An established remote-support session may continue while new name lookups fail. Existing connections or cached answers can explain the apparent contradiction. DNS is then worth testing early, while proxy policy, web filtering, and application-specific faults remain possible.</p><h2>Separate the questions</h2><ol><li><strong>Scope:</strong> identify affected users, locations, names, and exact errors.</li><li><strong>Configuration:</strong> inspect the address, mask, gateway, and configured DNS servers.</li><li><strong>Resolution:</strong> query the failing name through the intended resolver.</li><li><strong>Connectivity:</strong> test the relevant address and service separately, accounting for filtering.</li><li><strong>Comparison:</strong> compare a working client and internal versus external names where relevant.</li></ol><pre><code>ipconfig /all\nnslookup fileserver01.example.test\nnslookup example.com</code></pre><p>The file-server name is illustrative. Use the affected organization's names and approved DNS servers. A public resolver normally cannot resolve private corporate records and is not an automatic replacement for domain-client DNS configuration.</p><h2>Interpret results precisely</h2><p>An expected address returned by a query demonstrates that lookup succeeded at that moment. It does not establish application-port reachability, service health, or user authorization. A timeout and an authoritative answer that a name does not exist also call for different follow-up checks.</p><p>A failed ping does not prove a device is offline: ICMP may be filtered. Opening an HTTPS site directly by IP is not a clean substitute for a DNS test because certificate validation and virtual hosting depend on names. Test resolution and the required service independently.</p><h2>The mapped-drive connection</h2><p>A UNC path such as <code>\\\\fileserver01\\Accounts</code> depends on name resolution, file-service connectivity, authentication, and authorization. DNS is one dependency in that chain. Correct the demonstrated failure, verify the original user task, and document which evidence distinguished it from other causes.</p>",
+      "question": "Remote support works, but users report that websites fail. Is DNS definitely broken?",
+      "answer": "No. Existing connectivity is a clue. Query a failing name through the intended resolver and separately test the required service path, then compare scope and recent changes.",
+      "sources": [
+        "dns"
+      ],
+      "related": [
+        "file-shares",
+        "private-addressing"
+      ]
+    },
+    {
+      "slug": "sentinelone",
+      "title": "SentinelOne: detection to response",
+      "category": "Security operations",
+      "basis": "Concept study",
+      "principle": "An endpoint alert becomes actionable when the process context and the response action are understood.",
+      "connection": "A detection policy is more than a list of known bad files. The distinction between quarantining a file and isolating a host changes what containment actually achieves.",
+      "body": "<h2>Read the activity behind the alert</h2><p>Endpoint Detection and Response combines endpoint telemetry, detection, investigation, and response capabilities. In SentinelOne, related activity can be presented through Storyline context. A process tree helps an analyst ask which program launched the suspicious process, under which account, with which command line, and what happened next.</p><p>A browser launching a downloaded program and an approved management tool running a script may require different interpretations. A detection name alone does not establish intent. Check the process ancestry, file information, network activity, timing, and expected business use.</p><h2>Detection is more than a database</h2><p>Known indicators can identify recognized threats. Behavioral analysis can identify suspicious sequences even when a file has not previously been catalogued. Policy also determines how detections are handled. The presence of an agent does not prove that every detection triggers automatic remediation: policy, platform, configuration, and available capabilities matter.</p><h2>Choose the action by its effect</h2><ul><li><strong>Quarantine a file:</strong> restrict access to the identified file. This does not disconnect the entire endpoint.</li><li><strong>Isolate a host:</strong> restrict its network communication to contain activity. Management connectivity may remain available according to the product and configuration.</li><li><strong>Remediate:</strong> address malicious artifacts and changes within supported capabilities. Verify the outcome rather than assuming the button succeeded.</li></ul><p>Rollback is a capability with prerequisites and platform limitations, not a replacement for recoverable backups. Containment decisions must consider active harm, confidence, asset importance, and the incident runbook.</p><h2>Place EDR in the wider investigation</h2><p>An endpoint process tree explains local execution. Identity logs, email evidence, and firewall events can explain parts of the incident that an endpoint alert does not show. Sysmon provides telemetry; deploying Sysmon alone does not create a complete EDR response platform. This note records conceptual tool study, not production SentinelOne administration.</p>",
+      "question": "Does quarantining a suspicious executable isolate the workstation from the network?",
+      "answer": "No. File quarantine and host network isolation have different scopes. Confirm which action is required and verify its resulting state.",
+      "sources": [
+        "edr",
+        "behavior"
+      ],
+      "related": [
+        "syslog",
+        "mdr"
+      ]
+    },
+    {
+      "slug": "mdr",
+      "title": "Blackpoint: MDR is a service",
+      "category": "Security operations",
+      "basis": "Concept study",
+      "principle": "Distinguish the technology collecting evidence from the people and service responsible for investigating and responding.",
+      "connection": "EDR, SIEM, and MDR describe different roles. A managed detection service cannot be understood simply as another name for a log dashboard.",
+      "body": "<h2>Separate three roles</h2><div class=\"table-scroll\"><table><thead><tr><th>Term</th><th>Central role</th><th>Useful question</th></tr></thead><tbody><tr><td>EDR</td><td>Endpoint detection, investigation, and response</td><td>What executed on the device?</td></tr><tr><td>SIEM</td><td>Collect, search, and correlate security events</td><td>How do events across systems relate?</td></tr><tr><td>MDR</td><td>A managed detection and response service</td><td>Who investigates and takes action?</td></tr></tbody></table></div><p>These roles can work together. A SIEM is not automatically a staffed response service, and an EDR deployment does not by itself establish continuous human monitoring.</p><h2>Where Blackpoint fits</h2><p>Blackpoint offers managed detection and response, including human-led investigation and response services. Treating it simply as “the SIEM” misses the service model. Exactly which systems are monitored and which actions are authorized depends on the purchased service, integrations, and agreed operating arrangements.</p><p>A vendor overview demonstrates the concept; it does not establish familiarity with a customer's console, response contract, or escalation process.</p><h2>Make a handoff useful</h2><p>A local analyst reviewing an MDR escalation should identify the affected account or asset, the evidence supporting the conclusion, the time window, and actions already performed. Separate confirmed facts from unresolved questions. Record who owns the next step and whether containment has been verified.</p><p>For example, an endpoint alert showing suspicious execution may be supported by a firewall event and an unusual account sign-in. Those signals strengthen the timeline when their timestamps and entities align; merely appearing in several products does not prove they belong to the same incident.</p><h2>Avoid duplicated or conflicting response</h2><p>Before resetting an account or isolating a device, establish whether the service has already acted and what the runbook authorizes. A complete handoff makes the incident state explicit so the next analyst can continue from evidence.</p>",
+      "question": "Does installing an EDR agent mean an organization now has MDR?",
+      "answer": "No. MDR adds a managed operational service. The responsible team, coverage, escalation arrangements, and response authority must be established.",
+      "sources": [
+        "mdr",
+        "mdrEDR"
+      ],
+      "related": [
+        "sentinelone",
+        "identity"
+      ]
+    },
+    {
+      "slug": "syslog",
+      "title": "Syslog: transport is not correlation",
+      "category": "Security operations",
+      "basis": "Concept study",
+      "principle": "Forwarding an event makes it available elsewhere; parsing and correlation make it useful to an investigation.",
+      "connection": "A process alert and a firewall block can become one investigative story when a central platform receives usable fields and links the evidence.",
+      "body": "<h2>Follow an event to its destination</h2><p>Syslog provides a message format and an event-delivery framework. A sender emits a message toward a configured collector. The receiving platform must accept it, interpret its fields, and store it in a form an analyst can query. Syslog is not itself a SIEM or an investigation engine.</p><div class=\"flow-diagram\"><span>Endpoint / firewall event</span><span>→</span><span>Collector + parser</span><span>→</span><span>Search + correlation</span></div><h2>Read configuration as a chain of dependencies</h2><p>A destination hostname or address identifies the receiver. The port and transport must match its listener. UDP 514 is a conventional syslog arrangement; syslog over TLS conventionally uses TCP 6514. A port number alone does not prove encryption. Confirm the configured transport, certificate requirements, network path, and listener.</p><p>CEF is a structured security-event format that can be carried in syslog messages. Selecting a format changes what the receiver needs to parse. A connection test does not establish that every intended event type is arriving with correct fields.</p><h2>Verify usable evidence</h2><ul><li>Locate a known test event at the receiver.</li><li>Check timestamp and time zone, originating host, event type, account, and relevant network fields.</li><li>Confirm fields are parsed rather than trapped in an opaque message string.</li><li>Check whether filtering, delivery loss, or duplicate ingestion affects the view.</li></ul><h2>Build the connection carefully</h2><p>An EDR event may explain which process initiated a connection. A firewall event may explain whether a network path was blocked. A SIEM can help relate these observations by host, address, account, and time. Shared NAT addresses and clock differences can complicate that relationship. Correlation supports a hypothesis; the analyst still needs evidence that the events describe the same activity.</p>",
+      "question": "A sender reports a successful test. Is the integration ready for investigation?",
+      "answer": "Not yet. Find the event at the receiver and verify its timestamp, source, parsed fields, and coverage of the intended event types.",
+      "sources": [
+        "syslog",
+        "syslogTLS"
+      ],
+      "related": [
+        "sentinelone",
+        "sentinel"
+      ]
+    },
+    {
+      "slug": "timus",
+      "title": "Timus: access to a resource",
+      "category": "Identity & access",
+      "basis": "Concept study",
+      "principle": "Network reachability, authentication, and authorization are separate checks in an access decision.",
+      "connection": "A home PC cannot automatically browse another PC's files simply because both share a network. That distinction explains why a VPN, ZTNA, and a virtual desktop are different.",
+      "body": "<h2>Start with the resource</h2><p>Zero Trust Network Access evaluates access to protected resources using policy and identity context. Timus provides ZTNA capabilities. The useful question is which user and device may reach which resource under which conditions, rather than whether a user is simply “inside” a trusted network.</p><p>An agent can participate in enforcing connectivity and device-related policy. Its presence does not make it equivalent to an EDR agent: an access product and an endpoint response product have different primary responsibilities.</p><h2>Three gates to a file share</h2><ol><li><strong>Reachability:</strong> a permitted network path to the file service exists.</li><li><strong>Authentication:</strong> the service establishes the connecting identity.</li><li><strong>Authorization:</strong> that identity has permission to the requested content.</li></ol><p>A VPN can provide a network path without granting file permissions. VPNs can also be segmented and constrained; they do not inherently provide unrestricted access to everything. ZTNA emphasizes policy-controlled access rather than relying on broad network membership.</p><h2>Connect the virtual-desktop comparison</h2><p>A Citrix-style virtual desktop runs a desktop or application remotely and presents it to the user. ZTNA controls access to resources; it does not inherently move the user's desktop into a remote environment. The technologies can coexist.</p><p>A virtual desktop does not make an untrusted local device harmless. Session theft, captured keystrokes, screenshots, and enabled redirection remain relevant considerations. “The application runs remotely” is a statement about execution location, not a complete security guarantee.</p><h2>Where Conditional Access fits</h2><p>Microsoft Entra Conditional Access evaluates identity-related access conditions for supported resources. A Conditional Access policy alone does not create an arbitrary network path to an internal SMB server. Entra Private Access can extend identity-based controls to private resources, so the distinction should be made by architecture rather than a permanent “cloud versus network” divide.</p><p>This is conceptual access-model study; no Timus policy deployment is represented here.</p>",
+      "question": "If a user connects through an approved access service, must a file share open?",
+      "answer": "No. The resource must be reachable, the identity must authenticate, and the share and underlying file permissions must authorize access.",
+      "sources": [
+        "timus",
+        "ca",
+        "privateAccess"
+      ],
+      "related": [
+        "file-shares",
+        "identity"
+      ]
+    },
+    {
+      "slug": "email-auth",
+      "title": "Email authentication & alignment",
+      "category": "Security operations",
+      "basis": "Scenario study",
+      "principle": "An authenticated sending domain does not prove that an email's request is legitimate.",
+      "connection": "A lookalike domain may pass its own authentication. A compromised real mailbox may also send authenticated mail. Both explain why “pass” is not a verdict.",
+      "body": "<h2>Separate the checks</h2><ul><li><strong>SPF:</strong> checks whether the sending system is authorized for the evaluated envelope-sender domain (or HELO identity where applicable).</li><li><strong>DKIM:</strong> verifies a domain's cryptographic signature over the covered message content. It establishes the signing domain and integrity of the signed portions, not the honesty of a human sender.</li><li><strong>DMARC:</strong> evaluates whether a passing SPF or DKIM result aligns with the visible From domain and publishes handling policy for failures.</li></ul><p>DMARC does not require both SPF and DKIM to pass. A qualifying aligned pass from either mechanism can satisfy it. A DKIM signature's signing domain can differ from the address the reader sees; alignment is the connection that must be checked.</p><h2>Compare three suspicious messages</h2><div class=\"table-scroll\"><table><thead><tr><th>Situation</th><th>Why authentication is insufficient</th></tr></thead><tbody><tr><td>Exact-domain spoof</td><td>May fail DMARC when neither passing mechanism aligns; inspect actual results and receiving policy.</td></tr><tr><td>Lookalike domain</td><td>The attacker can authenticate a domain they control while imitating another organization's name.</td></tr><tr><td>Compromised legitimate mailbox</td><td>The real account can send authenticated messages containing fraudulent instructions.</td></tr></tbody></table></div><h2>Use the right evidence source</h2><p>Inspect the message headers and trusted receiving system's authentication results through the mail investigation tooling. Compare the full From and Reply-To addresses, links, attachments, and the requested business action. Do not treat arbitrary attacker-supplied header text as a trusted verdict.</p><p>Endpoint telemetry may show a downloaded file executing, but it is not the primary record of a cloud mail service's SPF, DKIM, or DMARC evaluation. A SIEM may contain those results if the relevant mail logs are integrated.</p><h2>Return to the business request</h2><p>Urgency, payment changes, and requests to bypass normal approval remain significant even when authentication passes. Independently verify a sensitive request through a known contact route and preserve the original message for investigation.</p>",
+      "question": "A CEO payment request passes DMARC. Is it safe to approve?",
+      "answer": "No. A lookalike domain or compromised legitimate account can send authenticated mail. Check the actual domain and verify the request through an established independent channel.",
+      "sources": [
+        "dmarc",
+        "bec"
+      ],
+      "related": [
+        "bec",
+        "identity"
+      ]
+    },
+    {
+      "slug": "bec",
+      "title": "BEC: verify before payment",
+      "category": "Security operations",
+      "basis": "Scenario study",
+      "principle": "Break the attacker's communication path when validating a sensitive business request.",
+      "connection": "Replying to the suspicious CEO email asks the same potentially compromised channel to vouch for itself. A known phone number provides a separate verification path.",
+      "body": "<h2>Identify the attempted outcome</h2><p>Business Email Compromise is a fraud scenario, not a defensive framework. An attacker impersonates a trusted party or uses a compromised account to induce a payment, disclosure, or other business action. Malware is not required.</p><p>An urgent executive request to transfer funds should trigger the established approval process. Pause the transaction while verifying through a known contact number or another approved independent channel. A number supplied inside the suspicious message is not independent verification.</p><h2>Preserve and assess the message</h2><p>Retain the original message and headers. Examine the full sender and reply addresses, authentication results, links, attachments, and message history. Authentication supports domain assessment but does not prove the request is authorized. A legitimate account may have been compromised.</p><h2>Scope beyond one recipient</h2><p>Determine who else received the message, whether anyone replied or submitted information, and whether a payment was initiated. If account compromise is suspected, examine sign-ins, relevant mailbox audit activity, forwarding settings, and inbox rules using available permissions and tooling.</p><p>Endpoint investigation is appropriate where a recipient opened a file or executed content. A cloud-only mailbox compromise may leave its strongest evidence in identity and mail-service logs instead.</p><h2>Respond and communicate</h2><p>Apply the incident runbook and approved authority for account containment, session revocation, credential recovery, or mail remediation. Coordinate promptly with the responsible financial team and institution if money has moved. Record the time, evidence, impact, actions, and outstanding questions.</p><p>A useful update explains the observed request, the verified risk, and the next action in plain language. It does not substitute an unconfirmed conclusion for evidence or blame the person who reported the message.</p>",
+      "question": "What is the first verification step for an unexpected urgent transfer request?",
+      "answer": "Pause the transaction and contact the supposed requester through an established independent channel. Preserve the message and investigate the technical evidence alongside the business verification.",
+      "sources": [
+        "bec",
+        "dmarc"
+      ],
+      "related": [
+        "email-auth",
+        "identity"
+      ]
+    },
+    {
+      "slug": "identity",
+      "title": "Risky sign-ins: evidence before verdict",
+      "category": "Identity & access",
+      "basis": "Scenario study",
+      "principle": "Treat a risk signal as a hypothesis, then choose a proportionate response using confidence and active harm.",
+      "connection": "Impossible travel can reflect a VPN. Conversely, “always confirm before containing” is too rigid when strong evidence indicates an attack is still causing harm.",
+      "body": "<h2>Explain the signal</h2><p>An impossible-travel or atypical-location signal compares activity that appears geographically inconsistent. IP geolocation describes the observed network exit, not a GPS reading from the person. VPNs, proxies, mobile networks, and incomplete context can affect interpretation.</p><p>Examine the account, timestamps, source addresses, application, device information, authentication details, and surrounding activity. Compare the event with the user's expected work and verify their explanation through a trusted channel where appropriate. A plausible VPN explanation should be checked against the evidence.</p><h2>Ask each system the right question</h2><ul><li><strong>Entra sign-in records:</strong> what identity access occurred and what authentication or policy details were recorded?</li><li><strong>Intune:</strong> what managed-device and compliance information is available?</li><li><strong>Microsoft 365 audit evidence:</strong> what relevant cloud-service actions followed?</li><li><strong>EDR:</strong> what execution or other activity occurred on the endpoint?</li></ul><p>Entra identity administration and Intune device management are related but different responsibilities. A cloud account attack does not necessarily produce a malicious local process tree.</p><h2>Avoid absolute response rules</h2><p>Immediately resetting every account with a location alert can disrupt legitimate work without resolving the cause. Waiting for perfect certainty during an active compromise can also increase harm. Evaluate confidence, ongoing activity, asset sensitivity, and the reversibility of the proposed control. Follow the runbook and escalation authority.</p><p>Where authorized and justified, account restrictions or session revocation may limit further access while investigation continues. Verify the effect: password changes, token lifetimes, and session controls are not interchangeable guarantees.</p><h2>Leave an evidence-based handoff</h2><p>Document the alert, corroborating facts, alternative explanations, actions, and remaining uncertainty. “Unusual location; VPN explanation verified against expected activity” conveys more than “false positive” without supporting detail.</p>",
+      "question": "Should every impossible-travel alert immediately trigger a password reset?",
+      "answer": "No. Correlate the signal with authentication, device, application, and user context. Escalate or contain promptly when confidence and active harm justify it, within the incident runbook.",
+      "sources": [
+        "risk",
+        "ca"
+      ],
+      "related": [
+        "bec",
+        "mdr"
+      ]
+    },
+    {
+      "slug": "windows-domain",
+      "title": "Windows Server & domain authentication",
+      "category": "Identity & access",
+      "basis": "Concept study",
+      "principle": "An operating system, a server role, and an authorization decision are different layers.",
+      "connection": "Windows Server does not automatically mean domain controller. Logging on to a domain and receiving access to a particular file are also separate events.",
+      "body": "<h2>Start with the role</h2><p>Windows Server is an operating system that can host different workloads. A server may provide file services or run an application without functioning as a domain controller. A domain controller hosts Active Directory Domain Services and participates in domain identity and authentication functions.</p><p>The physical or virtual machine is the host. The installed operating system supplies the platform. Configured roles determine what services it actually provides. A machine's name or appearance does not establish its role.</p><h2>Follow a domain sign-in</h2><p>In a typical Active Directory domain, a joined workstation can contact a domain controller to authenticate a domain user. Kerberos uses tickets to support access to participating services. This is different from assuming that the workstation sends a user's password to every file server it contacts.</p><p>Cached domain credentials may allow an interactive sign-in when a domain controller is unavailable, depending on policy and prior logon. That does not establish that every domain resource is currently reachable or that fresh authentication to every service will work.</p><h2>Authentication does not grant every permission</h2><p>After identity is established, the target resource evaluates authorization. File and share permissions can deny access to an authenticated domain user. An investigation therefore separates account validity, connectivity, service authentication, and the permissions governing the requested operation.</p><h2>Keep directory models distinct</h2><p>Active Directory Domain Services and Microsoft Entra ID are related identity technologies with different models. An organizational unit in an on-premises AD hierarchy should not be assumed to exist as the same management structure in Entra ID. Identify which directory and management plane an instruction refers to before applying it.</p><p>This note covers studied role distinctions and authentication concepts. It does not claim deployment or troubleshooting experience with an enterprise domain.</p>",
+      "question": "A machine runs Windows Server. Does that prove it authenticates domain users?",
+      "answer": "No. Its configured roles must be identified. Windows Server can host many workloads; a domain controller specifically provides AD DS domain functions.",
+      "sources": [
+        "kerberos"
+      ],
+      "related": [
+        "file-shares",
+        "identity"
+      ]
+    },
+    {
+      "slug": "file-shares",
+      "title": "File shares: a path is not permission",
+      "category": "Identity & access",
+      "basis": "Concept study",
+      "principle": "A mapped drive is a convenient reference to a resource, not the server or the access control protecting it.",
+      "connection": "A drive letter, a file-server role, a NAS appliance, and the host running that service describe different parts of the same access path.",
+      "body": "<h2>Resolve the names</h2><p>A mapped drive such as <code>Z:</code> points to a network location. A UNC path such as <code>\\\\fileserver\\team</code> identifies a server name and share. The drive letter is a local convenience: removing the mapping does not delete the server's data.</p><p>A file server is a service role. It can run on a physical server, a virtual machine, or an appliance. A Network Attached Storage device commonly provides file access over the network, but its additional capabilities depend on the product. “Virtual” and “file server” are not mutually exclusive descriptions.</p><h2>Follow a failed access request</h2><ol><li>Identify the actual UNC target behind the drive letter.</li><li>Check whether the server name resolves as expected.</li><li>Check the permitted network path and whether the file service is available.</li><li>Establish which identity is used to authenticate.</li><li>Inspect the relevant share and underlying file-system permissions.</li></ol><p>SMB commonly uses TCP 445 for modern direct-hosted access. A successful network connection does not mean the requested folder operation is authorized.</p><h2>Explain the home-network comparison</h2><p>Two computers connected to one home router do not automatically publish every folder to one another. Sharing must be configured, the service must be reachable, and permissions must allow the request. This illustrates why “on the same network” and “authorized to read the files” are different conditions.</p><h2>Use precise incident language</h2><p>“The Z drive is broken” leaves the dependency unclear. “The mapped target resolves, but the server denies this account access to the share” narrows the investigation. Record the exact error and scope, including whether other users can access the same resource. Avoid changing broad permissions simply to make an unexplained failure disappear.</p>",
+      "question": "Does assigning a user a mapped drive letter grant access to its files?",
+      "answer": "No. The mapping references a location. Network reachability, authentication, and the effective share and file permissions still govern access.",
+      "sources": [
+        "smb"
+      ],
+      "related": [
+        "dns",
+        "timus"
+      ]
+    },
+    {
+      "slug": "nsg",
+      "title": "Azure NSGs: policy along the path",
+      "category": "Cloud & telemetry",
+      "basis": "Lab application",
+      "principle": "Cloud network rules and the guest operating system's firewall are separate enforcement points.",
+      "connection": "The honeypot lab changed both an Azure NSG and Windows Firewall. Opening one layer does not automatically change the other.",
+      "body": "<h2>Identify what an NSG controls</h2><p>An Azure Network Security Group filters network traffic using rules that include source, destination, ports, protocol, direction, priority, and action. Rules apply through associations such as a subnet or network interface. A rule's presence is not enough: the association and traffic path determine whether it is relevant.</p><p>NSGs are stateful. Allowed connection state affects return traffic; a rule change should not be assumed to terminate every already-established connection. Rule priority and existing state matter when verifying behavior.</p><h2>Follow inbound and outbound evaluation</h2><p>Where both associations exist, inbound traffic is evaluated at the subnet NSG and then the NIC NSG. Outbound traffic is evaluated at the NIC NSG and then the subnet NSG. Each applicable enforcement point must permit the flow. Routes determine where packets travel; NSG rules filter traffic on that path.</p><div class=\"flow-diagram\"><span>Inbound path</span><span>→</span><span>Subnet NSG</span><span>→</span><span>NIC NSG</span><span>→</span><span>Guest firewall + service</span></div><h2>Connect the two firewalls</h2><p>Windows Firewall runs in the guest operating system. It can block a connection that the cloud-side rules permit. Conversely, allowing a Windows Firewall rule cannot override a denying NSG. A listening application is another requirement; firewall permission does not start a service.</p><p>The study lab intentionally exposed a honeypot to observe unsolicited connection attempts. That exposure was a property of the experiment, not a suitable baseline for an ordinary production VM. Production rules should permit the required sources and services rather than reproduce the lab's broad exposure.</p><h2>Verify the actual flow</h2><p>Identify the source and destination addresses, ports, protocol, direction, effective rules, and route. Check the guest firewall and service state. An NSG is not limited to traffic arriving directly from the public internet; its applicable associations and rules also matter for other network paths.</p>",
+      "question": "An NSG permits the intended connection, but it still fails. What remains to check?",
+      "answer": "Other applicable NSGs, routing, the guest firewall, and the listening service. An allow at one point does not establish an end-to-end permitted and working path.",
+      "sources": [
+        "nsg",
+        "nsgOrder"
+      ],
+      "related": [
+        "vlans",
+        "sentinel"
+      ]
+    },
+    {
+      "slug": "sentinel",
+      "title": "Sentinel: follow the event pipeline",
+      "category": "Cloud & telemetry",
+      "basis": "Lab application",
+      "principle": "Troubleshoot collection from the original event through the agent and collection rules to the queryable workspace.",
+      "connection": "Checking Event Viewer still matters even when a connector is configured. It establishes whether the event exists before investigating its journey into Sentinel.",
+      "body": "<h2>Follow one known event</h2><p>In the Windows-event lab, the source was the VM's Windows event logging. Azure Monitor Agent and a Data Collection Rule defined a collection path into a Log Analytics workspace. Microsoft Sentinel used the connected workspace's security data for analysis.</p><div class=\"flow-diagram\"><span>Windows event</span><span>→</span><span>AMA + DCR</span><span>→</span><span>Log Analytics workspace</span><span>→</span><span>Sentinel analysis</span></div><p>Enabling Sentinel is not best understood as manually copying every record into a second, separate set of logs. Identify the actual connector, destination, and table used by the configured collection path.</p><h2>Why Event Viewer remains useful</h2><p>A missing query result has several possible causes. The event may never have been generated, auditing may not include it, collection may exclude it, delivery may have failed, or the query may be looking in the wrong place. Locating a known event at the source separates generation from transport and query problems.</p><h2>Validate each boundary</h2><ol><li>Confirm the event exists on the intended host and record its timestamp and identifier.</li><li>Check agent health and the machine's association with the intended collection rule.</li><li>Confirm that the rule collects the event channel or selection required by the investigation.</li><li>Verify the destination workspace and table.</li><li>Check the query's time range, filters, and ingestion delay.</li></ol><p>For the Windows Security Events via AMA connector, <code>SecurityEvent</code> is a relevant table. Other collection choices can use different tables; a copied query must match the deployed pipeline.</p><h2>Keep the evidence portable</h2><p>Record which source, rule, destination, and query were checked. A functioning dashboard demonstrates the final view. A traceable test event demonstrates that the intended collection path works.</p>",
+      "question": "A Sentinel query returns no failed logons. Does that prove no failed logons occurred?",
+      "answer": "No. First verify source events, collection scope and health, destination table, time window, and filters. An empty result describes the query result, not necessarily the underlying activity.",
+      "sources": [
+        "ama"
+      ],
+      "related": [
+        "windows-events",
+        "kql-enrichment"
+      ]
+    },
+    {
+      "slug": "windows-events",
+      "title": "Windows logons: correlate the session",
+      "category": "Cloud & telemetry",
+      "basis": "Lab application",
+      "principle": "An event ID identifies an event type; account, logon context, and related records determine its investigative meaning.",
+      "connection": "Event 4672 initially looked like a privilege-escalation verdict. It actually records special privileges assigned to a new logon and needs context.",
+      "body": "<h2>Read the event without overclaiming</h2><div class=\"table-scroll\"><table><thead><tr><th>Event</th><th>Records</th><th>Does not prove by itself</th></tr></thead><tbody><tr><td>4624</td><td>A successful logon</td><td>The activity was authorized by the account owner</td></tr><tr><td>4625</td><td>A failed logon</td><td>An attacker caused the failure</td></tr><tr><td>4672</td><td>Special privileges assigned to a new logon</td><td>A successful privilege-escalation exploit</td></tr></tbody></table></div><h2>Understand the privileged-logon question</h2><p>Administrative and system activity can legitimately generate 4672. Its significance depends on which account received privileges, on which host, at what time, and in which session. A SYSTEM account label is not a blanket guarantee that all surrounding activity is harmless.</p><p>Correlate the logon identifier with related records on the same computer, taking timestamps and system restarts into account. A logon ID is not a universal identifier for one session across every host.</p><h2>Inspect fields that explain the attempt</h2><p>For a logon event, inspect the relevant account, computer, logon type, authentication information, source details where populated, and time. Failed logons include status information that can help distinguish causes. Field availability depends on the logon context and authentication path.</p><p>A missing source address does not establish that an event is benign or malicious. It can reflect the event's context. Likewise, a successful logon after failures is a lead: establish whether the records actually concern the same account, origin, and activity.</p><h2>Write the conclusion at the evidence level</h2><p>“A privileged logon occurred for this account on this host” is supported by the event. “The host was exploited” requires additional evidence. The distinction keeps alert triage useful and prevents an event label from becoming an unsupported incident verdict.</p>",
+      "question": "Does event 4672 alone confirm privilege escalation?",
+      "answer": "No. It records special privileges assigned to a new logon. Correlate the account, host, session, and surrounding activity to decide whether that privileged logon was expected.",
+      "sources": [
+        "e4624",
+        "e4625",
+        "e4672"
+      ],
+      "related": [
+        "sentinel",
+        "identity"
+      ]
+    },
+    {
+      "slug": "kql-enrichment",
+      "title": "KQL enrichment: match the schema",
+      "category": "Cloud & telemetry",
+      "basis": "Lab application",
+      "principle": "A lookup can only enrich events when the query references a real data source with the expected columns and compatible values.",
+      "connection": "Changing from a watchlist to external CSV data did not automatically update the workbook's query. The missing network-column error exposed the dependency underneath the map.",
+      "body": "<h2>Separate the event from the enrichment</h2><p>The lab combined security events containing source IP addresses with a geolocation reference dataset. The event supplied the observed address; the reference data supplied an approximate location associated with an address range. The workbook visualized the query result.</p><p>The map template and geolocation reference were external inputs used in the lab. Their presence in a workbook did not make the template or dataset an original implementation.</p><h2>Diagnose the missing column</h2><p>An IPv4 range lookup needs an event-side address field and a reference-side range field. If the query names a column that is absent from the reference schema, the lookup cannot evaluate that relationship. Inspect the actual column names and types before copying or changing the lookup expression.</p><pre><code>// Shape example: both table names and their columns must exist.\nEventsWithIP\n| evaluate ipv4_lookup(GeoRanges, SourceIP, Network)</code></pre><p>Here <code>EventsWithIP</code> must expose <code>SourceIP</code>, and <code>GeoRanges</code> must expose compatible CIDR ranges in <code>Network</code>. These are illustrative names, not a ready-to-run query against every Sentinel workspace.</p><h2>Update the consumer as well as the source</h2><p>A workbook calling <code>_GetWatchlist(...)</code> still depends on that watchlist even if a separate query now uses <code>externaldata</code>. Verify the workbook's own query. Also distinguish JSON syntax errors in a workbook definition from KQL execution errors: they occur at different layers.</p><p>Inspect the source schema, test a small result, validate the lookup, and only then troubleshoot the visualization. Keep credentials and signed data-access URLs out of published examples.</p><h2>Interpret the map conservatively</h2><p>IP geolocation is an estimate associated with a network address. VPN exits, proxies, and hosting providers complicate attribution. A map marker does not identify a person's physical location or prove who initiated an attempt.</p>",
+      "question": "The standalone enrichment query works, but the workbook still reports a missing watchlist. Why?",
+      "answer": "The workbook may still execute its original _GetWatchlist query. Check and update the consumer's data-source reference, then verify the columns it expects.",
+      "sources": [
+        "lookup",
+        "external"
+      ],
+      "related": [
+        "sentinel",
+        "windows-events"
+      ]
+    },
+    {
+      "slug": "tls",
+      "title": "TLS: encryption above transport",
+      "category": "Networking",
+      "basis": "Concept study",
+      "principle": "Reliable delivery and cryptographic protection solve different problems.",
+      "connection": "TCP's reliability and checksums do not make HTTP confidential. TLS supplies security properties that the IP and TCP layers do not provide by themselves.",
+      "body": "<h2>Place the responsibilities</h2><p>IP addresses and routes packets at the network layer. TCP provides an ordered byte stream with reliability mechanisms at the transport layer. HTTP describes application messages. These roles do not, by themselves, ensure that an observer cannot read the content or that a peer is the intended service.</p><p>TLS provides cryptographic protection for a connection, including confidentiality and integrity, with peer authentication according to its configuration. In ordinary web use, certificate validation helps a client authenticate the server.</p><div class=\"flow-diagram\"><span>HTTP application data</span><span>→</span><span>TLS protection</span><span>→</span><span>TCP transport</span><span>→</span><span>IP routing</span></div><p>This is a common HTTPS stack, not a claim that all modern HTTP uses TCP. HTTP/3 uses QUIC over UDP and incorporates TLS 1.3 into its security design.</p><h2>Checksum versus cryptographic integrity</h2><p>A transport checksum helps detect accidental corruption. It is not a secret and does not establish the sender's identity or defend against an adversary who can alter data and recompute the checksum. Cryptographic integrity protection addresses a different threat model.</p><h2>Interpret a TLS version carefully</h2><p>TLS 1.3 is the modern preferred version. TLS 1.2 is not automatically insecure solely because it is older; its configuration, supported algorithms, certificate validation, and applicable policy matter. A version number is one part of an assessment, not a complete verdict.</p><h2>Know what encryption leaves unresolved</h2><p>A protected connection can still deliver malicious content from an attacker-controlled site. TLS also does not remove endpoint risk after data is decrypted. When troubleshooting HTTPS, connecting to an IP address in a browser can introduce hostname and certificate mismatches, so failure by IP alone is not a clean test of ordinary website availability.</p>",
+      "question": "Does a valid TCP checksum prove the HTTP content was not maliciously altered?",
+      "answer": "No. TCP checksums address accidental transmission corruption, not adversarial integrity or identity. TLS provides cryptographic protections when correctly negotiated and validated.",
+      "sources": [
+        "tls",
+        "tcp"
+      ],
+      "related": [
+        "tcp-streams",
+        "dns"
+      ]
+    },
+    {
+      "slug": "tcp-streams",
+      "title": "Wireshark: identify the conversation",
+      "category": "Networking",
+      "basis": "Concept study",
+      "principle": "A packet's stream label, sequence number, and header offset describe different coordinates.",
+      "connection": "A TCP stream index groups a connection in the capture. It is not the packet's position in that connection, and a browser tab is not a reliable one-to-one connection identifier.",
+      "body": "<h2>Separate stream and sequence</h2><p>Wireshark's <code>tcp.stream</code> field is an analysis index used to group packets belonging to a TCP conversation in that capture. It is not transmitted as a TCP header field. TCP sequence numbers track positions in the byte stream; they are not Wireshark's conversation number. SYN and FIN also consume sequence-number space.</p><p>A filter such as <code>tcp.stream == 3</code> selects a conversation identified by the analyzer. It does not request the third packet or byte. Stream indices should not be assumed to match across separately processed captures.</p><h2>Use the endpoints</h2><p>Source and destination addresses and ports distinguish the endpoints of a TCP connection. A client commonly selects an ephemeral source port while connecting to a service's destination port. The reply reverses those roles. A changing client port is not, by itself, an indication of malicious behavior.</p><p>A browser tab may open multiple connections. Multiple requests can also share a connection; HTTP/2 supports multiplexing. Counting tabs therefore does not reliably predict the number of TCP streams.</p><h2>Read offsets and padding in their own units</h2><p>A hexadecimal offset locates a byte in the displayed data: <code>0x16</code> is decimal 22 and <code>0x80</code> is decimal 128. An offset is not a sequence number or an address on the network.</p><p>The TCP Data Offset describes the TCP header length in 32-bit words. Options and any necessary padding keep the header on that four-byte boundary. The packing-material analogy explains alignment, but padding is still defined header structure rather than application payload.</p><h2>Keep the conclusion narrow</h2><p>First identify the conversation, then inspect its ordered evidence and the protocol being carried. Header structure can explain where bytes belong. It cannot alone establish whether the application action was authorized or malicious.</p>",
+      "question": "Does tcp.stream == 4 mean the fourth packet from the fourth browser tab?",
+      "answer": "No. It selects Wireshark's TCP conversation index 4 in that capture. Packet order, sequence numbers, and browser tabs are separate concepts.",
+      "sources": [
+        "tcp",
+        "wireshark"
+      ],
+      "related": [
+        "tls",
+        "syslog"
+      ]
+    }
+  ]
+}

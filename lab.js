@@ -3,20 +3,17 @@
   const pages = [
     {name:'pwning my light bulbs',url:'lifx-pentest.html',type:'Investigation',keywords:'lifx iot udp 56700'},
     {name:'pwning my TV',url:'samsung-tv-pentest.html',type:'Investigation',keywords:'samsung tizen tcp 8001'},
-    {name:'ports',url:'ports.html',type:'Reference',keywords:'network services'},
-    {name:'protocols',url:'protocols.html',type:'Reference',keywords:'tcp udp http dns'},
-    {name:'linux commands',url:'linux-commands.html',type:'Reference',keywords:'shell kali bash'},
-    {name:'typing test',url:'typing-test.html',type:'Interactive',keywords:'wpm speed keyboard'},
     {name:'whoami',url:'index.html#about',type:'About',keywords:'farris khan certifications security azure'},
-    {name:'home lab',url:'index.html',type:'Home',keywords:'map home'}
-  ];
+    {name:'home lab',url:'index.html',type:'Home',keywords:'map home'},
+    {name:'knowledge base',url:'knowledge.html',type:'Study directory',keywords:'notes study review'}
+  ].concat(window.knowledgePages || []);
   const $ = selector => document.querySelector(selector);
   if ($('#year')) $('#year').textContent = new Date().getFullYear();
   // A schematic derived from the two investigations; never contacts lab devices.
   const nodes = {
     bulb:['DEVICE 01 / LIFX','A light bulb with an open door.','A local control protocol. No credentials required. Follow the packets from discovery to control.','lifx-pentest.html','Read the LIFX investigation'],
     tv:['DEVICE 02 / SAMSUNG','More services. More questions.','A Tizen TV, a remote-control API, and a reminder: no public exploit does not mean no risk.','samsung-tv-pentest.html','Read the Samsung investigation'],
-    host:['WORKBENCH / KALI LINUX','Start with the right questions.','Discover the host. Identify the service. Understand the protocol. Keep the useful commands close.','linux-commands.html','Explore Linux commands']
+    host:['WORKBENCH / KALI LINUX','Start with the right questions.','Discover the host. Identify the service. Understand the protocol. Follow the reasoning in the study archive.','knowledge.html','Explore the study notes']
   };
   document.querySelectorAll('[data-node]').forEach(button => button.addEventListener('click', () => {
     document.querySelectorAll('[data-node]').forEach(node => node.setAttribute('aria-pressed',String(node === button)));
@@ -28,7 +25,7 @@
   let dialog = $('#command-dialog');
   if (!dialog) {
     dialog=document.createElement('dialog'); dialog.id='command-dialog'; dialog.setAttribute('aria-labelledby','command-title');
-    dialog.innerHTML='<div class="command-heading"><h2 id="command-title">Where to?</h2><button id="close-command" aria-label="Close command menu">Esc</button></div><label class="sr-only" for="command-search">Search pages</label><input id="command-search" type="search" placeholder="Search writeups and tools…" autocomplete="off"><div id="command-results"></div><p class="command-help">↑ ↓ navigate <span>↵ open</span><span>esc close</span></p>';
+    dialog.innerHTML='<div class="command-heading"><h2 id="command-title">Where to?</h2><button id="close-command" aria-label="Close command menu">Esc</button></div><label class="sr-only" for="command-search">Search pages</label><input id="command-search" type="search" placeholder="Search writeups and study notes…" autocomplete="off"><div id="command-results"></div><p class="command-help">↑ ↓ navigate <span>↵ open</span><span>esc close</span></p>';
     document.body.append(dialog);
   }
   let selected=0;
@@ -43,7 +40,7 @@
       const kind=document.createElement('small');kind.textContent=page.type+' ↗';
       a.append(name,kind);a.addEventListener('click',()=>dialog.close());results.append(a);
     });
-    if(!results.children.length){const p=document.createElement('p');p.textContent='No matches. Try “ports”, “Linux”, or “LIFX”.';results.append(p);}
+    if(!results.children.length){const p=document.createElement('p');p.textContent='No matches. Try “DNS”, “Timus”, or “LIFX”.';results.append(p);}
     highlight();
   }
   function openCommands(){search.value='';renderResults();dialog.showModal();search.focus();}
@@ -77,11 +74,11 @@
       event.preventDefault();const value=input.value.trim();if(!value)return;history.push(value);historyIndex=history.length;input.value='';print('visitor:~$ '+value);
       const command=value.toLowerCase();
       if(command==='clear'){output.replaceChildren();return;}
-      if(command==='help')print('help       available commands\nls         browse every page\nwhoami     meet Farris\nopen ports open a page by name\ncat        toggle the companion\nclear      clear this terminal\nTip: use ↑ / ↓ for command history.');
+      if(command==='help')print('help       available commands\nls         browse the site\nwhoami     meet Farris\nopen dns   open a study note\ncat        toggle the companion\nclear      clear this terminal\nTip: use ↑ / ↓ for command history.');
       else if(command==='whoami')print('Farris Khan\nsecurity / ops tinkerer\nMicrosoft Certified: Security Operations Analyst Associate (SC-200) · In Progress\nMicrosoft Certified: Azure Administrator Associate (AZ-104) · In Progress');
       else if(command==='ls'){pages.forEach(page=>{const p=document.createElement('p'),a=document.createElement('a');a.href=page.url;a.textContent=page.name+' ↗';p.append(a);output.append(p);});}
       else if(command==='cat')print(toggleCat());
-      else if(command.startsWith('open ')){const name=command.slice(5).trim();const page=pages.find(p=>p.name.toLowerCase()===name||p.url.replace('.html','')===name);if(page)window.location.assign(page.url);else print('Page not found. Use ls to see the available names.');}
+      else if(command.startsWith('open ')){const name=command.slice(5).trim();const page=pages.find(p=>p.name.toLowerCase()===name||p.slug===name||p.url.replace('.html','')===name);if(page)window.location.assign(page.url);else print('Page not found. Use ls to see the available names.');}
       else print('Unknown command. Type help to see what this shell can do.');
       output.scrollTop=output.scrollHeight;
     });
