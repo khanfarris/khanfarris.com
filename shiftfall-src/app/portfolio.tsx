@@ -173,9 +173,7 @@ export default function Portfolio({
                 <pre>
                   {r.note || 'No personal notes saved for this encounter.'}
                 </pre>
-                <p>
-                  <b>Recap prompt:</b> {s.recap}
-                </p>
+                
               </details>
             );
           })

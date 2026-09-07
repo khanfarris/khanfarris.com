@@ -43,7 +43,6 @@ import {
   portfolioHTML,
   download,
   scoreDetails,
-  resetIncident,
   improvementTips,
   type Save,
 } from './progress';
@@ -131,8 +130,7 @@ function ScoreExplanation({ incident }: { incident: CaseState }) {
         ))}
       </ul>
       <p className="score-note">
-        Only recorded choices affect the score. Personal notes and recap
-        responses remain self-reviewed.
+        Only recorded choices affect the score. Personal notes remain self-reviewed.
       </p>
     </section>
   );
@@ -149,8 +147,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     [disposition, setDisposition] = useState(''),
     [comms, setComms] = useState(''),
     [note, setNote] = useState(''),
-    [hint, setHint] = useState(false),
-    [recap, setRecap] = useState('');
+    [hint, setHint] = useState(false);
   const saveRef = useRef(save);
   saveRef.current = save;
   useEffect(() => {
@@ -267,7 +264,6 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
   useEffect(() => {
     const d = c ? save.drafts?.[c.id] : null;
     setNote(d?.note || '');
-    setRecap(d?.recap || '');
     setDisposition(d?.disposition || '');
     setComms(d?.comms || '');
   }, [c?.id, ready]);
@@ -302,7 +298,6 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     setDisposition(d?.disposition || '');
     setComms(d?.comms || '');
     setNote(d?.note || '');
-    setRecap(d?.recap || '');
   }
   function submit() {
     if (!run || !c || !s || !disposition || !comms || c.closed) return;
@@ -844,7 +839,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                         </RadioGroup>
                       </fieldset>
                       <label className="note-label" htmlFor="case-note">
-                        Your analyst notes / recap practice{' '}
+                        Your analyst notes{' '}
                         <small>
                           Optional · self-reviewed, not automatically graded
                         </small>
@@ -911,56 +906,13 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                           </div>
                         </div>
                       ))}
-                      <section className="analyst-notes"><h3>Analyst notes</h3><pre style={{whiteSpace: 'pre-wrap', overflowWrap: 'anywhere'}}>{c.notes || 'No analyst notes recorded for this incident.'}</pre></section><div className="recap">
-                        <small>RECAP REP / SAY IT OUT LOUD</small>
-                        <h3>{s.recap}</h3>
-                        <textarea
-                          aria-label="Recap response"
-                          readOnly={readOnly}
-                          rows={3}
-                          value={recap}
-                          onChange={(e) => {
-                            setRecap(e.target.value);
-                            draft('recap', e.target.value);
-                          }}
-                          placeholder="Explain your reasoning clearly: cite evidence, actions, unknowns, and validation."
-                        />
-                        <button
-                          onClick={() => {
-                            setSave((prev) => ({
-                              ...prev,
-                              records: prev.records.map((r) =>
-                                r.id === c.id
-                                  ? {
-                                      ...r,
-                                      note: [r.note, recap]
-                                        .filter(Boolean)
-                                        .join('\nRecap: '),
-                                    }
-                                  : r,
-                              ),
-                            }));
-                            setRecap('');
-                            draft('recap', '');
-                          }}
-                          disabled={readOnly || !recap.trim()}
-                        >
-                          Save response to journal
-                        </button>
-                        <p>
-                          Self-check: cite two observations, justify a scoped
-                          action, state what is still unknown, and describe
-                          validation.
-                        </p>
-                      </div>
-                      <a
+                      <section className="analyst-notes"><h3>Analyst notes</h3><pre style={{whiteSpace: 'pre-wrap', overflowWrap: 'anywhere'}}>{c.notes || 'No analyst notes recorded for this incident.'}</pre></section><a
                         target="_blank"
                         rel="noreferrer"
                         href={sources[s.source][1]}
                       >
                         {sources[s.source][0]} <ArrowUpRight size={15} />
                       </a>
-                      {!readOnly && <div className="reset-incident"><p>Clears this incident’s notes, answers, score, and earned intel. Shift turn and trust stay unchanged.</p><button onClick={()=>{setSave(prev=>resetIncident(prev));setNote('');setRecap('');setDisposition('');setComms('');setHint(false);setTab('evidence');}}>Reset incident</button></div>}
                       {run.cases.some((x) => !x.closed) && (
                         <button
                           className="primary"
@@ -1221,7 +1173,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                 <li>Practice your lowest-scoring skill without pressure.</li>
                 <li>Replay Veteran with a different specialty.</li>
                 <li>Do the daily seeded challenge to compare your choices.</li>
-                <li>Export your journal and rehearse the recap prompts.</li>
+                <li>Export your journal and review your incident notes.</li>
               </ol>
               <p>
                 Daily challenges use the UTC date, selected class, and the same
@@ -1242,9 +1194,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                     <details className="manual-case" key={s.id}>
                       <summary>{s.title}</summary>
                       <p>{s.lesson}</p>
-                      <p>
-                        <b>Recap:</b> {s.recap}
-                      </p>
+                      
                       <a
                         href={sources[s.source][1]}
                         target="_blank"
@@ -1327,5 +1277,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     </main>
   );
 }
+
+
 
 

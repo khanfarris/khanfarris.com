@@ -30,25 +30,6 @@ export const emptySave: Save = {
   drafts: {},
   schemaVersion: 2,
 };
-export function resetIncident(save: Save): Save {
-  const run=save.run;
-  if(!run)return save;
-  const incident=run.cases[run.selected];
-  if(!incident?.closed)return save;
-  const drafts={...save.drafts};
-  delete drafts[incident.id];
-  return {...save,
-    xp:Math.max(0,save.xp-incident.score),
-    records:save.records.filter(r=>r.id!==incident.id),drafts,
-    run:{...run,phase:'play',
-      totalScore:Math.max(0,run.totalScore-incident.score),
-      totalClosed:Math.max(0,run.totalClosed-1),
-      credits:Math.max(0,run.credits-Math.floor(incident.score/20)),
-      cases:run.cases.map((c,i)=>i===run.selected?{id:c.id,template:c.template,client:c.client,reads:[],done:[],mistakes:0,pressure:10,closed:false,score:0}:c),
-      log:[`Incident reset: ${template(incident).title}. Previous score and notes cleared; shift turn and trust retained.`,...run.log].slice(0,18)
-    }
-  };
-}
 const finite = (n: unknown, min = 0, max = 10000000) =>
   typeof n === 'number' && Number.isFinite(n) && n >= min && n <= max;
 const validCase = (c: CaseState) =>
@@ -285,7 +266,7 @@ export function portfolioHTML(save: Save) {
       const explanation = score
         ? `<h3>How the score was calculated</h3><ul><li>Evidence reviewed: +${score.evidence}/20</li><li>Response actions: +${score.response}/45</li><li>Classification: +${score.classification}/20</li><li>Client update: +${score.communication}/15</li><li>Decision penalties: −${score.penalty}</li><li><b>Final score: ${score.total}/100</b></li></ul><h3>${score.total === 100 ? 'What went right' : 'How to improve'}</h3><ul>${tips.map((tip) => `<li>${esc(tip)}</li>`).join('')}</ul>`
         : '';
-      return `<article><h2>${esc(s.title)} · ${r.score}/100</h2><small>${esc(s.skill)} · ${esc(r.mode || 'Legacy exercise')} · ${esc(r.completedAt || 'Completion timestamp not recorded')}<br>${esc(r.provenance)}</small><p>${esc(s.brief)}</p><h3>Evidence and response record</h3>${r.detail ? `<p>Classification: ${esc(r.detail.result)} · Reviewed ${r.detail.reads.length}/3 sources · ${r.detail.mistakes} decision penalties</p><ul>${r.detail.done.map((id) => `<li>${esc(s.actions.find((a) => a.id === id)?.label)}</li>`).join('')}</ul>${r.detail.reads.map((i) => `<details><summary>${esc(s.evidence[i].tool)} — ${esc(s.evidence[i].title)}</summary><pre>${esc(s.evidence[i].body)}</pre></details>`).join('')}` : '<p>Legacy score and notes retained; detailed action history was not recorded.</p>'}${explanation}<h3>My analyst notes and recap answer</h3><pre>${esc(r.note || 'No personal notes saved.')}</pre><h3>Recap prompt</h3><p>${esc(s.recap)}</p><h3>Exercise learning point</h3><p>${esc(s.lesson)}</p></article>`;
+      return `<article><h2>${esc(s.title)} · ${r.score}/100</h2><small>${esc(s.skill)} · ${esc(r.mode || 'Legacy exercise')} · ${esc(r.completedAt || 'Completion timestamp not recorded')}<br>${esc(r.provenance)}</small><p>${esc(s.brief)}</p><h3>Evidence and response record</h3>${r.detail ? `<p>Classification: ${esc(r.detail.result)} · Reviewed ${r.detail.reads.length}/3 sources · ${r.detail.mistakes} decision penalties</p><ul>${r.detail.done.map((id) => `<li>${esc(s.actions.find((a) => a.id === id)?.label)}</li>`).join('')}</ul>${r.detail.reads.map((i) => `<details><summary>${esc(s.evidence[i].tool)} — ${esc(s.evidence[i].title)}</summary><pre>${esc(s.evidence[i].body)}</pre></details>`).join('')}` : '<p>Legacy score and notes retained; detailed action history was not recorded.</p>'}${explanation}<h3>My analyst notes</h3><pre>${esc(r.note || 'No personal notes saved.')}</pre><h3>Exercise learning point</h3><p>${esc(s.lesson)}</p></article>`;
     })
     .join(
       '',
@@ -299,3 +280,4 @@ export function download(content: string, name: string, type: string) {
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
