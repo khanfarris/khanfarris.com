@@ -875,7 +875,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                           setNote(e.target.value);
                           draft('note', e.target.value);
                         }}
-                        placeholder="UTC timeline → affected assets → evidence → actions and results → unknowns → next owner and update"
+                        placeholder="timeline > affected assets > evidence > actions and results > unknowns > next owner / further updates"
                         rows={5}
                         maxLength={6000}
                       />
