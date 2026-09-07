@@ -12,3 +12,5 @@ const html=p.portfolioHTML(save);assert(html.includes('Evidence-based analyst no
 assert(!fs.readFileSync(path.join(root,'shiftfall/game.js'),'utf8').includes('/api/progress'));
 console.log('PASS: fresh start, perfect incident, analyst notes, backup restore, casebook export, no backend dependency');
 
+
+const history=p.keepShift([],run);run.turn+=1;assert.notEqual(history[0].turn,run.turn);const archived={...save,shiftHistory:history};assert.deepEqual(p.parseBackup(p.backupJSON(archived)).shiftHistory,history);assert.equal(p.keepShift(history,run).length,1);console.log('PASS: shift snapshots are independent and survive JSON backup');

@@ -19,6 +19,7 @@ export type Save = {
   xp: number;
   records: RecordItem[];
   run: Run | null;
+  shiftHistory?: Run[];
   drafts?: Record<string, Draft>;
   updatedAt?: string;
   schemaVersion?: number;
@@ -30,6 +31,9 @@ export const emptySave: Save = {
   drafts: {},
   schemaVersion: 2,
 };
+export function keepShift(history: Run[] = [], run: Run): Run[] {
+  return [...history.filter(h=>!(h.seed===run.seed && h.mode===run.mode && h.wave===run.wave)),structuredClone(run)];
+}
 const finite = (n: unknown, min = 0, max = 10000000) =>
   typeof n === 'number' && Number.isFinite(n) && n >= min && n <= max;
 const validCase = (c: CaseState) =>
@@ -60,6 +64,10 @@ const migrateDrafts = (s: Save) => {
 export function normalizeSave(input: unknown): Save {
   if (!input || typeof input !== 'object') throw new Error('Invalid backup');
   const s = migrateDrafts(input as Save);
+  if(s.shiftHistory){
+    if(!Array.isArray(s.shiftHistory)||s.shiftHistory.length>2000)throw new Error('Invalid shift history');
+    for(const run of s.shiftHistory)normalizeSave({...emptySave,run});
+  }
   if (
     !finite(s.xp) ||
     !Array.isArray(s.records) ||
@@ -172,6 +180,7 @@ export function mergeSaves(remote: Save | null, local: Save | null): Save {
   return {
     ...r,
     records,
+    shiftHistory: [...(l.shiftHistory||[]),...(r.shiftHistory||[])].reduce((all,h)=>keepShift(all,h),[] as Run[]),
     drafts,
     run,
     xp: Math.max(

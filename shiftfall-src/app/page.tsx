@@ -44,6 +44,7 @@ import {
   portfolioHTML,
   download,
   scoreDetails,
+  keepShift,
   improvementTips,
   type Save,
 } from './progress';
@@ -137,9 +138,17 @@ function ScoreExplanation({ incident }: { incident: CaseState }) {
   );
 }
 export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void}) {
-  const readOnly=!!profile;
+  const isProfile=!!profile;
+  const [browsingWave,setBrowsingWave]=useState<number|null>(null);
   const [profileSelection,setProfileSelection]=useState(profile?.run?.selected||0);
   const { save, setSave, ready, status: storage } = useProgress(profile);
+  const activeRun=save.run || (isProfile ? save.shiftHistory?.at(-1) || null : null);
+  const completedWaves=activeRun ? [...(save.shiftHistory||[]).filter(h=>h.seed===activeRun.seed&&h.mode===activeRun.mode&&h.cases.every(c=>c.closed)).map(h=>h.wave),...(activeRun.cases.every(c=>c.closed)?[activeRun.wave]:[])] : [];
+  const selectedWave=browsingWave ?? (isProfile&&completedWaves.length?Math.max(...completedWaves):activeRun?.wave);
+  const past=!!activeRun && !!selectedWave && selectedWave<activeRun.wave;
+  const locked=!!activeRun && !!selectedWave && selectedWave>activeRun.wave;
+  const historical=activeRun && save.shiftHistory?.find(h=>h.seed===activeRun.seed && h.mode===activeRun.mode && h.wave===selectedWave);
+  const readOnly=isProfile||past;
   const [view, setView] = useState('play'),
     [mode, setMode] = useState('Guided'),
     [role, setRole] = useState('Investigator'),
@@ -258,7 +267,8 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     });
     return () => lifecycle.abort();
   }, []);
-  const run = readOnly&&save.run ? {...save.run,selected:profileSelection} : save.run,
+  const viewedRun=past?historical:activeRun;
+  const run = viewedRun ? {...viewedRun,selected:readOnly?Math.min(profileSelection,viewedRun.cases.length-1):viewedRun.selected} : null,
     c = run?.cases[run.selected],
     s = c ? template(c) : null;
   const level = Math.floor(save.xp / 350) + 1;
@@ -269,7 +279,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     setComms(d?.comms || '');
   }, [c?.id, ready]);
   function draft(key: string, value: string) {
-    if (!c) return;
+    if (!c || readOnly || locked) return;
     setSave((prev) => ({
       ...prev,
       drafts: {
@@ -279,9 +289,11 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     }));
   }
   function update(next: Run) {
-    setSave((prev) => ({ ...prev, run: next }));
+    if(readOnly || locked)return;
+    setSave((prev) => ({ ...prev, run: next,shiftHistory:prev.run&&prev.run.wave!==next.wave?keepShift(prev.shiftHistory,prev.run):prev.shiftHistory }));
   }
   function start(daily = false) {
+    setBrowsingWave(null);
     const seed = daily
       ? Number(new Date().toISOString().slice(0, 10).replaceAll('-', ''))
       : Math.floor(Math.random() * 1000000);
@@ -301,12 +313,13 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     setNote(d?.note || '');
   }
   function submit() {
-    if (!run || !c || !s || !disposition || !comms || c.closed) return;
+    if (readOnly || locked || !run || !c || !s || !disposition || !comms || c.closed) return;
     const next = closeCase(run, disposition, Number(comms) - 1, note);
     const closed = next.cases[next.selected];
     setSave((prev) => ({
       ...prev,
       run: next,
+      shiftHistory:next.cases.every(c=>c.closed)?keepShift(prev.shiftHistory,next):prev.shiftHistory,
       xp: prev.xp + closed.score,
       records: [
         {
@@ -325,7 +338,8 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     setTab('debrief');
   }
   function nextWave(upgrade: string) {
-    if (!run) return;
+    if (!run || readOnly || locked || run.phase!=='reward') return;
+    setBrowsingWave(null);
     const next = newRun(run.seed, run.mode, run.role, 'All', run.wave + 1);
     update({
       ...next,
@@ -400,7 +414,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
         <Help topic="navigation" label="Navigation" /><span role="status">{storage}</span>
       </nav>
       <div className="save-controls">
-        <button className="casebook-button" aria-pressed={readOnly} onClick={onToggle}>{readOnly?'Return to your progress':'View khanfarris profile'}</button>
+        <button className="casebook-button" aria-pressed={isProfile} onClick={onToggle}>{isProfile?'Return to your progress':'View khanfarris profile'}</button>
         <button
           onClick={() =>
             download(
@@ -415,8 +429,19 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
         </button>
         <Help topic="saving" label="Saving and profiles" />
       </div>
-      <div className="profile-banner" role="status">{readOnly ? 'Viewing khanfarris · published work, read only. Browse incidents, debriefs, notes, and Portfolio. Your browser progress is kept separate.' : 'Your progress · editable, saved in this browser. Switch to the khanfarris profile to explore published work.'}</div>
-      {view === 'play' && !run && (
+      <div className="profile-banner" role="status">{isProfile ? 'Viewing khanfarris · published work, read only. Browse incidents, debriefs, notes, and Portfolio. Your browser progress is kept separate.' : 'Your progress · editable, saved in this browser. Switch to the khanfarris profile to explore published work.'}</div>
+      {view==='play'&&activeRun&&<section className="shift-browser" aria-label="Browse shifts">
+        <nav className="shift-selector" aria-label="Shift navigation">
+          {Array.from({length:activeRun.mode==='Practice'?1:3},(_,i)=>i+1).map(wave=><button key={wave} aria-pressed={selectedWave===wave} onClick={()=>{setBrowsingWave(wave);setProfileSelection(0);setTab(wave<activeRun.wave||isProfile?'debrief':'evidence');setHint(false);}}><strong>Shift {wave}</strong><span>{wave>activeRun.wave?'Locked preview':wave<activeRun.wave||activeRun.cases.every(c=>c.closed)?'Completed':'Active'}</span></button>)}
+        </nav>
+        <p>{locked?'Preview only. Complete the previous shift to unlock these incidents. Evidence, response choices and solutions stay hidden.':past?'Reviewing a previous shift · read only. Your active shift and progress stay unchanged.':isProfile?'Published profile · read only. Select any shift to explore.':'Your current shift. Browse other shifts freely, then return here to continue.'}</p>
+      </section>}
+      {view==='play'&&locked&&activeRun&&selectedWave&&<section className="shift-preview" aria-label="Locked shift preview"><h2>Shift {selectedWave} · Locked preview</h2>{newRun(activeRun.seed,activeRun.mode,activeRun.role,'All',selectedWave).cases.map(incident=><article key={incident.id}><h3>{template(incident).title}</h3><p>{template(incident).brief}</p></article>)}</section>}
+      {view==='play'&&past&&!historical&&activeRun&&<section className="shift-preview" aria-label="Historical case records">
+        <h2>Shift {selectedWave} · Saved case records</h2><p>This older backup contains case records, but no full shift snapshot. Historical turn, trust and any unrecorded choices are unavailable.</p>
+        {save.records.filter(r=>r.id.startsWith(`${activeRun.seed}-${selectedWave}-`)).map(r=><details key={r.id}><summary>{scenarios.find(s=>s.id===r.template)?.title} · {r.score}/100</summary>{r.detail&&<><p>Recorded classification: {r.detail.result||'Not recorded'}</p><ScoreExplanation incident={r.detail}/><h3>Evidence reviewed</h3>{r.detail.reads.map(i=><details key={i}><summary>{template(r.detail!).evidence[i].title}</summary><p className="historical-notes">{template(r.detail!).evidence[i].body}</p></details>)}<h3>Response actions taken</h3><ul>{r.detail.done.map(id=><li key={id}>{template(r.detail!).actions.find(a=>a.id===id)?.label||id}</li>)}</ul></>}<h3>Analyst notes</h3><p className="historical-notes">{r.note||'No analyst notes saved.'}</p>{r.provenance&&<p>{r.provenance}</p>}</details>)}
+      </section>}
+      {view === 'play' && !activeRun && (
         <>
           <section className="intro">
             <div>
@@ -537,7 +562,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
           </section>
         </>
       )}
-      {view === 'play' && run && c && s && (
+      {view === 'play' && !locked && run && c && s && (
         <>
           <div className="shiftbar">
             <div>
@@ -998,6 +1023,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                   </button>
                   <button
                     onClick={() => {
+                      setBrowsingWave(null);
                       const next = newRun(
                         run.seed,
                         run.mode,
@@ -1026,7 +1052,8 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                 <button
                   className="primary"
                   onClick={() => {
-                    setSave((prev) => ({ ...prev, run: null }));
+                    setSave((prev) => ({ ...prev, run: null, shiftHistory:prev.run?keepShift(prev.shiftHistory,prev.run):prev.shiftHistory }));
+                    setBrowsingWave(null);
                     setTab('evidence');
                   }}
                 >
@@ -1270,7 +1297,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
         </section>
       )}
       {view === 'portfolio' && (
-        <Portfolio save={save} setSave={setSave} status={storage} readOnly={readOnly} />
+        <Portfolio save={save} setSave={setSave} status={storage} readOnly={isProfile} />
       )}
       <footer>
         <span>SHIFTFALL / ANALYST GUILD</span>
