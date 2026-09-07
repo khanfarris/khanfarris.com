@@ -420,7 +420,8 @@
         "mdr",
         "blackpoint"
       ],
-      "keywords": "Storyline Deep Visibility quarantine isolate EDR"
+      "keywords": "Storyline Deep Visibility quarantine isolate EDR",
+      "archived": true
     },
     {
       "slug": "blackpoint",
@@ -441,7 +442,8 @@
         "mdr",
         "sentinelone"
       ],
-      "keywords": ""
+      "keywords": "",
+      "archived": true
     },
     {
       "slug": "siem",
@@ -483,7 +485,8 @@
         "siem",
         "kql-enrichment"
       ],
-      "keywords": "Sentinel AMA DCR LAW Log Analytics"
+      "keywords": "Sentinel AMA DCR LAW Log Analytics",
+      "archived": true
     },
     {
       "slug": "timus",
@@ -503,7 +506,8 @@
         "ztna-sase",
         "file-shares"
       ],
-      "keywords": ""
+      "keywords": "",
+      "archived": true
     },
     {
       "slug": "ztna-sase",
@@ -630,7 +634,8 @@
         "windows-domain",
         "windows-events"
       ],
-      "keywords": ""
+      "keywords": "",
+      "archived": true
     },
     {
       "slug": "file-shares",
@@ -674,7 +679,8 @@
         "identity",
         "ztna-sase"
       ],
-      "keywords": ""
+      "keywords": "",
+      "archived": true
     },
     {
       "slug": "nsg",
@@ -694,7 +700,8 @@
         "subnetting",
         "windows-server"
       ],
-      "keywords": ""
+      "keywords": "",
+      "archived": true
     },
     {
       "slug": "windows-events",
@@ -737,7 +744,8 @@
         "sentinel",
         "windows-events"
       ],
-      "keywords": ""
+      "keywords": "",
+      "archived": true
     },
     {
       "slug": "tls",
@@ -801,7 +809,8 @@
         "tcp",
         "tls"
       ],
-      "keywords": ""
+      "keywords": "",
+      "archived": true
     }
   ]
 }

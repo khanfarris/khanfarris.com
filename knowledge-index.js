@@ -81,26 +81,6 @@ window.knowledgePages = [
     "answer": "SentinelOne supplies endpoint visibility and response controls. With the supported integration and coverage configured, Blackpoint can provide continuous monitoring, investigation, and response around those alerts and its other evidence. The organization still coordinates business impact, remediation, and follow-up. XDR can add broader correlation across security areas."
   },
   {
-    "name": "SentinelOne",
-    "url": "kb-sentinelone.html",
-    "type": "Tool guide",
-    "keywords": "Security operations Tool study SentinelOne’s console lets you inspect protected devices, investigate detections through Storyline, and check or perform response actions on the affected endpoint. Storyline Deep Visibility quarantine isolate EDR",
-    "slug": "sentinelone",
-    "category": "Security operations",
-    "question": "A threat says “resolved,” but the endpoint has been offline since before isolation was requested. What do you verify?",
-    "answer": "Verify the isolation action’s result and the device’s current connectivity, not just the alert’s workflow status. Check last contact and pending or failed actions. Coordinate the next containment step with the incident owner and document the uncertainty."
-  },
-  {
-    "name": "Blackpoint",
-    "url": "kb-blackpoint.html",
-    "type": "Tool guide",
-    "keywords": "Security operations Tool study Blackpoint’s CompassOne platform gives a customer team visibility into protected assets, security findings, and the work performed by Blackpoint’s response service. ",
-    "slug": "blackpoint",
-    "category": "Security operations",
-    "question": "Blackpoint reports successful containment. Why might the customer ticket still need work?",
-    "answer": "Containment stops or limits the threat. The customer may still need remediation, account investigation, service recovery, and communication. Read the provider’s evidence, confirm the action outcome, and assign the remaining work before closing the ticket."
-  },
-  {
     "name": "SIEM",
     "url": "kb-siem.html",
     "type": "Concept",
@@ -109,26 +89,6 @@ window.knowledgePages = [
     "category": "Security operations",
     "question": "How can a SIEM contain logs without producing an alert about those logs?",
     "answer": "Collection and detection are separate. The source may be sending events successfully while no enabled rule matches the behavior, its threshold is not reached, or its query looks in the wrong table or time range. Check the raw events before changing the detection."
-  },
-  {
-    "name": "Microsoft Sentinel",
-    "url": "kb-sentinel.html",
-    "type": "Tool guide",
-    "keywords": "Cloud & telemetry Lab application Microsoft Sentinel lets you connect security data, query it with KQL, investigate incidents, and build workbooks and detection rules around the connected data. Sentinel AMA DCR LAW Log Analytics",
-    "slug": "sentinel",
-    "category": "Cloud & telemetry",
-    "question": "A known failed logon exists in Event Viewer but is absent from Sentinel. What would you check next?",
-    "answer": "Check AMA health, the machine’s DCR association, the selected event collection, and the destination workspace. Then verify SecurityEvent, your access, the time range, and ingestion delay. The local event confirms generation; it does not prove collection succeeded."
-  },
-  {
-    "name": "Timus",
-    "url": "kb-timus.html",
-    "type": "Tool guide",
-    "keywords": "Identity & access Tool study Timus Manager is the web console for administering users, devices, sites, and access policies. Timus Connect is the client application employees use to connect through the configured service. ",
-    "slug": "timus",
-    "category": "Identity & access",
-    "question": "An employee is connected in Timus Connect but cannot use one internal application. What details make the ticket actionable?",
-    "answer": "Record the customer, signed-in user, device, site, application hostname, destination port, time, and error. Review the matching policy decision, team and profile, then check DNS and the destination service. Connection status alone does not show that this application is permitted."
   },
   {
     "name": "ZTNA / SASE",
@@ -181,16 +141,6 @@ window.knowledgePages = [
     "answer": "No. Windows Server can host many roles. Domain controllers running AD DS provide domain authentication services. A server used only for file sharing or an application is not automatically a domain controller."
   },
   {
-    "name": "Windows Server",
-    "url": "kb-windows-server.html",
-    "type": "Tool guide",
-    "keywords": "Identity & access Tool study Windows Server is Microsoft’s operating system for shared services such as domains, DNS, DHCP, files, and applications. Start by identifying the role a server performs and who depends on it. ",
-    "slug": "windows-server",
-    "category": "Identity & access",
-    "question": "A service is stopped in Services. Does that prove it caused the outage?",
-    "answer": "No. Some services normally start only when needed or are not used by this server’s role. Compare the affected function with its dependencies, configured startup behavior, recent events, and a known-good baseline before changing the service."
-  },
-  {
     "name": "File shares",
     "url": "kb-file-shares.html",
     "type": "Concept",
@@ -201,26 +151,6 @@ window.knowledgePages = [
     "answer": "The server path and this user’s basic access work. Investigate the drive mapping, sign-in script, Group Policy, or device-management configuration that should create Z:. Also check whether the problem is limited to one session or device."
   },
   {
-    "name": "Microsoft 365",
-    "url": "kb-m365.html",
-    "type": "Ecosystem guide",
-    "keywords": "Identity & access Concept study Microsoft 365 combines work applications with identity, device management, and security services. Entra identifies users, Intune manages devices, Defender investigates threats, and Conditional Access controls sign-ins. ",
-    "slug": "m365",
-    "category": "Identity & access",
-    "question": "A user knows their password and passes MFA but is blocked because their device is noncompliant. Which tools help you investigate?",
-    "answer": "Use Entra sign-in logs to identify the Conditional Access policy and failed requirement. Use Intune to inspect that device’s compliance details and check-in state. If an integrated Defender device-risk signal is involved, investigate the threat there. Fix and verify the cause rather than broadly disabling the policy."
-  },
-  {
-    "name": "Azure NSGs",
-    "url": "kb-nsg.html",
-    "type": "Tool guide",
-    "keywords": "Cloud & telemetry Lab application An Azure Network Security Group is a set of traffic-filtering rules attached to a subnet, a network interface, or both. It can allow or block a VM’s network traffic before that traffic reaches Windows. ",
-    "slug": "nsg",
-    "category": "Cloud & telemetry",
-    "question": "An NSG permits RDP, but the VM still cannot be reached. What other checks matter?",
-    "answer": "Check every applicable NSG, effective routes, the actual source and destination, Windows Firewall, and whether Remote Desktop is listening. Allowing traffic through one checkpoint does not make the whole path work. Use a new connection when verifying changed rules."
-  },
-  {
     "name": "Windows events",
     "url": "kb-windows-events.html",
     "type": "Concept",
@@ -229,16 +159,6 @@ window.knowledgePages = [
     "category": "Cloud & telemetry",
     "question": "A 4624 is followed by a 4672 with the same Logon ID on one host. Does that prove privilege escalation?",
     "answer": "No. It shows a successful logon and sensitive privileges assigned to that session. This can be normal for an administrative or system account. Check the account, logon type, source, time, expected role, and subsequent actions to decide whether the activity is suspicious."
-  },
-  {
-    "name": "KQL",
-    "url": "kb-kql-enrichment.html",
-    "type": "Tool guide",
-    "keywords": "Cloud & telemetry Lab application Kusto Query Language lets you ask questions of tables of data. Each pipe passes the previous result into another step, such as filtering rows or counting events. ",
-    "slug": "kql-enrichment",
-    "category": "Cloud & telemetry",
-    "question": "Why would ipv4_lookup fail when the reference table has a column called Network but the query uses network?",
-    "answer": "KQL column names are case-sensitive. The query must name the actual reference-side range column and the event-side IP column. Inspect the schema and test a small result before troubleshooting the map that consumes it."
   },
   {
     "name": "TLS",
@@ -259,15 +179,5 @@ window.knowledgePages = [
     "category": "Networking",
     "question": "A TCP segment starts at sequence 1000 and carries 100 data bytes. Is tcp.stream == 1100 the way to find the next bytes?",
     "answer": "No. Sequence 1100 would describe the next data-byte position in this simplified example. tcp.stream is Wireshark’s separate identifier for the whole connection. Filter the right stream, then inspect sequence and acknowledgement numbers inside it."
-  },
-  {
-    "name": "Wireshark",
-    "url": "kb-tcp-streams.html",
-    "type": "Tool guide",
-    "keywords": "Networking Tool study Wireshark lets you inspect a packet capture, filter the traffic you see, and follow individual conversations. Its three main panes show packets, decoded fields, and the corresponding bytes. ",
-    "slug": "tcp-streams",
-    "category": "Networking",
-    "question": "What is the difference between offset 0x16 and a byte with value 0x80 in the packet bytes pane?",
-    "answer": "Offset 0x16 is a position 22 bytes from the beginning of the displayed byte source. A byte value of 0x80 represents the number 128 at its position. Select the corresponding decoded field to learn what those bytes mean in the protocol."
   }
 ];

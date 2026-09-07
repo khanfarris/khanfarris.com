@@ -57,8 +57,10 @@ for(const a of data.articles){
 eq(allExercises.size,7);
 for(const file of ['knowledge.js','reading.js','lab.js','study-showcase.js','study-exercises.js','knowledge-index.js']){new vm.Script(read(file),{filename:file});checks++;}
 const searchContext={window:{}};vm.createContext(searchContext);vm.runInContext(read('knowledge-index.js'),searchContext);
-eq(searchContext.window.knowledgePages.length,data.articles.length);
-eq((read('knowledge.html').match(/class="knowledge-entry"/g)||[]).length,data.articles.length);
-eq((read('index.html').match(/data-archive-card aria-label/g)||[]).length,data.articles.length);
+eq(searchContext.window.knowledgePages.length,data.articles.filter(a=>!a.archived).length);
+eq((read('knowledge.html').match(/class="knowledge-entry"/g)||[]).length,data.articles.filter(a=>!a.archived).length);
+eq((read('index.html').match(/data-archive-card aria-label/g)||[]).length,data.articles.filter(a=>!a.archived).length);
 assert.ok(!/sig=|AccountKey=|BEGIN PRIVATE KEY|conversations-000|blob\.core\.windows\.net/i.test(read('knowledge-content.json')));
 console.log(`${checks} checks passed: ${data.articles.length} articles, ${allExercises.size} exercises, calculation boundaries, policy cases, search index, and homepage cards.`);
+
+for(const a of data.articles.filter(a=>a.archived)){assert.ok(!searchContext.window.knowledgePages.some(p=>p.slug===a.slug));assert.ok(!read('knowledge.html').includes('href="kb-'+a.slug+'.html"'));assert.ok(!read('index.html').includes('href="kb-'+a.slug+'.html"'));assert.ok(read('kb-'+a.slug+'.html').includes('noindex, nofollow'));}console.log('PASS: archived studies excluded from directory, homepage and search, with noindex metadata');

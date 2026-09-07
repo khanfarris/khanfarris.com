@@ -1,19 +1,20 @@
 // Edit knowledge-content.json, then run: node scripts/build-knowledge.cjs
 (function build(){
 const fs=require('node:fs'),path=require('node:path'),root=path.resolve(__dirname,'..');
-const {refs,articles}=JSON.parse(fs.readFileSync(path.join(root,'knowledge-content.json'),'utf8'));
+const {refs,articles:allArticles}=JSON.parse(fs.readFileSync(path.join(root,'knowledge-content.json'),'utf8'));
 const slugs=new Set();
-for(const a of articles){
+for(const a of allArticles){
   if(!/^[a-z0-9-]+$/.test(a.slug)||slugs.has(a.slug))throw Error('Invalid or duplicate article slug: '+a.slug);
   slugs.add(a.slug);
   for(const key of ['title','kind','category','basis','principle','body','question','answer'])if(typeof a[key]!=='string'||!a[key].trim())throw Error('Missing '+key+' in '+a.slug);
   if(!Array.isArray(a.sources)||!a.sources.length||a.sources.some(key=>!refs[key]))throw Error('Invalid sources in '+a.slug);
   if(!Array.isArray(a.related))throw Error('Missing related articles in '+a.slug);
 }
-for(const a of articles)for(const related of a.related)if(!slugs.has(related))throw Error('Missing related article: '+related);
+for(const a of allArticles)for(const related of a.related)if(!slugs.has(related))throw Error('Missing related article: '+related);
+const articles=allArticles.filter(a=>!a.archived);
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const url=slug=>'kb-'+slug+'.html';
-const find=slug=>{const a=articles.find(a=>a.slug===slug);if(!a)throw Error(slug);return a;};
+const find=slug=>{const a=allArticles.find(a=>a.slug===slug);if(!a)throw Error(slug);return a;};
 const write=(name,data)=>fs.writeFileSync(path.join(root,name),data+'\n');
 const head=(title,description)=>`<!doctype html>
 <html lang="en"><head>
@@ -23,40 +24,41 @@ const head=(title,description)=>`<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="reading.css"><link rel="stylesheet" href="knowledge.css">
-<script src="knowledge-index.js" defer></script><script src="reading.js" defer></script><script src="lab.js" defer></script><script src="knowledge.js" defer></script><script src="study-exercises.js" defer></script>
+<script src="knowledge-index.js?v=concepts-18" defer></script><script src="reading.js" defer></script><script src="lab.js?v=2931b52" defer></script><script src="knowledge.js" defer></script><script src="study-exercises.js" defer></script>
 </head>`;
 const footer=`<footer class="site-footer wrap"><span>© <span id="year">2026</span> khanfarris</span><a href="knowledge.html">Knowledge base ↗</a><a href="#main">Back to top ↑</a></footer></body></html>`;
 const cards=items=>items.map(a=>`<a class="study-card" href="${url(a.slug)}"><span class="eyebrow">${esc(a.category)}</span><h3>${esc(a.title)} <span aria-hidden="true">↗</span></h3><p>${esc(a.principle)}</p><span class="study-basis">${esc(a.basis)}</span></a>`).join('\n');
-articles.forEach((a,i)=>{
+allArticles.forEach((a)=>{
+const i=Math.max(0,articles.indexOf(a));
 const prev=articles[(i+articles.length-1)%articles.length],next=articles[(i+1)%articles.length];
-write(url(a.slug),head(a.title,a.principle)+`
+write(url(a.slug),head(a.title,a.principle).replace('</head>',a.archived?'<meta name="robots" content="noindex, nofollow"></head>':'</head>')+`
 <body class="lab-page kb-article"><main class="container">
 <p class="brand"><a href="knowledge.html">knowledge base</a></p>
-<p class="eyebrow">NOTE ${String(i+1).padStart(2,'0')} / ${esc(a.category)}</p>
+<p class="eyebrow">${a.archived?'ARCHIVED / ':''}NOTE ${String(i+1).padStart(2,'0')} / ${esc(a.category)}</p>
 <h1 class="post-title">${esc(a.title)}<span class="accent">_</span></h1>
 <p class="post-meta"><span class="note-kind">${esc(a.kind||'Concept')}</span> <span class="study-basis">${esc(a.basis)}</span></p>
 <section class="principle-box" aria-label="In plain English"><span class="eyebrow">IN PLAIN ENGLISH</span><p>${esc(a.principle)}</p></section>
 <article class="study-body" aria-label="${esc(a.title)}">${a.body}</article>
 <section class="retrieval-check" aria-labelledby="recall-title"><span class="eyebrow">PUT IT INTO WORDS</span><h2 id="recall-title">Check your understanding</h2><p>${esc(a.question)}</p><details><summary>Show an example answer</summary><p>${esc(a.answer)}</p></details></section>
 <section class="study-sources" aria-labelledby="sources-title"><h2 id="sources-title">Technical references</h2><ul>${a.sources.map(k=>`<li><a href="${esc(refs[k][1])}">${esc(refs[k][0])} ↗</a></li>`).join('')}</ul></section>
-<aside class="study-related" aria-labelledby="related-title"><h2 id="related-title">Related notes</h2><div class="study-grid">${cards(a.related.map(find))}</div></aside>
+<aside class="study-related" aria-labelledby="related-title"><h2 id="related-title">Related notes</h2><div class="study-grid">${cards(a.related.map(find).filter(a=>!a.archived))}</div></aside>
 <nav class="study-pagination" aria-label="Study notes"><a href="${url(prev.slug)}">← ${esc(prev.title)}</a><a href="${url(next.slug)}">${esc(next.title)} →</a></nav>
 </main>${footer}`);
 });
 const categories=[...new Set(articles.map(a=>a.category))];
-write('knowledge.html',head('Knowledge base',articles.length+' beginner-friendly concept notes, tool cheat sheets, and interactive exercises for security operations.')+`
+write('knowledge.html',head('Knowledge base',articles.length+' beginner-friendly concept notes and interactive exercises for security operations.')+`
 <body class="lab-page kb-directory"><main class="wrap">
 <p class="brand"><a href="index.html#knowledge">personal lab</a></p>
-<header class="knowledge-intro"><div><p class="eyebrow">02 / KNOWLEDGE BASE</p><h1>Learn it.<br>Work through it<span class="accent">_</span></h1><p class="knowledge-deck">Networking and security, explained from the beginning. Concept notes, tool cheat sheets, and examples you can work through.</p></div><div class="knowledge-tally"><strong>${articles.length}</strong><span>STUDY NOTES</span><p>Understand the basics.<br>See them at work.<br>Try it yourself.</p></div></header>
-<details class="basis-guide"><summary>About these study notes</summary><p><strong>Concept notes</strong> explain how a topic works. <strong>Tool guides</strong> cover a product's screens and common tasks. Study labels distinguish reading, practiced calculations, and lab application. Exercises use fictional examples; a tool guide does not imply production experience.</p></details>
+<header class="knowledge-intro"><div><p class="eyebrow">02 / KNOWLEDGE BASE</p><h1>Learn it.<br>Work through it<span class="accent">_</span></h1><p class="knowledge-deck">Networking and security, explained from the beginning. Concept notes and examples you can work through.</p></div><div class="knowledge-tally"><strong>${articles.length}</strong><span>STUDY NOTES</span><p>Understand the basics.<br>See them at work.<br>Try it yourself.</p></div></header>
+<details class="basis-guide"><summary>About these study notes</summary><p><strong>Concept notes</strong> explain how a topic works. Study labels distinguish reading, practiced calculations, and lab application. Exercises use fictional examples; a tool guide does not imply production experience.</p></details>
 <section class="study-routes" aria-label="Study starting points">
 <a href="kb-subnetting.html"><span class="eyebrow">01 / NETWORKING</span><h2>How devices communicate ↗</h2><p>Subnetting · VLANs · DNS · DHCP</p></a>
-<a href="kb-mdr.html"><span class="eyebrow">02 / SECURITY OPERATIONS</span><h2>How threats get investigated ↗</h2><p>EDR, MDR, and XDR · SentinelOne · Blackpoint</p></a>
-<a href="kb-m365.html"><span class="eyebrow">03 / IDENTITY & ACCESS</span><h2>How access is controlled ↗</h2><p>Microsoft 365 · Active Directory · ZTNA / SASE</p></a>
+<a href="kb-mdr.html"><span class="eyebrow">02 / SECURITY OPERATIONS</span><h2>How threats get investigated ↗</h2><p>EDR, MDR, and XDR · SIEM · Incident response</p></a>
+<a href="kb-identity.html"><span class="eyebrow">03 / IDENTITY & ACCESS</span><h2>How access is controlled ↗</h2><p>Risky sign-ins · Active Directory · ZTNA / SASE</p></a>
 </section>
 <section class="review-console" aria-labelledby="review-heading" hidden><div><span class="eyebrow">RETRIEVAL PRACTICE / NO TIMER</span><h2 id="review-heading">Explain it in your own words</h2><p id="review-question">Try a question, then compare your reasoning with the example answer.</p><details id="review-answer" hidden><summary>Show an example answer</summary><p></p><a id="review-link">Read the full note ↗</a></details></div><button id="next-review" type="button">Start a quick review →</button></section>
 <section aria-labelledby="notes-heading"><div class="section-heading"><h2 id="notes-heading">All study notes<span class="accent">_</span></h2><span class="section-aside">The reasoning behind the answer.</span></div>
-<div class="knowledge-controls" hidden><label for="knowledge-search">Find a topic or tool</label><input id="knowledge-search" type="search" placeholder="Try subnetting, SentinelOne, Timus, or DNS…" autocomplete="off"><div class="knowledge-filters" role="group" aria-label="Filter by subject"><button type="button" data-category="All" aria-pressed="true">All</button>${categories.map(c=>`<button type="button" data-category="${esc(c)}" aria-pressed="false">${esc(c)}</button>`).join('')}</div><p id="knowledge-count" role="status"></p></div>
+<div class="knowledge-controls" hidden><label for="knowledge-search">Find a topic</label><input id="knowledge-search" type="search" placeholder="Try subnetting, DNS, VLANs, or SIEM…" autocomplete="off"><div class="knowledge-filters" role="group" aria-label="Filter by subject"><button type="button" data-category="All" aria-pressed="true">All</button>${categories.map(c=>`<button type="button" data-category="${esc(c)}" aria-pressed="false">${esc(c)}</button>`).join('')}</div><p id="knowledge-count" role="status"></p></div>
 <div class="knowledge-list">${articles.map((a,i)=>`<a class="knowledge-entry" data-slug="${a.slug}" data-category="${esc(a.category)}" href="${url(a.slug)}"><span class="note-number">${String(i+1).padStart(2,'0')}</span><div><span class="eyebrow">${esc(a.category)}</span><h3>${esc(a.title)}</h3><p>${esc(a.principle)}</p></div><span class="study-basis">${esc(a.basis)}</span><span class="entry-arrow" aria-hidden="true">↗</span></a>`).join('\n')}</div><p id="knowledge-empty" hidden>No matching notes. Try another term or reset the subject filter.</p></section>
 </main>${footer}`);
 write('knowledge-index.js','// Generated by scripts/build-knowledge.cjs.\nwindow.knowledgePages = '+JSON.stringify(articles.map(a=>({name:a.title,url:url(a.slug),type:a.kind||'Concept',keywords:a.category+' '+a.basis+' '+a.principle+' '+(a.keywords||''),slug:a.slug,category:a.category,question:a.question,answer:a.answer})),null,2)+';');
