@@ -2210,9 +2210,25 @@ summary:focus-visible {
   padding: 10px 0;
   flex-wrap: wrap;
 }
-.save-controls button {
+.save-controls button,
+.save-controls .casebook-button {
   font-size: 12px;
   padding: 6px 10px;
+}
+.save-controls .casebook-button {
+  border: 1px solid #304448;
+  border-radius: 6px;
+  background: #203337;
+  color: #e7eeec;
+  text-decoration: none;
+  justify-content: center;
+}
+.save-controls .casebook-button:hover {
+  background: #243b3e;
+}
+.save-controls .casebook-button:focus-visible {
+  outline: 2px solid #b9f478;
+  outline-offset: 3px;
 }
 .portfolio-status p {
   max-width: 850px;

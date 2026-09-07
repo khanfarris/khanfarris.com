@@ -399,6 +399,7 @@ export default function Home() {
         <span role="status">{storage}</span>
       </nav>
       <div className="save-controls">
+        <a className="casebook-button" href="casebook.html">Explore the khanfarris casebook</a>
         <button
           onClick={() =>
             download(
@@ -411,7 +412,6 @@ export default function Home() {
         >
           Backup progress
         </button>
-        <a href="casebook.html">Explore my casebook</a>
         <button onClick={() => setView('portfolio')}>Recap portfolio</button>
       </div>
       {view === 'play' && !run && (
