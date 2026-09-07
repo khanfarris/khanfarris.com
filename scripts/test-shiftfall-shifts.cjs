@@ -36,7 +36,7 @@ const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComp
  await page.getByRole('button',{name:'Return to your progress',exact:true}).click();
  const legacy={...current};delete legacy.shiftHistory;
  await page.evaluate(data=>localStorage.setItem('khanfarris-shiftfall-v1',JSON.stringify(data)),legacy);await page.reload();await page.getByRole('button',{name:/Browse shifts, current shift/}).hover();await page.getByRole('button',{name:'Shift 1 Completed',exact:true}).click();
- await page.getByText(/This older backup contains case records/).waitFor();assert.equal(await page.locator('.shift-preview>details').count(),4);
+ await page.getByText(/Historical trust, turns and intel were not retained/).waitFor();assert.equal(await page.locator('.queue .ticket').count(),4);assert.equal(await page.getByRole('tab').count(),4);await page.getByRole('tab',{name:/02 Respond/}).click();assert.equal(await page.locator('.action-grid button:enabled').count(),0);await page.getByRole('tab',{name:'Debrief',exact:true}).click();assert.equal(await page.locator('.analyst-notes').count(),1);
  await page.setViewportSize({width:390,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
  assert.deepEqual(errors,[]);console.log('PASS: locked preview, matching unlocked queue, history persistence, read-only browsing, legacy records, mobile width');
  }finally{await browser.close();server.close();}})().catch(e=>{console.error(e);server.close();process.exitCode=1;});

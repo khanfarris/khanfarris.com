@@ -271,7 +271,13 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     });
     return () => lifecycle.abort();
   }, []);
-  const viewedRun=locked&&activeRun&&selectedWave?newRun(activeRun.seed,activeRun.mode,activeRun.role,'All',selectedWave):past?historical:activeRun;
+  const legacyHistory=!!(past&&!historical);
+  const recovered=legacyHistory&&activeRun&&selectedWave?(()=>{
+    const shell=newRun(activeRun.seed,activeRun.mode,activeRun.role,'All',selectedWave);
+    const records=save.records.filter(r=>r.id.startsWith(`${activeRun.seed}-${selectedWave}-`)).sort((a,b)=>Number(a.id.split('-').at(-1))-Number(b.id.split('-').at(-1)));
+    return {...shell,phase:'finished' as const,cases:records.map(r=>r.detail?{...r.detail,notes:r.note,score:r.score}:{...shell.cases[0],id:r.id,template:r.template,closed:true,score:r.score,notes:r.note}),log:['Read-only review from saved incident records. Historical trust, turns and intel were not retained in this older save.']};
+  })():null;
+  const viewedRun=locked&&activeRun&&selectedWave?newRun(activeRun.seed,activeRun.mode,activeRun.role,'All',selectedWave):past?(historical||recovered):activeRun;
   const run = viewedRun ? {...viewedRun,selected:readOnly?Math.min(profileSelection,viewedRun.cases.length-1):viewedRun.selected} : null,
     c = run?.cases[run.selected],
     s = c ? template(c) : null;
@@ -442,19 +448,19 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
             <div className="stat">
               <small>CLIENT TRUST <Help topic="trust" label="Client trust" /></small>
               <b className={run.trust < 40 ? 'danger' : ''}>
-                {run.trust}
+                {legacyHistory?'—':run.trust}
                 <span>/100</span>
               </b>
-              <Progress value={run.trust} aria-label="Client trust" />
+              <Progress value={legacyHistory?0:run.trust} aria-label={legacyHistory?"Historical client trust unavailable":"Client trust"} />
             </div>
             <div className="stat">
               <small>TURN <Help topic="turn" label="Turns" /></small>
-              <b>{run.turn.toString().padStart(2, '0')}</b>
+              <b>{legacyHistory?'—':run.turn.toString().padStart(2, '0')}</b>
             </div>
             <div className="stat">
               <small>INTEL <Help topic="intel" label="Intel" /></small>
               <b>
-                {run.credits} <span>◆</span>
+                {legacyHistory?'—':run.credits} <span>◆</span>
               </b>
             </div>
             <div className="perk">
@@ -470,10 +476,6 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
             </>:<p className="shift-preview-caption">{locked?'A glimpse of your next assignment. Complete the previous shift to unlock evidence and response actions.':'Archived casework. This older save has no historical shift metrics.'}</p>}
           </div>
       </>}
-      {view==='play'&&past&&!historical&&activeRun&&<section className="shift-preview" aria-label="Historical case records">
-        <h2>Shift {selectedWave} · Saved case records</h2><p>This older backup contains case records, but no full shift snapshot. Historical turn, trust and any unrecorded choices are unavailable.</p>
-        {save.records.filter(r=>r.id.startsWith(`${activeRun.seed}-${selectedWave}-`)).map(r=><details key={r.id}><summary>{scenarios.find(s=>s.id===r.template)?.title} · {r.score}/100</summary>{r.detail&&<><p>Recorded classification: {r.detail.result||'Not recorded'}</p><ScoreExplanation incident={r.detail}/><h3>Evidence reviewed</h3>{r.detail.reads.map(i=><details key={i}><summary>{template(r.detail!).evidence[i].title}</summary><p className="historical-notes">{template(r.detail!).evidence[i].body}</p></details>)}<h3>Response actions taken</h3><ul>{r.detail.done.map(id=><li key={id}>{template(r.detail!).actions.find(a=>a.id===id)?.label||id}</li>)}</ul></>}<h3>Analyst notes</h3><p className="historical-notes">{r.note||'No analyst notes saved.'}</p>{r.provenance&&<p>{r.provenance}</p>}</details>)}
-      </section>}
       {view === 'play' && !activeRun && (
         <>
           <section className="intro">
@@ -910,7 +912,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                         </div>
                       </div>
                       <p className="lesson">{s.lesson}</p>
-                      <ScoreExplanation incident={c} />
+                      {(!legacyHistory||save.records.find(r=>r.id===c.id)?.detail)?<ScoreExplanation incident={c} />:<p>Only the final score was retained in this older record; detailed scoring is unavailable.</p>}
                       {readOnly && save.records.find(r=>r.id===c.id)?.provenance?.includes('corrected') && <p className="coach">{save.records.find(r=>r.id===c.id)?.provenance}</p>}
                       {readOnly && <section><h3>Recorded client update</h3><p>{c.communication===15?'We are reviewing the evidence and documenting the confirmed scope and actions. We will coordinate any remaining validation and provide the next update in 30 minutes.':'This record did not earn client-update credit; the exact selection is available only when retained in its draft.'}</p></section>}
                       <h3>Response walkthrough</h3>
