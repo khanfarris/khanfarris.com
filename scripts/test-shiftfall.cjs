@@ -9,5 +9,10 @@ assert.equal(run.cases[0].score,100);assert.equal(run.cases[0].notes,'Evidence-b
 const save={...p.emptySave,xp:100,run,records:[{id:run.cases[0].id,template:'bec',score:100,note:'Evidence-based analyst notes',detail:run.cases[0]}]};
 assert.deepEqual(p.parseBackup(p.backupJSON(save)).records[0].detail.notes,'Evidence-based analyst notes');
 const html=p.portfolioHTML(save);assert(html.includes('Evidence-based analyst notes'));assert(html.includes('How the score was calculated'));
+const withDraft={...save,drafts:{[run.cases[0].id]:{note:'clear me',recap:'clear me too'},other:{note:'keep me'}}};
+const reset=p.resetIncident(withDraft);
+assert.equal(reset.xp,0);assert.equal(reset.records.length,0);assert.equal(reset.run.totalClosed,0);assert.equal(reset.run.totalScore,0);assert.equal(reset.run.cases[0].closed,false);assert.deepEqual(reset.run.cases[0].reads,[]);assert.deepEqual(reset.run.cases[0].done,[]);assert.equal(reset.run.cases[0].notes,undefined);assert.equal(reset.drafts[run.cases[0].id],undefined);assert.equal(reset.drafts.other.note,'keep me');assert.deepEqual(reset.run.cases.slice(1),run.cases.slice(1));assert.equal(reset.run.trust,run.trust);assert.equal(reset.run.turn,run.turn);assert.equal(p.resetIncident(reset),reset);
+let retry=reset.run;for(let i=0;i<3;i++)retry=p.readEvidence(retry,i);for(const id of ['contain','clean','verify'])retry=p.perform(retry,id);retry=p.closeCase(retry,'Confirmed compromise',0,'New attempt');assert.equal(retry.cases[0].score,100);assert.equal(retry.totalClosed,1);assert.equal(retry.totalScore,100);
+console.log('PASS: reset clears only selected case and drafts, removes score credit, preserves other cases, and allows retry without double counting');
 assert(!fs.readFileSync(path.join(root,'shiftfall/game.js'),'utf8').includes('/api/progress'));
 console.log('PASS: fresh start, perfect incident, analyst notes, backup restore, casebook export, no backend dependency');

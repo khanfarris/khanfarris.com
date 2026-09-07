@@ -1420,6 +1420,7 @@ summary:focus-visible {
 .published-profile .portfolio-status > p:not([role='status']):not(.meta):not(.published-summary){display:none}
 .published-profile .portfolio-status .meta{display:none}
 .published-profile .recap button{display:none}
+.reset-incident{display:flex;justify-content:flex-end;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px}.reset-incident p{font-size:13px;color:#a0b5b5;max-width:440px;margin:0}.reset-incident button{flex-shrink:0}
 .save-controls {
   display: flex;
   justify-content: flex-end;

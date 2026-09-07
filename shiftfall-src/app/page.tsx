@@ -43,6 +43,7 @@ import {
   portfolioHTML,
   download,
   scoreDetails,
+  resetIncident,
   improvementTips,
   type Save,
 } from './progress';
@@ -959,6 +960,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                       >
                         {sources[s.source][0]} <ArrowUpRight size={15} />
                       </a>
+                      {!readOnly && <div className="reset-incident"><p>Clears this incident’s notes, answers, score, and earned intel. Shift turn and trust stay unchanged.</p><button onClick={()=>{setSave(prev=>resetIncident(prev));setNote('');setRecap('');setDisposition('');setComms('');setHint(false);setTab('evidence');}}>Reset incident</button></div>}
                       {run.cases.some((x) => !x.closed) && (
                         <button
                           className="primary"

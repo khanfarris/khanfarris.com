@@ -30,6 +30,25 @@ export const emptySave: Save = {
   drafts: {},
   schemaVersion: 2,
 };
+export function resetIncident(save: Save): Save {
+  const run=save.run;
+  if(!run)return save;
+  const incident=run.cases[run.selected];
+  if(!incident?.closed)return save;
+  const drafts={...save.drafts};
+  delete drafts[incident.id];
+  return {...save,
+    xp:Math.max(0,save.xp-incident.score),
+    records:save.records.filter(r=>r.id!==incident.id),drafts,
+    run:{...run,phase:'play',
+      totalScore:Math.max(0,run.totalScore-incident.score),
+      totalClosed:Math.max(0,run.totalClosed-1),
+      credits:Math.max(0,run.credits-Math.floor(incident.score/20)),
+      cases:run.cases.map((c,i)=>i===run.selected?{id:c.id,template:c.template,client:c.client,reads:[],done:[],mistakes:0,pressure:10,closed:false,score:0}:c),
+      log:[`Incident reset: ${template(incident).title}. Previous score and notes cleared; shift turn and trust retained.`,...run.log].slice(0,18)
+    }
+  };
+}
 const finite = (n: unknown, min = 0, max = 10000000) =>
   typeof n === 'number' && Number.isFinite(n) && n >= min && n <= max;
 const validCase = (c: CaseState) =>
