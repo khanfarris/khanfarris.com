@@ -16,6 +16,7 @@ import {
   Layers,
   Clock,
   Download,
+  Lock,
 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
@@ -36,6 +37,7 @@ import {
 } from './game';
 import Portfolio from './portfolio';
 import {Help} from '../help';
+import {ShiftDial} from '../shift-dial';
 import { useProgress } from './use-progress';
 import {
   backupJSON,
@@ -137,6 +139,8 @@ function ScoreExplanation({ incident }: { incident: CaseState }) {
     </section>
   );
 }
+function LockedResponse(){return <div className="sealed-section"><div className="action-grid sealed-shapes" aria-hidden="true">{[1,2,3,4].map(n=><div className="action" key={n}><small>RESPONSE ACTION</small><b>Review findings and coordinate the next response</b><span>Execute</span></div>)}</div><div className="sealed-overlay"><span className="sealed-emblem"><Lock size={22}/></span><h3>Response actions locked</h3><p>Investigate this assignment when the shift unlocks.</p></div></div>}
+function LockedHandoff(){return <div className="sealed-section"><div className="sealed-shapes handoff-skeleton" aria-hidden="true"><h3>What does the evidence establish?</h3><div className="sealed-options">{[1,2,3,4].map(n=><span key={n}>Assessment</span>)}</div><h3>Client update</h3>{[1,2,3].map(n=><div className="sealed-answer" key={n}>Record the scope and communicate the next steps.</div>)}<h3>Analyst notes</h3><div className="sealed-notes"/></div><div className="sealed-overlay"><span className="sealed-emblem"><Lock size={22}/></span><h3>Handoff locked</h3><p>Classification, client updates and notes become available when you can work this incident.</p></div></div>}
 export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void}) {
   const isProfile=!!profile;
   const [browsingWave,setBrowsingWave]=useState<number|null>(null);
@@ -148,12 +152,12 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
   const past=!!activeRun && !!selectedWave && selectedWave<activeRun.wave;
   const locked=!!activeRun && !!selectedWave && selectedWave>activeRun.wave;
   const historical=activeRun && save.shiftHistory?.find(h=>h.seed===activeRun.seed && h.mode===activeRun.mode && h.wave===selectedWave);
-  const readOnly=isProfile||past;
+  const readOnly=isProfile||past||locked;
   const [view, setView] = useState('play'),
     [mode, setMode] = useState('Guided'),
     [role, setRole] = useState('Investigator'),
     [focus, setFocus] = useState('All'),
-    [tab, setTab] = useState(readOnly?'debrief':'evidence'),
+    [tab, setTab] = useState(past||profile?.run?.cases.every(c=>c.closed)?'debrief':'evidence'),
     [disposition, setDisposition] = useState(''),
     [comms, setComms] = useState(''),
     [note, setNote] = useState(''),
@@ -267,10 +271,11 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     });
     return () => lifecycle.abort();
   }, []);
-  const viewedRun=past?historical:activeRun;
+  const viewedRun=locked&&activeRun&&selectedWave?newRun(activeRun.seed,activeRun.mode,activeRun.role,'All',selectedWave):past?historical:activeRun;
   const run = viewedRun ? {...viewedRun,selected:readOnly?Math.min(profileSelection,viewedRun.cases.length-1):viewedRun.selected} : null,
     c = run?.cases[run.selected],
     s = c ? template(c) : null;
+  const sealed=locked || !!(isProfile&&c&&!c.closed);
   const level = Math.floor(save.xp / 350) + 1;
   useEffect(() => {
     const d = c ? save.drafts?.[c.id] : null;
@@ -430,13 +435,41 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
         <Help topic="saving" label="Saving and profiles" />
       </div>
       <div className="profile-banner" role="status">{isProfile ? 'Viewing khanfarris · published work, read only. Browse incidents, debriefs, notes, and Portfolio. Your browser progress is kept separate.' : 'Your progress · editable, saved in this browser. Switch to the khanfarris profile to explore published work.'}</div>
-      {view==='play'&&activeRun&&<section className="shift-browser" aria-label="Browse shifts">
-        <nav className="shift-selector" aria-label="Shift navigation">
-          {Array.from({length:activeRun.mode==='Practice'?1:3},(_,i)=>i+1).map(wave=><button key={wave} aria-pressed={selectedWave===wave} onClick={()=>{setBrowsingWave(wave);setProfileSelection(0);setTab(wave<activeRun.wave||isProfile?'debrief':'evidence');setHint(false);}}><strong>Shift {wave}</strong><span>{wave>activeRun.wave?'Locked preview':wave<activeRun.wave||activeRun.cases.every(c=>c.closed)?'Completed':'Active'}</span></button>)}
-        </nav>
-        <p>{locked?'Preview only. Complete the previous shift to unlock these incidents. Evidence, response choices and solutions stay hidden.':past?'Reviewing a previous shift · read only. Your active shift and progress stay unchanged.':isProfile?'Published profile · read only. Select any shift to explore.':'Your current shift. Browse other shifts freely, then return here to continue.'}</p>
-      </section>}
-      {view==='play'&&locked&&activeRun&&selectedWave&&<section className="shift-preview" aria-label="Locked shift preview"><h2>Shift {selectedWave} · Locked preview</h2>{newRun(activeRun.seed,activeRun.mode,activeRun.role,'All',selectedWave).cases.map(incident=><article key={incident.id}><h3>{template(incident).title}</h3><p>{template(incident).brief}</p></article>)}</section>}
+      {view==='play'&&activeRun&&<>
+          <div className="shiftbar">
+            <ShiftDial wave={selectedWave||activeRun.wave} total={activeRun.mode==='Practice'?1:3} activeWave={activeRun.wave} completed={activeRun.cases.every(c=>c.closed)} mode={activeRun.mode} seed={activeRun.seed} readOnly={isProfile||past} onSelect={wave=>{setBrowsingWave(wave);setProfileSelection(0);setTab(wave<activeRun.wave||(isProfile&&wave===activeRun.wave&&activeRun.cases.every(c=>c.closed))?'debrief':'evidence');setHint(false);}} />
+            {!locked&&run?<>
+            <div className="stat">
+              <small>CLIENT TRUST <Help topic="trust" label="Client trust" /></small>
+              <b className={run.trust < 40 ? 'danger' : ''}>
+                {run.trust}
+                <span>/100</span>
+              </b>
+              <Progress value={run.trust} aria-label="Client trust" />
+            </div>
+            <div className="stat">
+              <small>TURN <Help topic="turn" label="Turns" /></small>
+              <b>{run.turn.toString().padStart(2, '0')}</b>
+            </div>
+            <div className="stat">
+              <small>INTEL <Help topic="intel" label="Intel" /></small>
+              <b>
+                {run.credits} <span>◆</span>
+              </b>
+            </div>
+            <div className="perk">
+              <Shield size={18} />
+              {run.role}
+              <Help topic="specialty" label="Specialty perk" />
+              <small>
+                {run.upgrade === 'watch'
+                  ? 'WATCHTOWER ACTIVE'
+                  : 'CLASS PERK ACTIVE'}
+              </small>
+            </div>
+            </>:<p className="shift-preview-caption">{locked?'A glimpse of your next assignment. Complete the previous shift to unlock evidence and response actions.':'Archived casework. This older save has no historical shift metrics.'}</p>}
+          </div>
+      </>}
       {view==='play'&&past&&!historical&&activeRun&&<section className="shift-preview" aria-label="Historical case records">
         <h2>Shift {selectedWave} · Saved case records</h2><p>This older backup contains case records, but no full shift snapshot. Historical turn, trust and any unrecorded choices are unavailable.</p>
         {save.records.filter(r=>r.id.startsWith(`${activeRun.seed}-${selectedWave}-`)).map(r=><details key={r.id}><summary>{scenarios.find(s=>s.id===r.template)?.title} · {r.score}/100</summary>{r.detail&&<><p>Recorded classification: {r.detail.result||'Not recorded'}</p><ScoreExplanation incident={r.detail}/><h3>Evidence reviewed</h3>{r.detail.reads.map(i=><details key={i}><summary>{template(r.detail!).evidence[i].title}</summary><p className="historical-notes">{template(r.detail!).evidence[i].body}</p></details>)}<h3>Response actions taken</h3><ul>{r.detail.done.map(id=><li key={id}>{template(r.detail!).actions.find(a=>a.id===id)?.label||id}</li>)}</ul></>}<h3>Analyst notes</h3><p className="historical-notes">{r.note||'No analyst notes saved.'}</p>{r.provenance&&<p>{r.provenance}</p>}</details>)}
@@ -562,53 +595,14 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
           </section>
         </>
       )}
-      {view === 'play' && !locked && run && c && s && (
+      {view === 'play' && run && c && s && (
         <>
-          <div className="shiftbar">
-            <div>
-              <small>
-                {run.mode.toUpperCase()} / SEED {run.seed} <Help topic="modes" label="Modes and seeds" />
-              </small>
-              <h2>
-                Shift {String(run.wave).padStart(2, '0')}{' '}
-                <span>/ {run.mode === 'Practice' ? '01' : '03'}</span> <Help topic="shift" label="Shift progression" />
-              </h2>
-            </div>
-            <div className="stat">
-              <small>CLIENT TRUST <Help topic="trust" label="Client trust" /></small>
-              <b className={run.trust < 40 ? 'danger' : ''}>
-                {run.trust}
-                <span>/100</span>
-              </b>
-              <Progress value={run.trust} aria-label="Client trust" />
-            </div>
-            <div className="stat">
-              <small>TURN <Help topic="turn" label="Turns" /></small>
-              <b>{run.turn.toString().padStart(2, '0')}</b>
-            </div>
-            <div className="stat">
-              <small>INTEL <Help topic="intel" label="Intel" /></small>
-              <b>
-                {run.credits} <span>◆</span>
-              </b>
-            </div>
-            <div className="perk">
-              <Shield size={18} />
-              {run.role}
-              <Help topic="specialty" label="Specialty perk" />
-              <small>
-                {run.upgrade === 'watch'
-                  ? 'WATCHTOWER ACTIVE'
-                  : 'CLASS PERK ACTIVE'}
-              </small>
-            </div>
-          </div>
           {!readOnly && run.phase==='reward' && <p className="profile-banner">Shift complete. <a href="#shift-reward">Continue to next shift →</a> Choose an upgrade or continue without one below.</p>}
           <div className="arena">
             <aside className="queue">
               <div className="section-heading">
                 <h3>Incident queue <Help topic="pressure" label="Pressure and incident queue" /></h3>
-                <small>{run.cases.filter((x) => !x.closed).length} OPEN</small>
+                <small>{run.cases.filter((x) => !x.closed).length} {locked?'LOCKED':'OPEN'}</small>
               </div>
               {run.cases.map((x, i) => {
                 const t = template(x),
@@ -625,7 +619,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                   >
                     <div className="row">
                       <span className={'severity ' + t.severity.toLowerCase()}>
-                        {x.closed ? 'CLOSED' : t.severity.toUpperCase()}
+                        {locked?'LOCKED':x.closed ? 'CLOSED' : t.severity.toUpperCase()}
                       </span>
                       <span>
                         {x.closed ? (
@@ -640,7 +634,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                     <div className="row">
                       <small>{t.skill}</small>
                       <small>
-                        {x.closed
+                        {locked?'PREVIEW':x.closed
                           ? x.score + '/100'
                           : stable
                             ? 'STABILIZED'
@@ -648,7 +642,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                       </small>
                     </div>
                     <Progress
-                      value={x.closed ? 100 : x.pressure}
+                      value={locked?0:x.closed ? 100 : x.pressure}
                       aria-label={`${t.title} pressure`}
                     />
                   </button>
@@ -677,6 +671,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                   {clients[c.client].impact}
                 </div>
               </div>
+              {sealed&&<div className="incident-lock-notice"><Lock size={15}/><span>{locked?'Locked assignment - complete the previous shift to begin.':'Unfinished in this published profile - preview only.'} Browse the tabs; evidence and answers unlock when playable.</span></div>}
               <Tabs value={tab} onValueChange={(v) => setTab(String(v))}>
                 <TabsList className="case-tabs">
                   <TabsTrigger value="evidence">
@@ -690,8 +685,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                 </TabsList>
                 <TabsContent value="evidence">
                   <p className="tab-intro">
-                    Open at least two sources before acting. Every new review
-                    costs a turn unless your class perk applies.
+                    {sealed?'Preview the evidence sources below. Their contents unlock when this incident is playable.':'Open at least two sources before acting. Every new review costs a turn unless your class perk applies.'}
                   </p>
                   <div className="evidence-list">
                     {s.evidence.map((ev, i) => (
@@ -707,10 +701,10 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                             <h3>{ev.title}</h3>
                           </div>
                           <button
-                            disabled={readOnly || (c.closed && !c.reads.includes(i))}
+                            disabled={sealed || readOnly || (c.closed && !c.reads.includes(i))}
                             onClick={() => update(readEvidence(run, i))}
                           >
-                            {c.reads.includes(i) ? (
+                            {sealed?<><Lock size={14}/> Locked</>:c.reads.includes(i) ? (
                               <Check size={18} />
                             ) : (
                               <>
@@ -719,7 +713,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                             )}
                           </button>
                         </div>
-                        {(c.reads.includes(i) || c.closed) && (
+                        {!sealed&&(c.reads.includes(i) || c.closed) && (
                           <>
                             <pre>{ev.body}</pre>
                             {(run.mode !== 'Veteran' || c.closed) && (
@@ -739,10 +733,9 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                 </TabsContent>
                 <TabsContent value="respond">
                   <p className="tab-intro">
-                    Choose an action based on evidence. Sequence matters.
-                    Actions affect only this simulation.
+                    {sealed?'Response choices are concealed until you can investigate this incident.':'Choose an action based on evidence. Sequence matters. Actions affect only this simulation.'}
                   </p>
-                  <div className="action-grid">
+                  {sealed?<LockedResponse />:<div className="action-grid">
                     {[...s.actions]
                       .sort((a, b) => {
                         const hash = (id: string) =>
@@ -778,7 +771,8 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                         </button>
                       ))}
                   </div>
-                  {run.mode !== 'Veteran' && (
+                  }
+                  {!sealed&&run.mode !== 'Veteran' && (
                     <>
                       <button
                         className="text-button"
@@ -806,10 +800,9 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                 </TabsContent>
                 <TabsContent value="handoff">
                   <p className="tab-intro">
-                    Commit your assessment. Closing early is allowed, but missed
-                    evidence and response steps reduce your score.
+                    {sealed?'Your assessment and analyst notes will appear here when you work this incident.':'Commit your assessment. Closing early is allowed, but missed evidence and response steps reduce your score.'}
                   </p>
-                  {c.closed || readOnly ? (
+                  {sealed?<LockedHandoff/>:c.closed || readOnly ? (
                     <div className="coach">
                       {c.closed ? 'This case is closed. Open the debrief to review the recorded decisions.' : 'This incident was not completed in the published snapshot.'}
                     </div>
@@ -966,9 +959,9 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                 <Terminal size={18} />
               </div>
               <div aria-live="polite" aria-atomic="true" className="latest">
-                {run.log[0]}
+                {locked?'This assignment has not started. Previewing its queue uses no turns and changes no progress.':run.log[0]}
               </div>
-              {run.log.slice(1, 5).map((line, i) => (
+              {!locked&&run.log.slice(1, 5).map((line, i) => (
                 <p key={i}>{line}</p>
               ))}
               <div className="score-guide">
