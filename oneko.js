@@ -1,12 +1,7 @@
 // oneko.js: https://github.com/adryd325/oneko.js
 
 (function oneko() {
-  const isReducedMotion =
-    window.matchMedia(`(prefers-reduced-motion: reduce)`) === true ||
-    window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
-
-  if (isReducedMotion) return;
-
+  // Loaded only after the visitor explicitly enables the cat in the local shell.
   const nekoEl = document.createElement("div");
 
   let nekoPosX = 32;

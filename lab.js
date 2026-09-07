@@ -56,17 +56,11 @@
   document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();dialog.open?dialog.close():openCommands();}});
   let catEnabled=false, catLoaded=false;
   function toggleCat(){
-    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-      if($('#cat-toggle')){$('#cat-toggle').textContent='Companion: resting';$('#cat-toggle').setAttribute('aria-pressed','false');}
-      return 'The companion rests while reduced motion is enabled.';
-    }
     catEnabled=!catEnabled;
     if(catEnabled&&!catLoaded){const script=document.createElement('script');script.src='oneko.js';script.addEventListener('load',()=>{if($('#oneko'))$('#oneko').style.display=catEnabled?'block':'none';});document.body.append(script);catLoaded=true;}
     if($('#oneko'))$('#oneko').style.display=catEnabled?'block':'none';
-    if($('#cat-toggle')){$('#cat-toggle').textContent='Companion: '+(catEnabled?'on':'off');$('#cat-toggle').setAttribute('aria-pressed',String(catEnabled));}
-    return catEnabled?'A familiar little friend joins the lab.':'The companion is resting.';
+    return catEnabled?'Not the cat you were expecting?':'Meow.';
   }
-  if($('#cat-toggle')){$('#cat-toggle').addEventListener('click',toggleCat);toggleCat();}
   if($('#terminal-form')){
     const output=$('#terminal-output'),input=$('#terminal-input'),history=[];let historyIndex=0;
     const print=text=>{const p=document.createElement('p');p.textContent=text;output.append(p);while(output.children.length>50)output.firstElementChild.remove();output.scrollTop=output.scrollHeight;};
