@@ -412,7 +412,6 @@ export default function Home() {
         >
           Download progress JSON
         </button>
-        <button onClick={() => setView('portfolio')}>Recap portfolio</button>
       </div>
       {view === 'play' && !run && (
         <>
