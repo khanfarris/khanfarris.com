@@ -136,13 +136,15 @@ function ScoreExplanation({ incident }: { incident: CaseState }) {
     </section>
   );
 }
-export default function Home() {
-  const { save, setSave, ready, status: storage } = useProgress();
+export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void}) {
+  const readOnly=!!profile;
+  const [profileSelection,setProfileSelection]=useState(profile?.run?.selected||0);
+  const { save, setSave, ready, status: storage } = useProgress(profile);
   const [view, setView] = useState('play'),
     [mode, setMode] = useState('Guided'),
     [role, setRole] = useState('Investigator'),
     [focus, setFocus] = useState('All'),
-    [tab, setTab] = useState('evidence'),
+    [tab, setTab] = useState(readOnly?'debrief':'evidence'),
     [disposition, setDisposition] = useState(''),
     [comms, setComms] = useState(''),
     [note, setNote] = useState(''),
@@ -151,6 +153,7 @@ export default function Home() {
   const saveRef = useRef(save);
   saveRef.current = save;
   useEffect(() => {
+    if(readOnly)return;
     const context = (document as any).modelContext;
     if (!context?.registerTool) return;
     const lifecycle = new AbortController();
@@ -256,7 +259,7 @@ export default function Home() {
     });
     return () => lifecycle.abort();
   }, []);
-  const run = save.run,
+  const run = readOnly&&save.run ? {...save.run,selected:profileSelection} : save.run,
     c = run?.cases[run.selected],
     s = c ? template(c) : null;
   const level = Math.floor(save.xp / 350) + 1;
@@ -290,6 +293,7 @@ export default function Home() {
   }
   function select(index: number) {
     if (!run) return;
+    if(readOnly){setProfileSelection(index);setTab(run.cases[index].closed?'debrief':'evidence');setHint(false);return;}
     update({ ...run, selected: index });
     setTab('evidence');
     setHint(false);
@@ -399,7 +403,7 @@ export default function Home() {
         <span role="status">{storage}</span>
       </nav>
       <div className="save-controls">
-        <a className="casebook-button" href="casebook.html">Explore the khanfarris casebook</a>
+        <button className="casebook-button" aria-pressed={readOnly} onClick={onToggle}>{readOnly?'Return to your progress':'View khanfarris profile'}</button>
         <button
           onClick={() =>
             download(
@@ -413,6 +417,7 @@ export default function Home() {
           Download progress JSON
         </button>
       </div>
+      <div className="profile-banner" role="status">{readOnly ? 'Viewing khanfarris · published work, read only. Browse incidents, debriefs, notes, and Portfolio. Your browser progress is kept separate.' : 'Your progress · editable, saved in this browser. Switch to the khanfarris profile to explore published work.'}</div>
       {view === 'play' && !run && (
         <>
           <section className="intro">
@@ -677,7 +682,7 @@ export default function Home() {
                             <h3>{ev.title}</h3>
                           </div>
                           <button
-                            disabled={c.closed && !c.reads.includes(i)}
+                            disabled={readOnly || (c.closed && !c.reads.includes(i))}
                             onClick={() => update(readEvidence(run, i))}
                           >
                             {c.reads.includes(i) ? (
@@ -729,7 +734,7 @@ export default function Home() {
                             'action ' +
                             (c.done.includes(a.id) ? 'completed' : '')
                           }
-                          disabled={c.closed || c.done.includes(a.id)}
+                          disabled={readOnly || c.closed || c.done.includes(a.id)}
                           onClick={() => update(perform(run, a.id))}
                         >
                           <small>{a.tool}</small>
@@ -779,10 +784,9 @@ export default function Home() {
                     Commit your assessment. Closing early is allowed, but missed
                     evidence and response steps reduce your score.
                   </p>
-                  {c.closed ? (
+                  {c.closed || readOnly ? (
                     <div className="coach">
-                      This case is closed. Open the debrief to review your
-                      decisions.
+                      {c.closed ? 'This case is closed. Open the debrief to review the recorded decisions.' : 'This incident was not completed in the published snapshot.'}
                     </div>
                   ) : (
                     <>
@@ -889,6 +893,8 @@ export default function Home() {
                       </div>
                       <p className="lesson">{s.lesson}</p>
                       <ScoreExplanation incident={c} />
+                      {readOnly && save.records.find(r=>r.id===c.id)?.provenance?.includes('corrected') && <p className="coach">{save.records.find(r=>r.id===c.id)?.provenance}</p>}
+                      {readOnly && <section><h3>Recorded client update</h3><p>{c.communication===15?'We are reviewing the evidence and documenting the confirmed scope and actions. We will coordinate any remaining validation and provide the next update in 30 minutes.':'This record did not earn client-update credit; the exact selection is available only when retained in its draft.'}</p></section>}
                       <h3>Response walkthrough</h3>
                       {s.actions.map((a) => (
                         <div className="walkthrough" key={a.id}>
@@ -909,6 +915,7 @@ export default function Home() {
                         <h3>{s.recap}</h3>
                         <textarea
                           aria-label="Recap response"
+                          readOnly={readOnly}
                           rows={3}
                           value={recap}
                           onChange={(e) => {
@@ -935,7 +942,7 @@ export default function Home() {
                             setRecap('');
                             draft('recap', '');
                           }}
-                          disabled={!recap.trim()}
+                          disabled={readOnly || !recap.trim()}
                         >
                           Save response to journal
                         </button>
@@ -992,7 +999,7 @@ export default function Home() {
               </div>
             </aside>
           </div>
-          {run.phase !== 'play' && (
+          {!readOnly && run.phase !== 'play' && (
             <section className="reward panel">
               <div>
                 <small>
@@ -1307,7 +1314,7 @@ export default function Home() {
         </section>
       )}
       {view === 'portfolio' && (
-        <Portfolio save={save} setSave={setSave} status={storage} />
+        <Portfolio save={save} setSave={setSave} status={storage} readOnly={readOnly} />
       )}
       <footer>
         <span>SHIFTFALL / ANALYST GUILD</span>

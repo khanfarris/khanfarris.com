@@ -15,18 +15,20 @@ export default function Portfolio({
   save,
   setSave,
   status,
+  readOnly=false,
 }: {
   save: Save;
   setSave: Dispatch<SetStateAction<Save>>;
   status: string;
+  readOnly?: boolean;
 }) {
   const [backup, setBackup] = useState(''),
     [message, setMessage] = useState('');
   const unique = new Set(save.records.map((r) => r.template));
   return (
     <section className="library">
-      <small>MY CYBERSECURITY TRAINING PORTFOLIO</small>
-      <h1>Show your reasoning.</h1>
+      <small>{readOnly?'KHANFARRIS / PUBLISHED TRAINING PROFILE':'MY CYBERSECURITY TRAINING PORTFOLIO'}</small>
+      <h1>{readOnly?'Explore the recorded work.':'Show your reasoning.'}</h1>
       <p>
         Keep a durable record of the work you did, the evidence you reviewed,
         and how you explained your decisions.
@@ -39,6 +41,7 @@ export default function Portfolio({
           {save.records.length} completed encounters · {save.xp} XP
         </p>
         <p role="status">{status}</p>
+        {readOnly && <p className="published-summary">Published snapshot of Farris Khan’s completed simulations. Scores, notes, and responses are available below. Switch back to your progress to play.</p>}
         <p>
           Progress saves in this browser. Closing and reopening it keeps your work, but clearing browser data or switching devices can lose access. Download a full backup after each session. When ready, provide that backup to publish your read-only casebook on khanfarris.com.
         </p>
@@ -178,7 +181,7 @@ export default function Portfolio({
           })
         )}
       </div>
-      <details className="panel restore-panel">
+      {!readOnly && <details className="panel restore-panel">
         <summary>Restore or merge a full progress backup</summary>
         <p>
           Paste a downloaded backup JSON below. Existing completed records and
@@ -212,7 +215,7 @@ export default function Portfolio({
           Merge backup
         </button>
         <p role="status">{message}</p>
-      </details>
+      </details>}
     </section>
   );
 }

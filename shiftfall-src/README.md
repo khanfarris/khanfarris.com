@@ -4,6 +4,8 @@ Static game at `/shiftfall/`. Fresh browser storage key: `khanfarris-shiftfall-v
 
 Install dependencies in this folder, then run `npm run build`. Commit the generated `shiftfall/game.js` and `shiftfall/game.css` with source changes. Existing builds can use `SHIFTFALL_DEPENDENCIES` pointing to a compatible node_modules directory.
 
-To publish Farris's work: receive the explicitly selected backup, validate it with `parseBackup`, and generate `portfolioHTML` as `shiftfall/casebook.html`. Review the notes and exported page before publishing. The public casebook is a read-only snapshot; do not bundle the private browser backup or automatically publish drafts. Preserve the website navigation in the casebook. The empty page is intentional until Farris supplies completed work.
+Farris's published profile is `shiftfall/khanfarris-profile.json`, loaded into the same game UI at `/shiftfall/#khanfarris`. The toggle returns to the visitor's editable browser save. The profile hook never writes localStorage; mutations are disabled and its setter is a no-op. Selection is separate view state. No login or online user accounts are involved. The old casebook URL redirects to the profile.
 
-The casebook and play session are separate. Never load the published casebook into a visitor's game save.
+To update the profile, receive the explicitly selected backup, validate with `parseBackup`, compare against the previous published snapshot, preserve earlier records, and publish the selected data in `khanfarris-profile.json`. Keep author notes verbatim. Record requested post-completion corrections in provenance and reconcile dependent score totals. Never manufacture completed incidents. Never automatically publish future browser changes. Do not replace a visitor's local save with this snapshot.
+
+The profile and play session are separate. Run `scripts/test-shiftfall-profile.cjs` with `PLAYWRIGHT_MODULE` pointing to Playwright to check isolation and read-only behavior using installed Edge.

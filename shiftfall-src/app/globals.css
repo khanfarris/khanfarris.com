@@ -1416,6 +1416,10 @@ summary:focus-visible {
     scroll-behavior: auto !important;
   }
 }
+.profile-banner{padding:14px 18px;margin:8px 0 20px;border-left:3px solid #b9f478;background:#162a27;color:#d5e8db;font-size:14px;line-height:1.6}
+.published-profile .portfolio-status > p:not([role='status']):not(.meta):not(.published-summary){display:none}
+.published-profile .portfolio-status .meta{display:none}
+.published-profile .recap button{display:none}
 .save-controls {
   display: flex;
   justify-content: flex-end;
