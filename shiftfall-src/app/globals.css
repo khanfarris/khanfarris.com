@@ -1419,6 +1419,11 @@ summary:focus-visible {
 .profile-banner{padding:14px 18px;margin:8px 0 20px;border-left:3px solid #b9f478;background:#162a27;color:#d5e8db;font-size:14px;line-height:1.6}
 .published-profile .portfolio-status > p:not([role='status']):not(.meta):not(.published-summary){display:none}
 .published-profile .portfolio-status .meta{display:none}
+.mechanic-help{display:inline-flex!important;vertical-align:middle;align-items:center;position:relative;margin-left:4px}
+.mechanic-help .mechanic-info{display:inline-flex!important;align-items:center;justify-content:center;width:24px;height:24px;min-height:24px;padding:0!important;border:0!important;background:transparent!important;color:#b9d4c7!important;font:18px/1 Arial,sans-serif!important;border-radius:50%;cursor:help;letter-spacing:normal}
+.mechanic-help .mechanic-info:hover,.mechanic-help .mechanic-info[aria-expanded='true']{background:#28423b!important;color:#c6ff94!important}
+.mechanic-help .mechanic-tooltip{display:block!important;position:fixed;z-index:10000;padding:16px;margin:0!important;background:#172b29;border:1px solid #789c81;border-radius:8px;box-shadow:0 10px 30px #0009;color:#e4eee8!important;font:14px/1.65 Arial,sans-serif!important;text-transform:none;letter-spacing:normal;text-align:left;white-space:normal;max-height:calc(100dvh - 24px);overflow:auto;overflow-wrap:break-word}
+.mechanic-tooltip strong{display:block;font:600 15px/1.4 Arial,sans-serif!important;color:#c6ff94;margin-bottom:7px}
 .save-controls {
   display: flex;
   justify-content: flex-end;

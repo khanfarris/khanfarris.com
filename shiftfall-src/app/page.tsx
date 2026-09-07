@@ -35,6 +35,7 @@ import {
   type Run,
 } from './game';
 import Portfolio from './portfolio';
+import {Help} from '../help';
 import { useProgress } from './use-progress';
 import {
   backupJSON,
@@ -102,7 +103,7 @@ function ScoreExplanation({ incident }: { incident: CaseState }) {
   const score = scoreDetails(incident);
   return (
     <section className="score-explanation">
-      <h3>How your score was calculated</h3>
+      <h3>How your score was calculated <Help topic="score" label="Incident scoring" /></h3>
       <div className="rubric">
         <span>
           Evidence reviewed <b>+{score.evidence}/20</b>
@@ -376,7 +377,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                   ? 'Sentinel'
                   : 'Incident captain'}
             </b>
-            <small>{save.xp} XP · BROWSER SAVE</small>
+            <small>{save.xp} XP <Help topic="xp" label="XP and levels" /> · BROWSER SAVE</small>
           </div>
         </div>
       </header>
@@ -396,7 +397,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
             {label}
           </button>
         ))}
-        <span role="status">{storage}</span>
+        <Help topic="navigation" label="Navigation" /><span role="status">{storage}</span>
       </nav>
       <div className="save-controls">
         <button className="casebook-button" aria-pressed={readOnly} onClick={onToggle}>{readOnly?'Return to your progress':'View khanfarris profile'}</button>
@@ -412,6 +413,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
         >
           Download progress JSON
         </button>
+        <Help topic="saving" label="Saving and profiles" />
       </div>
       <div className="profile-banner" role="status">{readOnly ? 'Viewing khanfarris · published work, read only. Browse incidents, debriefs, notes, and Portfolio. Your browser progress is kept separate.' : 'Your progress · editable, saved in this browser. Switch to the khanfarris profile to explore published work.'}</div>
       {view === 'play' && !run && (
@@ -486,7 +488,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
           </section>
           <section className="loadout">
             <div className="section-heading">
-              <h2>Choose your specialty</h2>
+              <h2>Choose your specialty <Help topic="specialty" label="Specialties" /></h2>
               <small>ALL TOOLS AVAILABLE TO EVERY CLASS</small>
             </div>
             <RadioGroup
@@ -540,15 +542,15 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
           <div className="shiftbar">
             <div>
               <small>
-                {run.mode.toUpperCase()} / SEED {run.seed}
+                {run.mode.toUpperCase()} / SEED {run.seed} <Help topic="modes" label="Modes and seeds" />
               </small>
               <h2>
                 Shift {String(run.wave).padStart(2, '0')}{' '}
-                <span>/ {run.mode === 'Practice' ? '01' : '03'}</span>
+                <span>/ {run.mode === 'Practice' ? '01' : '03'}</span> <Help topic="shift" label="Shift progression" />
               </h2>
             </div>
             <div className="stat">
-              <small>CLIENT TRUST</small>
+              <small>CLIENT TRUST <Help topic="trust" label="Client trust" /></small>
               <b className={run.trust < 40 ? 'danger' : ''}>
                 {run.trust}
                 <span>/100</span>
@@ -556,11 +558,11 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
               <Progress value={run.trust} aria-label="Client trust" />
             </div>
             <div className="stat">
-              <small>TURN</small>
+              <small>TURN <Help topic="turn" label="Turns" /></small>
               <b>{run.turn.toString().padStart(2, '0')}</b>
             </div>
             <div className="stat">
-              <small>INTEL</small>
+              <small>INTEL <Help topic="intel" label="Intel" /></small>
               <b>
                 {run.credits} <span>◆</span>
               </b>
@@ -568,6 +570,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
             <div className="perk">
               <Shield size={18} />
               {run.role}
+              <Help topic="specialty" label="Specialty perk" />
               <small>
                 {run.upgrade === 'watch'
                   ? 'WATCHTOWER ACTIVE'
@@ -575,10 +578,11 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
               </small>
             </div>
           </div>
+          {!readOnly && run.phase==='reward' && <p className="profile-banner">Shift complete. <a href="#shift-reward">Continue to next shift →</a> Choose an upgrade or continue without one below.</p>}
           <div className="arena">
             <aside className="queue">
               <div className="section-heading">
-                <h3>Incident queue</h3>
+                <h3>Incident queue <Help topic="pressure" label="Pressure and incident queue" /></h3>
                 <small>{run.cases.filter((x) => !x.closed).length} OPEN</small>
               </div>
               {run.cases.map((x, i) => {
@@ -944,7 +948,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
               ))}
               <div className="score-guide">
                 <Crosshair size={21} />
-                <h3>Win condition</h3>
+                <h3>Win condition <Help topic="win" label="Win condition" /></h3>
                 <p>
                   Finish the shift with 70+ trust and an average case score of
                   80+. You can always continue learning after a loss.
@@ -954,7 +958,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
             </aside>
           </div>
           {!readOnly && run.phase !== 'play' && (
-            <section className="reward panel">
+            <section className="reward panel" id="shift-reward">
               <div>
                 <small>
                   {run.phase === 'finished'
