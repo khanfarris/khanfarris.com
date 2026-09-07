@@ -1,5 +1,6 @@
 import {useState,useEffect,type Dispatch,type SetStateAction} from 'react';
 import {emptySave,normalizeSave,type Save} from './progress';
+// Retain the existing storage namespace so the rename cannot reset progress.
 const KEY='khanfarris-shiftfall-v1';
 export function useProgress(profile?: Save){
  const [save,setSave]=useState<Save>(emptySave),[ready,setReady]=useState(false),[status,setStatus]=useState('Loading browser save…');

@@ -52,7 +52,7 @@ export default function Portfolio({
             onClick={() =>
               download(
                 portfolioHTML(save),
-                'shiftfall-recap-portfolio.html',
+                'shiftrun-recap-portfolio.html',
                 'text/html',
               )
             }
@@ -63,7 +63,7 @@ export default function Portfolio({
             onClick={() =>
               download(
                 backupJSON(save),
-                'shiftfall-backup.json',
+                'shiftrun-backup.json',
                 'application/json',
               )
             }
@@ -191,7 +191,7 @@ export default function Portfolio({
           value={backup}
           onChange={(e) => setBackup(e.target.value)}
           rows={5}
-          placeholder="Paste the contents of shiftfall-backup.json"
+          placeholder="Paste the contents of shiftrun-backup.json"
         />
         <button
           disabled={!backup.trim()}

@@ -3,9 +3,9 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const root=path.resolve(__dirname,'..');
 const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComponent(req.url.split('?')[0]));if(file.endsWith(path.sep))file+='index.html';if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}try{res.setHeader('Content-Type',file.endsWith('.json')?'application/json':file.endsWith('.js')?'application/javascript':file.endsWith('.css')?'text/css':'text/html');res.end(fs.readFileSync(file));}catch{res.writeHead(404).end();}});
 (async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,channel:'msedge'});try{
- const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(`http://127.0.0.1:${server.address().port}/shiftfall/`);
+ const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(`http://127.0.0.1:${server.address().port}/shiftrun/`);
 
- const fixture=JSON.parse(fs.readFileSync(path.join(root,'shiftfall/khanfarris-profile.json'),'utf8')).save;
+ const fixture=JSON.parse(fs.readFileSync(path.join(root,'shiftrun/khanfarris-profile.json'),'utf8')).save;
  await page.evaluate(data=>localStorage.setItem('khanfarris-shiftfall-v1',JSON.stringify(data)),fixture);await page.reload();
  const before=await page.evaluate(()=>localStorage.getItem('khanfarris-shiftfall-v1'));
  await page.getByRole('button',{name:/Browse shifts, current shift/}).hover();await page.getByRole('button',{name:'Shift 2 Locked preview',exact:true}).click();

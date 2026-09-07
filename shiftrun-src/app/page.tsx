@@ -367,7 +367,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
   }
   function exportNotes() {
     const content = [
-      'SHIFTFALL — Personal training journal',
+      'SHIFTRUN — Personal training journal',
       'Fictional scenarios; training scores are not a certification.',
       ...save.records.map((r) => {
         const s = scenarios.find((s) => s.id === r.template)!;
@@ -379,7 +379,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     );
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'shiftfall-training-journal.txt';
+    a.download = 'shiftrun-training-journal.txt';
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
@@ -387,7 +387,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     <main className="shell">
       <header>
         <button className="brand brand-button" onClick={() => setView('play')}>
-          <Shield size={25} /> SHIFTFALL
+          <Shield size={25} /> SHIFTRUN
         </button>
         <span className="header-label">
           ANALYST GUILD <i /> CYBERSECURITY ROLE PREP
@@ -430,7 +430,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
           onClick={() =>
             download(
               backupJSON(save),
-              'shiftfall-backup.json',
+              'shiftrun-backup.json',
               'application/json',
             )
           }
@@ -1295,7 +1295,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
         <Portfolio save={save} setSave={setSave} status={storage} readOnly={isProfile} />
       )}
       <footer>
-        <span>SHIFTFALL / ANALYST GUILD</span>
+        <span>SHIFTRUN / ANALYST GUILD</span>
         <span>
           Fictional incidents. Real reasoning. Independent training simulation.
         </span>
