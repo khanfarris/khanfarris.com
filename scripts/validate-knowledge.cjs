@@ -54,7 +54,17 @@ for(const a of data.articles){
  for(const [,id] of a.body.matchAll(/data-exercise="([a-z0-9-]+)"/g)){allExercises.add(id);assert.ok(read('study-exercises.js').includes(id+'(box)'),`No exercise implementation for ${id}`);}
  checks+=14;
 }
-eq(allExercises.size,7);
+eq(allExercises.size,8);
+for(const target of ['printer','website'])for(const cached of [false,true])for(const replies of [false,true]){
+ const r=m.arp(target,cached,replies);
+ eq(r.hop,target==='printer'?'10.20.10.50':'10.20.10.1');
+ eq(r.ip,target==='printer'?'10.20.10.50':'192.0.2.80');
+ eq(r.steps.some(s=>s.id==='request'),!cached);
+ eq(r.steps.some(s=>s.id==='reply'),!cached&&replies);
+ eq(r.steps.some(s=>s.id==='frame'),cached||replies);
+ eq(r.steps.some(s=>s.id==='unanswered'),!cached&&!replies);
+}
+assert.throws(()=>m.arp('unknown'));
 for(const file of ['knowledge.js','reading.js','lab.js','study-showcase.js','study-exercises.js','knowledge-index.js']){new vm.Script(read(file),{filename:file});checks++;}
 const searchContext={window:{}};vm.createContext(searchContext);vm.runInContext(read('knowledge-index.js'),searchContext);
 eq(searchContext.window.knowledgePages.length,data.articles.filter(a=>!a.archived).length);

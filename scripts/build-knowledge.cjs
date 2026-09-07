@@ -23,8 +23,8 @@ const head=(title,description)=>`<!doctype html>
 <meta name="description" content="${esc(description)}"><meta name="theme-color" content="#080c09">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="reading.css"><link rel="stylesheet" href="knowledge.css">
-<script src="knowledge-index.js?v=concepts-18" defer></script><script src="reading.js" defer></script><script src="lab.js?v=2931b52" defer></script><script src="knowledge.js" defer></script><script src="study-exercises.js" defer></script>
+<link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="reading.css"><link rel="stylesheet" href="knowledge.css?v=arp-1">
+<script src="knowledge-index.js?v=concepts-19" defer></script><script src="reading.js" defer></script><script src="lab.js?v=2931b52" defer></script><script src="knowledge.js" defer></script><script src="study-exercises.js?v=arp-1" defer></script>
 </head>`;
 const footer=`<footer class="site-footer wrap"><span>© <span id="year">2026</span> khanfarris</span><a href="knowledge.html">Knowledge base ↗</a><a href="#main">Back to top ↑</a></footer></body></html>`;
 const cards=items=>items.map(a=>`<a class="study-card" href="${url(a.slug)}"><span class="eyebrow">${esc(a.category)}</span><h3>${esc(a.title)} <span aria-hidden="true">↗</span></h3><p>${esc(a.principle)}</p><span class="study-basis">${esc(a.basis)}</span></a>`).join('\n');

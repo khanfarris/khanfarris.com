@@ -41,6 +41,16 @@ window.knowledgePages = [
     "answer": "Check that the guest is actually on the guest VLAN, then inspect routing and firewall or ACL rules between guests and servers. Separate VLANs alone do not guarantee a deny policy. Verify the exact service and both allowed and blocked paths."
   },
   {
+    "name": "ARP",
+    "url": "kb-arp.html",
+    "type": "Concept",
+    "keywords": "Networking Concept study ARP finds the MAC address needed to deliver IPv4 traffic to the next device on a local network. For a remote destination, that device is usually your gateway. address resolution protocol MAC Ethernet broadcast cache next hop gateway spoofing poisoning",
+    "slug": "arp",
+    "category": "Networking",
+    "question": "Your laptop sends to a website outside its /24 subnet. Does ARP look up the website’s MAC address or the default gateway’s, and which IP remains inside the packet?",
+    "answer": "With the default route selected, ARP resolves the gateway’s local IPv4 address to its MAC. The Ethernet frame goes to that gateway, while the enclosed IP packet still names the website as its destination. A usable cached gateway mapping can avoid a new ARP request."
+  },
+  {
     "name": "DNS",
     "url": "kb-dns.html",
     "type": "Concept",

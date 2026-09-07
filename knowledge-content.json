@@ -235,6 +235,22 @@
     "http3": [
       "RFC 9114 — HTTP/3",
       "https://www.rfc-editor.org/rfc/rfc9114"
+    ],
+    "arp": [
+      "RFC 826 — Address Resolution Protocol",
+      "https://www.rfc-editor.org/rfc/rfc826"
+    ],
+    "arpConflict": [
+      "RFC 5227 — IPv4 address conflict detection",
+      "https://www.rfc-editor.org/rfc/rfc5227"
+    ],
+    "arpWindows": [
+      "Microsoft — View the ARP cache",
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/arp"
+    ],
+    "arpInspection": [
+      "Cisco — Dynamic ARP Inspection",
+      "https://www.cisco.com/c/en/us/support/docs/switches/lan-switch-software/222274-troubleshoot-dynamic-arp-inspection-dai.html"
     ]
   },
   "articles": [
@@ -317,6 +333,30 @@
         "ztna-sase"
       ],
       "keywords": ""
+    },
+    {
+      "slug": "arp",
+      "title": "ARP",
+      "category": "Networking",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "ARP finds the MAC address needed to deliver IPv4 traffic to the next device on a local network. For a remote destination, that device is usually your gateway.",
+      "keywords": "address resolution protocol MAC Ethernet broadcast cache next hop gateway spoofing poisoning",
+      "body": "\n<h2>Why an IP address is not enough</h2>\n<p>Your laptop wants to send data to a printer. It knows the printer’s IPv4 address, but an Ethernet network delivers local traffic using <strong>MAC addresses</strong>. A MAC address identifies a network interface on that link, often written as six hexadecimal pairs, such as <code>02:00:00:00:00:50</code>. It is different from the IP address and is not a permanent proof of device identity.</p>\n<p>An <strong>IP packet</strong> carries the network-layer destination. For its trip across an Ethernet link, that packet sits inside a <strong>frame</strong> with local source and destination MAC addresses. <strong>Address Resolution Protocol (ARP)</strong> supplies the missing IPv4-to-MAC mapping for the next hop: the device that should receive this frame.</p>\n<h2>Ask the local network, then remember the reply</h2>\n<p>Imagine a laptop at <code>10.20.10.25/24</code> and a printer at <code>10.20.10.50/24</code>, both on the same VLAN.</p>\n<ol><li>The laptop checks its routing information. In this simple network, the printer is directly reachable on the local subnet.</li><li>It checks its <strong>ARP cache</strong>, a temporary table of IP-to-MAC mappings. A usable entry can avoid a new request.</li><li>Without an entry, it broadcasts an ARP request: “Who has 10.20.10.50? Tell 10.20.10.25.” The Ethernet destination is <code>ff:ff:ff:ff:ff:ff</code>, the broadcast address. The switch distributes it within that VLAN.</li><li>The printer normally replies directly to the laptop with its MAC address. The laptop caches the mapping and can address the frame to the printer.</li></ol>\n<p>Other devices can hear the request, but they do not normally answer for an address they do not own. ARP itself runs directly over the local link; it does not use a TCP or UDP port.</p>\n<h2>What changes when the destination is remote?</h2>\n<p>Now the laptop wants to reach a website outside its subnet. With a default route through <code>10.20.10.1</code>, it resolves <strong>the gateway’s MAC address</strong>. It does not broadcast across the internet asking for the website’s MAC.</p>\n<p>The frame is addressed to the gateway, while the packet inside still names the website’s IP as its destination. The router removes the incoming link-layer framing and forwards the packet using the next link’s addressing. Ordinary ARP broadcasts do not pass through routers. This is why understanding the subnet and gateway comes before interpreting an ARP lookup.</p>\n<section class=\"exercise\" data-exercise=\"arp\" aria-label=\"Choose the next hop\"><div class=\"exercise-heading\"><span class=\"eyebrow\">INTERACTIVE / FICTIONAL EXAMPLE</span><h2>Who should answer?</h2><p>Choose a printer or a remote website. Follow the lookup, request, reply, and first frame. Send again to see what the cache changes.</p></div><div class=\"exercise-mount\"></div><noscript><p>Enable JavaScript to step through the exercise. For the local printer, resolve 10.20.10.50; for the remote website, resolve gateway 10.20.10.1. A cached mapping skips the initial broadcast.</p></noscript></section>\n<h2>Keep the different tables straight</h2>\n<div class=\"table-scroll\"><table><thead><tr><th scope=\"col\">Mechanism</th><th scope=\"col\">Question it answers</th></tr></thead><tbody><tr><td>DHCP</td><td>Which IP configuration should this device use?</td></tr><tr><td>DNS</td><td>What address is associated with this name?</td></tr><tr><td>Routing table</td><td>Which next hop and interface should carry this IP packet?</td></tr><tr><td>ARP cache</td><td>Which MAC address corresponds to that local IPv4 next hop?</td></tr><tr><td>Switch MAC table</td><td>Which switch port leads toward this MAC address in this VLAN?</td></tr></tbody></table></div>\n<h2>Use it on a connectivity ticket</h2>\n<p>A laptop has a valid address but cannot reach the gateway. Check its address, mask, gateway, and VLAN first. On Windows, <code>arp -a</code> displays cached mappings, separated by interface. Compare the relevant next-hop entry with the expected device, and inspect a capture with Wireshark’s <code>arp</code> display filter if needed.</p>\n<p>Repeated requests without replies can suggest an offline next hop, wrong VLAN, incorrect addressing, or a filtering/link problem. Check the capture location too. A MAC entry proves neither that the application works nor that its IP owner is authentic. Record evidence before clearing a cache; “delete everything and retry” can hide a useful clue.</p>\n<h2>Address changes and security</h2>\n<p>Dynamic entries age or are refreshed according to the operating system. Devices can also announce an address mapping without first receiving an ordinary request, often called gratuitous ARP. ARP probes and announcements support address-conflict detection and legitimate changes such as failover, so a mapping change is not automatically an attack.</p>\n<p>ARP does not authenticate ownership of an address. False mappings, called <strong>ARP spoofing</strong> or <strong>cache poisoning</strong>, can redirect or disrupt local traffic. Investigate unexpected gateway mappings alongside device and switch evidence. On supported switches, Dynamic ARP Inspection validates ARP information against trusted bindings, commonly learned through DHCP snooping; static devices and trusted ports need appropriate configuration.</p>\n<aside class=\"field-note\"><strong>Scope to remember</strong><p>This note describes ordinary IPv4 over Ethernet. Proxy ARP is a special case where a router answers on another device’s behalf. IPv6 uses Neighbor Discovery rather than ARP.</p></aside>",
+      "question": "Your laptop sends to a website outside its /24 subnet. Does ARP look up the website’s MAC address or the default gateway’s, and which IP remains inside the packet?",
+      "answer": "With the default route selected, ARP resolves the gateway’s local IPv4 address to its MAC. The Ethernet frame goes to that gateway, while the enclosed IP packet still names the website as its destination. A usable cached gateway mapping can avoid a new ARP request.",
+      "sources": [
+        "arp",
+        "arpConflict",
+        "arpWindows",
+        "arpInspection"
+      ],
+      "related": [
+        "subnetting",
+        "vlans",
+        "dhcp",
+        "dns"
+      ]
     },
     {
       "slug": "dns",

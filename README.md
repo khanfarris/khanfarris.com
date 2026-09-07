@@ -21,7 +21,7 @@ The builder writes `kb-*.html`, `knowledge.html`, `knowledge-index.js`, and the 
 - `knowledge.css` styles the directory and study pages.
 - `study-showcase.css` and `study-showcase.js` provide the homepage's animated, scrollable archive. It supports native swiping, mouse dragging, arrow buttons, keyboard navigation, and a position slider. Motion can be paused and respects the reduced-motion preference.
 - `knowledge.js` provides filtering and the shuffled recall deck.
-- `study-exercises.js` supplies seven local interactive exercises: subnetting, VLAN routing, DHCP, syslog filtering, incident response roles, Microsoft 365 access, and TCP header sizing. Their calculation and policy models are checked by `node scripts/validate-knowledge.cjs`.
+- `study-exercises.js` supplies eight local interactive exercises: subnetting, VLAN routing, ARP next-hop resolution and caching, DHCP, syslog filtering, incident response roles, Microsoft 365 access, and TCP header sizing. Their calculation and policy models are checked by `node scripts/validate-knowledge.cjs`.
 - `knowledge-index.js` supplies search metadata and recall questions. Load it before `lab.js`.
 - `reading.js` adds article navigation, progress, and code-copy controls.
 - `lab.js` provides site search and homepage interactions.

@@ -3,6 +3,18 @@
   'use strict';
   const ipText = n => [24,16,8,0].map(bits=>Math.floor(n / 2 ** bits) % 256).join('.');
   const models = {
+    arp(destination,cacheHit=false,replies=true){
+      if(!['printer','website'].includes(destination))throw Error('Choose the printer or website.');
+      const local=destination==='printer',ip=local?'10.20.10.50':'192.0.2.80',hop=local?'10.20.10.50':'10.20.10.1',mac=local?'02:00:00:00:00:50':'02:00:00:00:00:01';
+      const steps=[{id:'route',title:'Choose the next hop',text:`Destination ${ip} is ${local?'inside':'outside'} the laptop’s 10.20.10.0/24 subnet. ${local?'Deliver directly to the printer.':'The default route selects the gateway.'} Look for ${hop} in the ARP cache.`}];
+      if(cacheHit)steps.push({id:'cache',title:'Use the cached mapping',text:`The laptop already knows ${hop} → ${mac}. No new ARP request is needed in this example.`});
+      else{
+        steps.push({id:'request',title:'Broadcast an ARP request',text:`Who has ${hop}? Tell 10.20.10.25. The switch distributes this request in VLAN 10; it does not forward it into the remote network.`});
+        steps.push(replies?{id:'reply',title:'Receive a reply and cache it',text:`The ${local?'printer':'gateway'} replies directly: ${hop} is at ${mac}. The laptop stores that mapping.`}:{id:'unanswered',title:'No reply: the mapping is unresolved',text:`The laptop cannot yet address the data frame to ${hop}. It may retry ARP and eventually report failure. Check the next hop, VLAN, and link; this observation alone does not identify the cause.`});
+      }
+      if(cacheHit||replies)steps.push({id:'frame',title:'Send the IPv4 packet in an Ethernet frame',text:`Ethernet destination: ${mac}. IP destination inside: ${ip}. ${local?'The frame goes directly to the printer.':'The frame goes to the gateway for onward routing, not directly to the website.'} This demonstrates local delivery preparation, not successful application access.`});
+      return {local,ip,hop,mac,steps};
+    },
     subnet(address, prefix) {
       if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(address)) throw Error('Enter four numbers separated by dots, such as 192.168.204.30.');
       const octets=address.split('.').map(Number);
@@ -36,6 +48,33 @@
   const checkbox=(id,label,checked=true)=>`<label class="exercise-check" for="${id}"><input id="${id}" type="checkbox" ${checked?'checked':''}><span>${label}</span></label>`;
   const status=(title,text,good=false)=>`<div class="result-label">${good?'●':'◇'} ${esc(title)}</div><p>${esc(text)}</p>`;
   const setups={
+    arp(box){
+      box.innerHTML=`<div class="exercise-controls"><label for="arp-destination">Send an IPv4 packet to<select id="arp-destination"><option value="printer">Local printer · 10.20.10.50</option><option value="website">Remote website · 192.0.2.80</option></select></label>${checkbox('arp-replies','Next hop answers ARP')}</div><div class="arp-topology" aria-label="Laptop, printer, and gateway share VLAN 10. The website is outside this subnet."><div class="arp-lan"><span class="arp-zone">VLAN 10 · 10.20.10.0/24 · ONE SWITCH</span><div class="arp-devices"><div class="arp-device" data-arp-node="laptop"><span>YOUR LAPTOP</span><strong>10.20.10.25</strong><small>MAC ends in :25</small></div><div class="arp-device" data-arp-node="printer"><span>PRINTER</span><strong>10.20.10.50</strong><small>MAC ends in :50</small></div><div class="arp-device" data-arp-node="gateway"><span>GATEWAY</span><strong>10.20.10.1</strong><small>MAC ends in :01</small></div></div><div class="arp-wire" aria-hidden="true"></div></div><div class="arp-outside"><span aria-hidden="true">↓ Routed path</span><strong>Remote website · 192.0.2.80</strong><small>Outside this VLAN; never receives the laptop’s ARP broadcast</small></div></div><div class="arp-phase" aria-hidden="true"><span>01 / ROUTE</span><span>02 / RESOLVE</span><span>03 / DELIVER</span></div><div class="exercise-result" role="status"></div><div class="arp-frame" hidden><div><span>ETHERNET DESTINATION · NEXT HOP</span><strong id="arp-frame-mac"></strong></div><div><span>IP DESTINATION · FINAL TARGET</span><strong id="arp-frame-ip"></strong></div></div><div class="arp-cache"><span>LAPTOP ARP CACHE · IPv4 → MAC</span><ul id="arp-cache-list"></ul></div><div class="exercise-actions"><button type="button" id="arp-next">Start delivery →</button><button type="button" class="quiet-button" id="arp-clear">Clear fictional cache</button></div><p class="exercise-caption">A fixed /24 network with a default route, no proxy ARP, and no cache expiry during the exercise. MAC addresses are abbreviated in the diagram. Clear the cache to test an unanswered lookup. Nothing is sent on your actual network.</p>`;
+      const cache=new Map();let plan,step=-1;
+      const reset=()=>{
+        const destination=by(box,'#arp-destination').value,hop=destination==='printer'?'10.20.10.50':'10.20.10.1';
+        plan=models.arp(destination,cache.has(hop),by(box,'#arp-replies').checked);step=-1;
+        by(box,'.arp-topology').dataset.phase='ready';by(box,'.arp-topology').dataset.target=plan.local?'printer':'gateway';
+        by(box,'.arp-frame').hidden=true;by(box,'#arp-next').textContent='Start delivery →';
+        by(box,'.exercise-result').innerHTML=status('Predict the next hop',`The final destination is ${plan.ip}. Should the laptop resolve the printer’s MAC or the gateway’s MAC?`);
+        by(box,'#arp-cache-list').innerHTML=cache.size?[...cache].map(([ip,mac])=>`<li><code>${ip}</code><span>→</span><code>${mac}</code></li>`).join(''):'<li>No mappings learned yet.</li>';
+      };
+      on(box,'#arp-next','click',()=>{
+        if(step===plan.steps.length-1)reset();
+        const current=plan.steps[++step];
+        by(box,'.arp-topology').dataset.phase=current.id;
+        by(box,'.exercise-result').innerHTML=status(current.title,current.text,current.id==='frame');
+        if(current.id==='reply'){
+          cache.set(plan.hop,plan.mac);
+          by(box,'#arp-cache-list').innerHTML=[...cache].map(([ip,mac])=>`<li><code>${ip}</code><span>→</span><code>${mac}</code></li>`).join('');
+        }
+        by(box,'.arp-frame').hidden=current.id!=='frame';
+        if(current.id==='frame'){by(box,'#arp-frame-mac').textContent=plan.mac;by(box,'#arp-frame-ip').textContent=plan.ip;}
+        by(box,'#arp-next').textContent=step===plan.steps.length-1?'Send again →':'Next step →';
+      });
+      on(box,'#arp-clear','click',()=>{cache.clear();reset();});
+      on(box,'#arp-destination','change',reset);on(box,'#arp-replies','change',reset);reset();
+    },
     subnet(box){
       box.innerHTML=`<div class="exercise-controls"><label for="subnet-ip">IPv4 address<input id="subnet-ip" type="text" inputmode="decimal" value="192.168.204.30" autocomplete="off" spellcheck="false" aria-describedby="subnet-error"></label><label for="subnet-prefix">Network prefix <output id="subnet-prefix-label" for="subnet-prefix">/28</output><input id="subnet-prefix" type="range" min="0" max="32" value="28"></label></div><p id="subnet-error" class="exercise-error" role="status"></p><div class="bit-legend"><span><i class="net-key"></i> Network bits</span><span><i class="host-key"></i> Host bits</span></div><div class="bit-strip" aria-label="IPv4 address split into network and host bits"></div><div class="exercise-actions"><button type="button" id="subnet-reveal">Reveal calculation →</button><button type="button" class="quiet-button" id="subnet-reset">Reset example</button></div><div class="subnet-result" role="status" hidden></div>`;
       let result=null;
