@@ -410,7 +410,7 @@ export default function Home() {
           }
           disabled={!ready}
         >
-          Backup progress
+          Download progress JSON
         </button>
         <button onClick={() => setView('portfolio')}>Recap portfolio</button>
       </div>
