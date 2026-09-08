@@ -1,3 +1,4 @@
+import {clientUpdates} from './client-updates';
 import { scenarios, template, type Run, type CaseState } from './game';
 export type RecordItem = {
   id: string;
@@ -49,7 +50,9 @@ const validCase = (c: CaseState) =>
   c.done.every((a) => template(c).actions.some((x) => x.id === a)) &&
   finite(c.score, 0, 100) &&
   finite(c.pressure, 0, 100) &&
-  typeof c.closed === 'boolean';
+  typeof c.closed === 'boolean' &&
+  (c.clientUpdate===undefined||(typeof c.clientUpdate==='string'&&c.clientUpdate.length<=10000)) &&
+  (c.clientUpdateWhy===undefined||(typeof c.clientUpdateWhy==='string'&&c.clientUpdateWhy.length<=10000));
 const migrateDrafts = (s: Save) => {
   const oldKey = 'inter' + 'view';
   if (s.drafts)
@@ -125,7 +128,23 @@ export function normalizeSave(input: unknown): Save {
       provenance: r.provenance || 'Recorded in the training game',
     };
   });
-  return { ...s, records, drafts: s.drafts || {}, schemaVersion: 2 };
+  return migrateOwnerClientUpdates({ ...s, records, drafts: s.drafts || {}, schemaVersion: 2 });
+}
+// User-authorized correction applies only to their known saved run, never other visitors.
+export function migrateOwnerClientUpdates(input:Save):Save{
+ const eligible=(c:CaseState)=>c.id.startsWith('966459-')&&c.closed&&c.clientUpdateVersion!==2;
+ const original=new Map<string,CaseState>();
+ for(const r of input.records)if(r.detail&&eligible(r.detail))original.set(r.id,r.detail);
+ for(const run of [...(input.shiftHistory||[]),...(input.run?[input.run]:[])])for(const c of run.cases)if(eligible(c)&&!original.has(c.id))original.set(c.id,c);
+ if(!original.size)return input;
+ const save=structuredClone(input),changes=new Map<string,{score:number;intel:number;trust:number}>();
+ const corrected=new Map<string,CaseState>();
+ for(const [id,c] of original){const best=clientUpdates(c,template(c).actions.filter(a=>!a.bad).map(a=>a.id))[0];const old=c.communication||0;const score=Math.min(100,c.score+15-old);changes.set(id,{score:score-c.score,intel:Math.floor(score/20)-Math.floor(c.score/20),trust:old===15?0:8});corrected.set(id,{...c,score,communication:15,clientUpdate:best.text,clientUpdateWhy:best.why,clientUpdateVersion:2});}
+ save.records=save.records.map(r=>{const c=corrected.get(r.id);if(!c)return r;save.xp+=changes.get(r.id)!.score;return {...r,score:c.score,detail:{...c,notes:r.note},provenance:(r.provenance||'Recorded in the training game')+' Client update corrected to the scenario-specific recommended answer at author request after completion; original answer credit '+(original.get(r.id)!.communication||0)+'/15.'};});
+ const revise=(run:Run)=>{const applicable=[...changes].filter(([id])=>id.startsWith(run.seed+'-')&&Number(id.split('-')[1])<=run.wave).map(([,v])=>v);return {...run,cases:run.cases.map(c=>corrected.get(c.id)||c),totalScore:run.totalScore+applicable.reduce((n,v)=>n+v.score,0),credits:run.credits+applicable.reduce((n,v)=>n+v.intel,0),trust:Math.min(100,run.trust+applicable.reduce((n,v)=>n+v.trust,0))};};
+ if(save.run)save.run=revise(save.run);if(save.shiftHistory)save.shiftHistory=save.shiftHistory.map(revise);
+ for(const id of corrected.keys())if(save.drafts?.[id])save.drafts[id].comms='1';
+ return save;
 }
 const combineText = (a = '', b = '') =>
   a === b || a.includes(b)
@@ -246,7 +265,7 @@ export function improvementTips(c: CaseState) {
     );
   if (d.communication < 15)
     tips.push(
-      'Use the cautious client update that separates confirmed facts, unknowns, next actions, and update timing (+15 possible).',
+      'Client update: '+(c.clientUpdateWhy||clientUpdates(c,template(c).actions.filter(a=>!a.bad).map(a=>a.id))[0].why)+' (+15 possible).',
     );
   if (d.penalty)
     tips.push(
@@ -273,7 +292,7 @@ export function portfolioHTML(save: Save) {
       const score = r.detail ? scoreDetails(r.detail) : null;
       const tips = r.detail ? improvementTips(r.detail) : [];
       const explanation = score
-        ? `<h3>How the score was calculated</h3><ul><li>Evidence reviewed: +${score.evidence}/20</li><li>Response actions: +${score.response}/45</li><li>Classification: +${score.classification}/20</li><li>Client update: +${score.communication}/15</li><li>Decision penalties: −${score.penalty}</li><li><b>Final score: ${score.total}/100</b></li></ul><h3>${score.total === 100 ? 'What went right' : 'How to improve'}</h3><ul>${tips.map((tip) => `<li>${esc(tip)}</li>`).join('')}</ul>`
+        ? `<h3>Recorded client update</h3><p>${esc(r.detail?.clientUpdate||'Exact update text not retained in this older record.')}</p><p>${esc(r.detail?.clientUpdateWhy||'')}</p><h3>How the score was calculated</h3><ul><li>Evidence reviewed: +${score.evidence}/20</li><li>Response actions: +${score.response}/45</li><li>Classification: +${score.classification}/20</li><li>Client update: +${score.communication}/15</li><li>Decision penalties: −${score.penalty}</li><li><b>Final score: ${score.total}/100</b></li></ul><h3>${score.total === 100 ? 'What went right' : 'How to improve'}</h3><ul>${tips.map((tip) => `<li>${esc(tip)}</li>`).join('')}</ul>`
         : '';
       return `<article><h2>${esc(s.title)} · ${r.score}/100</h2><small>${esc(s.skill)} · ${esc(r.mode || 'Legacy exercise')} · ${esc(r.completedAt || 'Completion timestamp not recorded')}<br>${esc(r.provenance)}</small><p>${esc(s.brief)}</p><h3>Evidence and response record</h3>${r.detail ? `<p>Classification: ${esc(r.detail.result)} · Reviewed ${r.detail.reads.length}/3 sources · ${r.detail.mistakes} decision penalties</p><ul>${r.detail.done.map((id) => `<li>${esc(s.actions.find((a) => a.id === id)?.label)}</li>`).join('')}</ul>${r.detail.reads.map((i) => `<details><summary>${esc(s.evidence[i].tool)} — ${esc(s.evidence[i].title)}</summary><pre>${esc(s.evidence[i].body)}</pre></details>`).join('')}` : '<p>Legacy score and notes retained; detailed action history was not recorded.</p>'}${explanation}<h3>My analyst notes</h3><pre>${esc(r.note || 'No personal notes saved.')}</pre><h3>Exercise learning point</h3><p>${esc(s.lesson)}</p></article>`;
     })

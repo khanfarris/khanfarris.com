@@ -30,11 +30,14 @@
           "score": 100,
           "result": "Configuration risk",
           "notes": "The device was confirmed to have an address, and could reach the gateway at 10.20.4.1. It shows a DNS server of 203.0.113.53, however it has an expected internal resolver 10.20.0.10. When performing an nslookup on the application (nslookup app.client.example) we receive NXDomain (non-existent domain).  By performing nslookup app.client.example 10.20.0.10, we attempt to resolve the domain using its internal resolver, which successfully points to 10.20.4.12 as intended.\n\nWe  inspect the switch and DHCP to confirm that VLAN assignment is correct, however DHCP option 6 was changed to an external resolver. A rollback is performed to ensure the internal resolver for the VLAN is restored to 10.20.0.10. Renew the DHCP lease on the affected host and confirm if resolved. If other devices on the VLAN are affected, this will be remediated when their DHCP lease renews. Once resolved, we confirm access with the reporting user.",
-          "communication": 15
+          "communication": 15,
+          "clientUpdate": "The incorrect DHCP DNS setting was restored to the approved internal resolver. We renewed the affected host’s lease and verified internal name resolution and application access with the user. Other affected DHCP clients need the corrected setting through lease renewal; record any remaining affected devices for follow-up.",
+          "clientUpdateWhy": "Explains the demonstrated DNS cause and includes client-side renewal and validation.",
+          "clientUpdateVersion": 2
         },
         "completedAt": "2026-09-07T03:21:21.046Z",
         "mode": "Guided",
-        "provenance": "Recorded in the training game"
+        "provenance": "Recorded in the training game Client update corrected to the scenario-specific recommended answer at author request after completion; original answer credit 15/15."
       },
       {
         "id": "966459-1-1",
@@ -60,11 +63,14 @@
           "score": 100,
           "result": "Benign activity",
           "notes": "Message ID matches approved campaign SIM-419 within KnowBe4.\nRecipients and delivery timestamps occur when expected (match campaign logs).\nSign in logs confirm no credential entries were reported as well as no other sign-in / malicious anomalies that may raise flags.\nSecurity awareness product owner also confirms the campaign with its SIM# are intended.\n\nAfter confirming benign activity, we can inform the user the message was real. Indicators are educated to the user's to increase their ability to detect intended / malicious communications in the future, and they are encouraged to reach out with any future concerns or questions.",
-          "communication": 15
+          "communication": 15,
+          "clientUpdate": "We matched the message to the approved awareness campaign using its campaign record, recipient and timestamp. The reviewed activity supports an authorized simulation. Thank you for reporting it; please continue reporting suspicious messages.",
+          "clientUpdateWhy": "Explains why this report is benign and reinforces useful reporting behavior.",
+          "clientUpdateVersion": 2
         },
         "completedAt": "2026-09-07T02:55:55.946Z",
         "mode": "Guided",
-        "provenance": "Client-update answer corrected after completion at author request; original score 85/100, revised score 100/100."
+        "provenance": "Client-update answer corrected after completion at author request; original score 85/100, revised score 100/100. Client update corrected to the scenario-specific recommended answer at author request after completion; original answer credit 15/15."
       },
       {
         "id": "966459-1-2",
@@ -90,11 +96,14 @@
           "score": 100,
           "result": "Configuration risk",
           "notes": "Within Timus, the contractor's identity was verified and its applicationg roups were confirmed. MFA was passed, however disk sencryption on the actual device failed.  This explains why the contactor is unable to reach the project app. The MAC device was confirmed to be enrolled in InTune which mean the device associated with teh MAC has registered with the company's network before.\n\nPer the policy of the company, global postuyre bypass is not authorized due to the app containing confidential client documents. Instead, we can issue a loan device to the user after approving through their manager.\n\nThe user will be granted immediate access via the loan device, and their initial device will be remediated by enabling disk encryption as well as any other configurations that need to be made if found through the investigation process. Compliance will then be confirmed on the device before granting it back to the user and retrieving the loan device.",
-          "communication": 15
+          "communication": 15,
+          "clientUpdate": "The encryption-related access issue was addressed through the approved compliant-device route and device remediation. Compliance and scoped application access were rechecked; the global posture requirement remains enabled.",
+          "clientUpdateWhy": "Explains the actual denial and gives a safe route to productivity without a global bypass.",
+          "clientUpdateVersion": 2
         },
         "completedAt": "2026-09-07T02:26:51.194Z",
         "mode": "Guided",
-        "provenance": "Recorded in the training game"
+        "provenance": "Recorded in the training game Client update corrected to the scenario-specific recommended answer at author request after completion; original answer credit 15/15."
       },
       {
         "id": "966459-1-0",
@@ -120,12 +129,15 @@
           "closed": true,
           "score": 100,
           "result": "Confirmed compromise",
-          "notes": "10:04 UTC - User finance@client.example had a successful sign in from unmanaged device 198.51.200.28.\n10:07 UTC - User accesses Exchange Online\n10:09 UTC - New-InboxRule: Invoice Archive was created with attributes: ForwardTo: invoices@external.example and DeleteMessage: true. Mailbox owner confirms they did not make or authorize these changes.\n10:12 UTC - M365 logs provide the \"Sent: Updated bank details\". \n\nFrom this timeline, we can see a user account was accessed on an unauthorized device, accessed emails services, created malicious rules, and potentially compromised bank details. The account will be disabled and any active sessions / tokens will be revoked to reduce further compromise. The account credentials / MFA will be reset to remedy the user account that was breached, and the malicious rules that are created will be removed for the entire mailbox. The client would be informed of the scenario for their money / internal communications to be handled appropriately. Further investigation would be done to see if the email had landed anywhere else within tenant's email services / network to investigate and remediate. Verify a full recovery. Security rules will now be put in place to block any information relating to the details of the malicious actor found in this incident. Ensure controls put in place pass test cases.",
-          "communication": 15
+          "notes": "10:04 UTC - User finance@client.example had a successful sign in from unmanaged device 198.51.200.28.\n10:07 UTC - User accesses Exchange Online\n10:09 UTC - New-InboxRule: Invoice Archive was created with attributes: ForwardTo: invoices@external.example and DeleteMessage: true. Mailbox owner confirms they did not make or authorize these changes.\n10:12 UTC - M365 logs provide the \"Sent: Updated bank details\". \n\nFrom this timeline, we can see a user account was accessed on an unauthorized device, accessed emails services, created malicious rules, and potentially compromised bank details. The account will be disabled and any active sessions / tokens will be revoked to reduce further compromise. The account credentials / MFA will be reset to remedy the user account that was breached, and the malicious rules that are created will be removed for the entire mailbox. The client would be informed of the scenario for their money / internal communications to be handled appropriately. Further investigation would be done to see if the email had landed anywhere else within tenant's email services / network to investigate and remediate. Verify a full recovery. Security rules will now be put in place to block any information relating to the details of the malicious actor found in this incident. Ensure controls put in place pass test cases.\nRecap: When initially receiving the report, we can check the basics of BEC compromise. The email's content and header can be inspected for indicators such as malicious links, false domains, or malicious tactics like impersonation or urgency. The client can be told to verify any request made, such as a money transfer, out-of-chain, meaning that they can call the requester's number directly to confirm the request rather than reply to the potentially suspicious email. This can also allow us to identify that risk may still be present after systematic checks like SPF, DMARC, and DKIM if the actual user account making the request may have been compromised, for example. \n\nIf confirmed non-malicious, the client can proceed with their normal operations. If this was confirmed as malicious, initial recovery will begin by ensuring the affected user account is disabled with active sessions / tokens revoked. The account's authentication like PW and MFA would also be reset so control of the account can return to its sole, intended owner. Depending on the BEC in question, remediation would take place. If credentials were leaked, the account would be remediated. If a malicious link was pressed, data loss prevention remediation processes would take place, so on and so forth. Once accounts / devices are isolated and remedied as needed to prevent further damage from being done, we will expand the scope of the compromise to see if any other part of the company's network may have been compromised such as other accounts or devices. Any malicious behavior that was implemented by an attacker would be removed, but its information would be logged to setup security controls for after. Once these security controls are in place, monitor to ensure they are working.",
+          "communication": 15,
+          "clientUpdate": "We confirmed unauthorized mailbox activity involving the payment instructions. We are coordinating account containment, tracing affected messages and contacting the payment owner through a trusted channel. Payment recovery and the extent of access still need verification.",
+          "clientUpdateWhy": "Names the confirmed mailbox compromise, coordinates the financial response, and avoids claiming money or data has been recovered.",
+          "clientUpdateVersion": 2
         },
         "completedAt": "2026-09-07T01:07:01.954Z",
         "mode": "Guided",
-        "provenance": "Recorded in the training game"
+        "provenance": "Recorded in the training game Client update corrected to the scenario-specific recommended answer at author request after completion; original answer credit 15/15."
       }
     ],
     "run": {
@@ -155,7 +167,10 @@
           "score": 100,
           "result": "Confirmed compromise",
           "notes": "10:04 UTC - User finance@client.example had a successful sign in from unmanaged device 198.51.200.28.\n10:07 UTC - User accesses Exchange Online\n10:09 UTC - New-InboxRule: Invoice Archive was created with attributes: ForwardTo: invoices@external.example and DeleteMessage: true. Mailbox owner confirms they did not make or authorize these changes.\n10:12 UTC - M365 logs provide the \"Sent: Updated bank details\". \n\nFrom this timeline, we can see a user account was accessed on an unauthorized device, accessed emails services, created malicious rules, and potentially compromised bank details. The account will be disabled and any active sessions / tokens will be revoked to reduce further compromise. The account credentials / MFA will be reset to remedy the user account that was breached, and the malicious rules that are created will be removed for the entire mailbox. The client would be informed of the scenario for their money / internal communications to be handled appropriately. Further investigation would be done to see if the email had landed anywhere else within tenant's email services / network to investigate and remediate. Verify a full recovery. Security rules will now be put in place to block any information relating to the details of the malicious actor found in this incident. Ensure controls put in place pass test cases.",
-          "communication": 15
+          "communication": 15,
+          "clientUpdate": "We confirmed unauthorized mailbox activity involving the payment instructions. We are coordinating account containment, tracing affected messages and contacting the payment owner through a trusted channel. Payment recovery and the extent of access still need verification.",
+          "clientUpdateWhy": "Names the confirmed mailbox compromise, coordinates the financial response, and avoids claiming money or data has been recovered.",
+          "clientUpdateVersion": 2
         },
         {
           "template": "training",
@@ -176,7 +191,10 @@
           "score": 100,
           "result": "Benign activity",
           "notes": "Message ID matches approved campaign SIM-419 within KnowBe4.\nRecipients and delivery timestamps occur when expected (match campaign logs).\nSign in logs confirm no credential entries were reported as well as no other sign-in / malicious anomalies that may raise flags.\nSecurity awareness product owner also confirms the campaign with its SIM# are intended.\n\nAfter confirming benign activity, we can inform the user the message was real. Indicators are educated to the user's to increase their ability to detect intended / malicious communications in the future, and they are encouraged to reach out with any future concerns or questions.",
-          "communication": 15
+          "communication": 15,
+          "clientUpdate": "We matched the message to the approved awareness campaign using its campaign record, recipient and timestamp. The reviewed activity supports an authorized simulation. Thank you for reporting it; please continue reporting suspicious messages.",
+          "clientUpdateWhy": "Explains why this report is benign and reinforces useful reporting behavior.",
+          "clientUpdateVersion": 2
         },
         {
           "template": "ztna",
@@ -197,7 +215,10 @@
           "score": 100,
           "result": "Configuration risk",
           "notes": "Within Timus, the contractor's identity was verified and its applicationg roups were confirmed. MFA was passed, however disk sencryption on the actual device failed.  This explains why the contactor is unable to reach the project app. The MAC device was confirmed to be enrolled in InTune which mean the device associated with teh MAC has registered with the company's network before.\n\nPer the policy of the company, global postuyre bypass is not authorized due to the app containing confidential client documents. Instead, we can issue a loan device to the user after approving through their manager.\n\nThe user will be granted immediate access via the loan device, and their initial device will be remediated by enabling disk encryption as well as any other configurations that need to be made if found through the investigation process. Compliance will then be confirmed on the device before granting it back to the user and retrieving the loan device.",
-          "communication": 15
+          "communication": 15,
+          "clientUpdate": "The encryption-related access issue was addressed through the approved compliant-device route and device remediation. Compliance and scoped application access were rechecked; the global posture requirement remains enabled.",
+          "clientUpdateWhy": "Explains the actual denial and gives a safe route to productivity without a global bypass.",
+          "clientUpdateVersion": 2
         },
         {
           "template": "dns",
@@ -219,7 +240,10 @@
           "score": 100,
           "result": "Configuration risk",
           "notes": "The device was confirmed to have an address, and could reach the gateway at 10.20.4.1. It shows a DNS server of 203.0.113.53, however it has an expected internal resolver 10.20.0.10. When performing an nslookup on the application (nslookup app.client.example) we receive NXDomain (non-existent domain).  By performing nslookup app.client.example 10.20.0.10, we attempt to resolve the domain using its internal resolver, which successfully points to 10.20.4.12 as intended.\n\nWe  inspect the switch and DHCP to confirm that VLAN assignment is correct, however DHCP option 6 was changed to an external resolver. A rollback is performed to ensure the internal resolver for the VLAN is restored to 10.20.0.10. Renew the DHCP lease on the affected host and confirm if resolved. If other devices on the VLAN are affected, this will be remediated when their DHCP lease renews. Once resolved, we confirm access with the reporting user.",
-          "communication": 15
+          "communication": 15,
+          "clientUpdate": "The incorrect DHCP DNS setting was restored to the approved internal resolver. We renewed the affected host’s lease and verified internal name resolution and application access with the user. Other affected DHCP clients need the corrected setting through lease renewal; record any remaining affected devices for follow-up.",
+          "clientUpdateWhy": "Explains the demonstrated DNS cause and includes client-side renewal and validation.",
+          "clientUpdateVersion": 2
         }
       ],
       "selected": 3,

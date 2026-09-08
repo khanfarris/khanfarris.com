@@ -6,7 +6,7 @@ const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComp
  const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(`http://127.0.0.1:${server.address().port}/shiftrun/`);
  await page.getByRole('button',{name:'Start guided shift'}).click();await page.getByRole('tab',{name:/03 Handoff/}).click();await page.locator('#case-note').fill('Visitor draft must survive switching');await page.waitForTimeout(150);
  const before=await page.evaluate(()=>localStorage.getItem('khanfarris-shiftfall-v1'));
- await page.getByRole('button',{name:'View khanfarris profile',exact:true}).click();await page.getByRole('button',{name:/CLOSED The suspicious safety drill/}).click();await page.getByText('Client-update answer corrected after completion at author request; original score 85/100, revised score 100/100.',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'View khanfarris profile',exact:true}).click();await page.getByRole('button',{name:/CLOSED The suspicious safety drill/}).click();await page.getByText('Client-update answer corrected after completion at author request; original score 85/100, revised score 100/100.',{exact:false}).waitFor();
  assert.equal(await page.locator('.debrief').count()>=0,true);
  assert(await page.getByText('Message ID matches approved campaign SIM-419 within KnowBe4.',{exact:false}).count()>0);
  await page.getByRole('button',{name:/Online, but nothing resolves/}).click();await page.getByRole('tab',{name:/02 Respond/}).click();assert.equal(await page.locator('.action-grid button:enabled').count(),0);

@@ -1,3 +1,4 @@
+import {clientUpdates,updateOrder} from './client-updates';
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { flushSync } from 'react-dom';
@@ -836,20 +837,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                           }}
                           className="comms"
                         >
-                          {[
-                            [
-                              '2',
-                              'Everything is safe. No information was exposed. You can close this ticket.',
-                            ],
-                            [
-                              '1',
-                              'We are reviewing the evidence and documenting the confirmed scope and actions. We will coordinate any remaining validation and provide the next update in 30 minutes.',
-                            ],
-                            [
-                              '3',
-                              'This happened because someone made a careless mistake. Please stop opening tickets.',
-                            ],
-                          ].map(([v, text]) => (
+                          {updateOrder(c.id).map(index=>{const v=String(index+1),text=clientUpdates(c,s.actions.filter(a=>!a.bad).map(a=>a.id))[index].text;return (
                             <label
                               key={v}
                               className={
@@ -859,7 +847,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                               <RadioGroupItem value={v} />
                               <span>{text}</span>
                             </label>
-                          ))}
+                          );})}
                         </RadioGroup>
                       </fieldset>
                       <label className="note-label" htmlFor="case-note">
@@ -914,7 +902,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                       <p className="lesson">{s.lesson}</p>
                       {(!legacyHistory||save.records.find(r=>r.id===c.id)?.detail)?<ScoreExplanation incident={c} />:<p>Only the final score was retained in this older record; detailed scoring is unavailable.</p>}
                       {readOnly && save.records.find(r=>r.id===c.id)?.provenance?.includes('corrected') && <p className="coach">{save.records.find(r=>r.id===c.id)?.provenance}</p>}
-                      {readOnly && <section><h3>Recorded client update</h3><p>{c.communication===15?'We are reviewing the evidence and documenting the confirmed scope and actions. We will coordinate any remaining validation and provide the next update in 30 minutes.':'This record did not earn client-update credit; the exact selection is available only when retained in its draft.'}</p></section>}
+                      <section className="recorded-client-update"><h3>Recorded client update</h3><p>{c.clientUpdate||'This older record did not retain the exact update text.'}</p>{c.clientUpdateWhy&&<p className="coach">{c.communication===15?'Why it earned 15/15: ':'Why it missed the 15 points: '}{c.clientUpdateWhy}</p>}{c.communication!==15&&<><h3>Recommended update</h3><p>{clientUpdates(c,s.actions.filter(a=>!a.bad).map(a=>a.id))[0].text}</p></>}</section>
                       <h3>Response walkthrough</h3>
                       {s.actions.map((a) => (
                         <div className="walkthrough" key={a.id}>

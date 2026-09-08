@@ -1,3 +1,4 @@
+import {clientUpdates} from './client-updates';
 export type Evidence = {
   tool: string;
   title: string;
@@ -1004,6 +1005,9 @@ export type CaseState = {
   result?: string;
   notes?: string;
   communication?: number;
+  clientUpdate?: string;
+  clientUpdateWhy?: string;
+  clientUpdateVersion?: number;
 };
 export type Run = {
   seed: number;
@@ -1208,11 +1212,14 @@ export function closeCase(
             result: disposition,
             notes: note,
             communication: comms === 0 ? 15 : 0,
+            clientUpdate:clientUpdates(c,required.map(a=>a.id))[comms]?.text,
+            clientUpdateWhy:clientUpdates(c,required.map(a=>a.id))[comms]?.why,
+            clientUpdateVersion:2,
           }
         : x,
     ),
     log: [
-      `Case closed: ${score}/100. ${disposition === s.truth ? 'Classification correct.' : 'Classification missed: ' + s.truth + '.'} ${comms === 0 ? 'Client update is appropriately cautious.' : 'Avoid blame or unsupported certainty in client updates.'}`,
+      `Case closed: ${score}/100. ${disposition === s.truth ? 'Classification correct.' : 'Classification missed: ' + s.truth + '.'} ${comms === 0 ? 'Client update fits the incident evidence and response state.' : 'Avoid blame or unsupported certainty in client updates.'}`,
       ...run.log,
     ].slice(0, 18),
   };
