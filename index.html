@@ -1,255 +1,34 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="crimson">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Farris Khan — security / ops tinkerer</title>
-<meta name="description" content="Farris Khan's personal lab. Security investigations, field notes, and hands-on reference tools.">
-<meta name="theme-color" content="#080c09">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="lab.css">
-<link rel="stylesheet" href="knowledge.css">
-<link rel="stylesheet" href="study-showcase.css">
-<script src="study-showcase.js" defer></script>
-<script src="knowledge-index.js?v=concepts-19" defer></script>
-<script src="lab.js?v=2931b52" defer>
-</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KhanOS — Farris Khan / Security &amp; Operations</title>
+<meta name="description" content="Farris Khan's personal workspace: security investigations, networking study notes, interactive learning activities, and a local shell.">
+<meta name="theme-color" content="#0b0c0f"><link rel="canonical" href="https://khanfarris.com/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="knowledge.css?v=khanos-1"><link rel="stylesheet" href="khanos-common.css?v=khanos-1"><link rel="stylesheet" href="khanos-base.css?v=khanos-1"><link rel="stylesheet" href="khanos.css?v=khanos-1">
+<script src="khanos-content.js?v=khanos-1" defer></script><script src="khanos-palettes.js?v=khanos-1" defer></script><script src="khanos-shell.js?v=khanos-1" defer></script><script src="study-exercises.js?v=khanos-1" defer></script><script src="khanos.js?v=khanos-1" defer></script>
 </head>
-<body class="lab-home">
-<a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header wrap">
-<a class="wordmark" href="index.html">
-<span class="brand-mark">[k/f]</span> khanfarris<span class="accent">_</span>
-</a>
-<nav aria-label="Main navigation">
-<a href="#investigations">Writeups</a>
-<a href="#knowledge">Knowledge base</a>
-<a href="shiftrun/">Shiftrun</a>
-<a href="#about">Whoami</a>
-</nav>
-<button class="command-trigger" data-command>⌕ <span>Jump to</span> <kbd>Ctrl K</kbd>
-</button>
-</header>
-<main id="main" class="wrap">
-<section class="hero" aria-labelledby="intro-title">
-<div class="intro">
-<div class="eyebrow">
-<span class="status-dot">
-</span> PERSONAL LAB / FIELD NOTES</div>
-<p class="shell-line">
-<span>visitor@khanfarris</span>:~$ whoami</p>
-<h1 id="intro-title">Farris Khan<span class="accent">.</span>
-</h1>
-<p class="role">security / ops tinkerer</p>
-<p class="intro-copy">Taking things apart.<br>Figuring out what talks to what.<br>Writing down what I find.</p>
-<a class="primary-link" href="#investigations">Explore the investigations <span>↗</span>
-</a>
-<div class="hero-foot">
-<span>02 investigations</span>
-<span data-study-total>19 study notes</span>
-<span>∞ curiosity</span>
-</div>
-</div>
-<section class="topology" aria-labelledby="topology-title">
-<div class="panel-bar">
-<h2 id="topology-title">01 / THE HOME LAB</h2>
-<span>INTERACTIVE MAP</span>
-</div>
-<div class="network-map">
-<svg class="network-lines" viewBox="0 0 600 340" preserveAspectRatio="none" aria-hidden="true">
-<path d="M108 170 H290 M290 170 V88 H480 M290 170 V262 H480"/>
-<circle class="packet" r="3">
-<animateMotion dur="5s" repeatCount="indefinite" path="M108 170 H290 V88 H480"/>
-</circle>
-<circle class="packet" r="3">
-<animateMotion dur="6s" repeatCount="indefinite" path="M108 170 H290 V262 H480"/>
-</circle>
-</svg>
-<span class="map-coordinate">LOCAL NETWORK / SCHEMATIC</span>
-<button class="map-node node-host" data-node="host" aria-pressed="false">
-<span class="node-symbol">&gt;_</span>
-<strong>Kali Linux</strong>
-<small>the workbench</small>
-</button>
-<span class="junction" aria-hidden="true">+</span>
-<button class="map-node node-bulb" data-node="bulb" aria-pressed="true">
-<span class="node-symbol">◉</span>
-<strong>LIFX bulb</strong>
-<small>UDP / 56700</small>
-</button>
-<button class="map-node node-tv" data-node="tv" aria-pressed="false">
-<span class="node-symbol">▣</span>
-<strong>Samsung TV</strong>
-<small>TCP / 8001 · 8002</small>
-</button>
-<span class="map-hint">SELECT A NODE TO INSPECT ↗</span>
-</div>
-<div class="node-detail" aria-live="polite">
-<div>
-<span class="eyebrow" id="node-tag">DEVICE 01 / LIFX</span>
-<h3 id="node-title">A light bulb with an open door.</h3>
-<p id="node-copy">A local control protocol. No credentials required. Follow the packets from discovery to control.</p>
-</div>
-<a id="node-link" href="lifx-pentest.html" aria-label="Read the LIFX investigation">↗</a>
-</div>
-<div class="panel-bottom">
-<span>
-<span class="status-dot">
-</span> Based on the writeups</span>
-<span>Illustrative · no live scanning</span>
-</div>
-</section>
-</section>
-<section id="investigations" class="content-section" aria-labelledby="investigations-title">
-<section class="shiftrun-feature" aria-labelledby="shiftrun-title">
-<div><span class="eyebrow">SHIFTRUN / ANALYST GUILD</span><h2 id="shiftrun-title">Your shift. Your call.</h2><p>Follow the evidence. Contain the incident. Explain your decisions.</p><div class="shiftrun-actions"><a class="primary-link" href="shiftrun/">Try Shiftrun <span>↗</span></a><a href="shiftrun/#khanfarris">View khanfarris profile →</a></div></div>
-<div class="shiftrun-console" aria-hidden="true"><span>INCIDENT RESPONSE / SIMULATION</span><strong>01 <i>Investigate</i></strong><strong>02 <i>Respond</i></strong><strong>03 <i>Recap</i></strong><span>14 SCENARIOS · EVERY DECISION COUNTS</span></div>
-</section>
-<div class="section-heading">
-<div>
-<span class="eyebrow">01 / FOLLOW THE EVIDENCE</span>
-<h2 id="investigations-title">Field investigations<span class="accent">_</span>
-</h2>
-</div>
-<span class="section-aside">Real devices. My own network.</span>
-</div>
-<div class="project-grid">
-<a class="project" href="lifx-pentest.html">
-<div class="project-top">
-<span>CASE / 001</span>
-<span>2026-08-10</span>
-<span class="project-arrow">↗</span>
-</div>
-<div class="project-visual" aria-hidden="true">
-<span class="big-glyph">◉</span>
-<div class="signal-code">DISCOVER<br>↳ UDP 56700<br>↳ NO CREDENTIALS</div>
-</div>
-<span class="tag">IoT / LOCAL CONTROL</span>
-<h3>pwning my light bulbs</h3>
-<p>Finding and controlling my LIFX smart bulbs on my own LAN with Kali Linux — no credentials required.</p>
-<div class="project-bottom">
-<span>Discovery → protocol → control</span>
-<span>Read investigation ↗</span>
-</div>
-</a>
-<a class="project" href="samsung-tv-pentest.html">
-<div class="project-top">
-<span>CASE / 002</span>
-<span>2026-08-10</span>
-<span class="project-arrow">↗</span>
-</div>
-<div class="project-visual tv-visual" aria-hidden="true">
-<span class="big-glyph">▣</span>
-<div class="signal-code">ENUMERATE<br>↳ TCP 8001 / 8002<br>↳ QUESTION THE RESULTS</div>
-</div>
-<span class="tag">IoT / ATTACK SURFACE</span>
-<h3>pwning my TV</h3>
-<p>Probing my Samsung TU700D on my own LAN — and why an empty searchsploit doesn't mean secure.</p>
-<div class="project-bottom">
-<span>Enumeration → API → analysis</span>
-<span>Read investigation ↗</span>
-</div>
-</a>
-</div>
-</section>
-<section id="knowledge" class="content-section" aria-labelledby="knowledge-title">
-<div class="section-heading">
-<div>
-<span class="eyebrow">02 / KEEP THE USEFUL THINGS CLOSE</span>
-<h2 id="knowledge-title">Knowledge base<span class="accent">_</span>
-</h2>
-</div>
-<span class="section-aside">Concepts, tool guides, and practical exercises.</span>
-</div>
-<!-- STUDY ARCHIVE START -->
-<div class="study-archive" data-archive>
-<div class="archive-toolbar"><span class="archive-label"><span class="status-dot"></span> FIELD INDEX <span class="archive-divider">/</span> 19 NOTES</span><div class="archive-controls" hidden><button type="button" class="archive-motion" aria-pressed="true">Motion: on</button><button type="button" data-archive-prev aria-label="Previous study notes">←</button><button type="button" data-archive-next aria-label="Next study notes">→</button></div></div>
-<div class="archive-viewport"><div class="archive-track" tabindex="0" role="region" aria-label="Scrollable study archive" aria-describedby="archive-hint">
-<a class="archive-card" href="kb-subnetting.html" data-archive-card aria-label="Subnetting — Practiced calculations"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 001</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M24 70H100M100 70V30H208M100 70V110H208M208 30H286M208 110H286"/><path class="diagram-trace" d="M24 70H100V30H286"/><circle cx="24" cy="70" r="8"/><rect x="85" y="55" width="30" height="30" rx="3"/><circle cx="208" cy="30" r="6"/><circle cx="208" cy="110" r="6"/><path d="M280 24l12 6-12 6M280 104l12 6-12 6"/><text x="16" y="105">HOST</text><text x="130" y="77">/ NETWORK</text></svg><span class="archive-visual-caption">Networking</span></div><div class="archive-card-copy"><h3>Subnetting</h3><p>Subnetting divides an IP address range into smaller networks. The subnet mask tells a device which addresses are local and which need a router.</p></div><div class="archive-card-foot"><span>Practiced calculations</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-private-addressing.html" data-archive-card aria-label="Private IPv4 &amp; NAT — Concept study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 002</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M24 70H100M100 70V30H208M100 70V110H208M208 30H286M208 110H286"/><path class="diagram-trace" d="M24 70H100V30H286"/><circle cx="24" cy="70" r="8"/><rect x="85" y="55" width="30" height="30" rx="3"/><circle cx="208" cy="30" r="6"/><circle cx="208" cy="110" r="6"/><path d="M280 24l12 6-12 6M280 104l12 6-12 6"/><text x="16" y="105">HOST</text><text x="130" y="77">/ NETWORK</text></svg><span class="archive-visual-caption">Networking</span></div><div class="archive-card-copy"><h3>Private IPv4 &amp; NAT</h3><p>A private IP identifies a device inside a network. NAT lets devices using private addresses communicate through an internet-facing address.</p></div><div class="archive-card-foot"><span>Concept study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-vlsm.html" data-archive-card aria-label="VLSM — Practiced calculations"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 003</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M24 70H100M100 70V30H208M100 70V110H208M208 30H286M208 110H286"/><path class="diagram-trace" d="M24 70H100V30H286"/><circle cx="24" cy="70" r="8"/><rect x="85" y="55" width="30" height="30" rx="3"/><circle cx="208" cy="30" r="6"/><circle cx="208" cy="110" r="6"/><path d="M280 24l12 6-12 6M280 104l12 6-12 6"/><text x="16" y="105">HOST</text><text x="130" y="77">/ NETWORK</text></svg><span class="archive-visual-caption">Networking</span></div><div class="archive-card-copy"><h3>VLSM</h3><p>Variable Length Subnet Masking gives each subnet a size that fits its needs, instead of giving every department the same-sized block.</p></div><div class="archive-card-foot"><span>Practiced calculations</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-vlans.html" data-archive-card aria-label="VLANs — Concept study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 004</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M24 70H100M100 70V30H208M100 70V110H208M208 30H286M208 110H286"/><path class="diagram-trace" d="M24 70H100V30H286"/><circle cx="24" cy="70" r="8"/><rect x="85" y="55" width="30" height="30" rx="3"/><circle cx="208" cy="30" r="6"/><circle cx="208" cy="110" r="6"/><path d="M280 24l12 6-12 6M280 104l12 6-12 6"/><text x="16" y="105">HOST</text><text x="130" y="77">/ NETWORK</text></svg><span class="archive-visual-caption">Networking</span></div><div class="archive-card-copy"><h3>VLANs</h3><p>A VLAN makes one physical switch behave like several separate local networks. Devices share a local broadcast network only when their ports belong to the same VLAN.</p></div><div class="archive-card-foot"><span>Concept study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-arp.html" data-archive-card aria-label="ARP — Concept study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 005</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M24 70H100M100 70V30H208M100 70V110H208M208 30H286M208 110H286"/><path class="diagram-trace" d="M24 70H100V30H286"/><circle cx="24" cy="70" r="8"/><rect x="85" y="55" width="30" height="30" rx="3"/><circle cx="208" cy="30" r="6"/><circle cx="208" cy="110" r="6"/><path d="M280 24l12 6-12 6M280 104l12 6-12 6"/><text x="16" y="105">HOST</text><text x="130" y="77">/ NETWORK</text></svg><span class="archive-visual-caption">Networking</span></div><div class="archive-card-copy"><h3>ARP</h3><p>ARP finds the MAC address needed to deliver IPv4 traffic to the next device on a local network. For a remote destination, that device is usually your gateway.</p></div><div class="archive-card-foot"><span>Concept study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-dns.html" data-archive-card aria-label="DNS — Scenario study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 006</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M24 70H100M100 70V30H208M100 70V110H208M208 30H286M208 110H286"/><path class="diagram-trace" d="M24 70H100V30H286"/><circle cx="24" cy="70" r="8"/><rect x="85" y="55" width="30" height="30" rx="3"/><circle cx="208" cy="30" r="6"/><circle cx="208" cy="110" r="6"/><path d="M280 24l12 6-12 6M280 104l12 6-12 6"/><text x="16" y="105">HOST</text><text x="130" y="77">/ NETWORK</text></svg><span class="archive-visual-caption">Networking</span></div><div class="archive-card-copy"><h3>DNS</h3><p>DNS translates names such as portal.example.com into information computers can use, often an IP address. It helps find a destination; it does not establish the connection.</p></div><div class="archive-card-foot"><span>Scenario study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-dhcp.html" data-archive-card aria-label="DHCP — Concept study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 007</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M24 70H100M100 70V30H208M100 70V110H208M208 30H286M208 110H286"/><path class="diagram-trace" d="M24 70H100V30H286"/><circle cx="24" cy="70" r="8"/><rect x="85" y="55" width="30" height="30" rx="3"/><circle cx="208" cy="30" r="6"/><circle cx="208" cy="110" r="6"/><path d="M280 24l12 6-12 6M280 104l12 6-12 6"/><text x="16" y="105">HOST</text><text x="130" y="77">/ NETWORK</text></svg><span class="archive-visual-caption">Networking</span></div><div class="archive-card-copy"><h3>DHCP</h3><p>DHCP automatically gives a device an IP address and the network settings it needs. The address is borrowed for a lease period, rather than manually typed into every computer.</p></div><div class="archive-card-foot"><span>Concept study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-syslog.html" data-archive-card aria-label="Syslog — Concept study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 008</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M35 25H105V70H178V110H285"/><path class="diagram-trace" d="M35 25H105V70H178V110H285"/><rect x="20" y="13" width="30" height="24"/><rect x="90" y="58" width="30" height="24"/><rect x="163" y="98" width="30" height="24"/><circle class="diagram-pulse" cx="285" cy="110" r="8"/><text x="67" y="25">COLLECT</text><text x="141" y="60">CORRELATE</text><text x="232" y="88">INTERPRET</text></svg><span class="archive-visual-caption">Cloud &amp; telemetry</span></div><div class="archive-card-copy"><h3>Syslog</h3><p>Syslog is a common way for devices and applications to send event messages to a central place. Instead of opening every firewall or server, an analyst can review their messages together.</p></div><div class="archive-card-foot"><span>Concept study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-mdr.html" data-archive-card aria-label="EDR, MDR, and XDR — Concept study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 009</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><circle class="diagram-orbit" cx="160" cy="70" r="54"/><circle cx="160" cy="70" r="34"/><path class="diagram-wire" d="M26 70H126M194 70H294M160 16V36M160 104V124"/><path class="diagram-trace" d="M26 70H126L160 36L194 70H294"/><path d="M160 48l22 22-22 22-22-22Z"/><circle class="diagram-pulse" cx="160" cy="70" r="5"/><text x="16" y="105">OBSERVE</text><text x="245" y="105">VERIFY</text></svg><span class="archive-visual-caption">Security operations</span></div><div class="archive-card-copy"><h3>EDR, MDR, and XDR</h3><p>EDR watches devices. XDR brings signals from several security areas together. MDR provides people and processes to investigate and respond using those tools.</p></div><div class="archive-card-foot"><span>Concept study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-siem.html" data-archive-card aria-label="SIEM — Concept study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 010</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><circle class="diagram-orbit" cx="160" cy="70" r="54"/><circle cx="160" cy="70" r="34"/><path class="diagram-wire" d="M26 70H126M194 70H294M160 16V36M160 104V124"/><path class="diagram-trace" d="M26 70H126L160 36L194 70H294"/><path d="M160 48l22 22-22 22-22-22Z"/><circle class="diagram-pulse" cx="160" cy="70" r="5"/><text x="16" y="105">OBSERVE</text><text x="245" y="105">VERIFY</text></svg><span class="archive-visual-caption">Security operations</span></div><div class="archive-card-copy"><h3>SIEM</h3><p>A SIEM collects searchable security data from different systems and applies detection rules. It helps an analyst investigate a sequence of events across the environment.</p></div><div class="archive-card-foot"><span>Concept study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-ztna-sase.html" data-archive-card aria-label="ZTNA / SASE — Concept study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 011</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M24 70H296"/><path class="diagram-trace" d="M24 70H296"/><rect x="50" y="35" width="48" height="70" rx="4"/><rect x="136" y="35" width="48" height="70" rx="4"/><rect x="222" y="35" width="48" height="70" rx="4"/><path d="M65 69l6 6 13-15M151 69l6 6 13-15M237 69l6 6 13-15"/><text x="52" y="128">PATH</text><text x="132" y="128">IDENTITY</text><text x="226" y="128">POLICY</text></svg><span class="archive-visual-caption">Identity &amp; access</span></div><div class="archive-card-copy"><h3>ZTNA / SASE</h3><p>ZTNA checks who is requesting access and the conditions of that request before allowing a path to a resource. SASE combines secure access with wider networking and security services.</p></div><div class="archive-card-foot"><span>Concept study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-email-auth.html" data-archive-card aria-label="Email authentication — Scenario study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 012</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><circle class="diagram-orbit" cx="160" cy="70" r="54"/><circle cx="160" cy="70" r="34"/><path class="diagram-wire" d="M26 70H126M194 70H294M160 16V36M160 104V124"/><path class="diagram-trace" d="M26 70H126L160 36L194 70H294"/><path d="M160 48l22 22-22 22-22-22Z"/><circle class="diagram-pulse" cx="160" cy="70" r="5"/><text x="16" y="105">OBSERVE</text><text x="245" y="105">VERIFY</text></svg><span class="archive-visual-caption">Security operations</span></div><div class="archive-card-copy"><h3>Email authentication</h3><p>SPF, DKIM, and DMARC help check whether a message is authorized to use a domain. They do not prove that the sender is honest or that the request is safe.</p></div><div class="archive-card-foot"><span>Scenario study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-bec.html" data-archive-card aria-label="Business email compromise — Scenario study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 013</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><circle class="diagram-orbit" cx="160" cy="70" r="54"/><circle cx="160" cy="70" r="34"/><path class="diagram-wire" d="M26 70H126M194 70H294M160 16V36M160 104V124"/><path class="diagram-trace" d="M26 70H126L160 36L194 70H294"/><path d="M160 48l22 22-22 22-22-22Z"/><circle class="diagram-pulse" cx="160" cy="70" r="5"/><text x="16" y="105">OBSERVE</text><text x="245" y="105">VERIFY</text></svg><span class="archive-visual-caption">Security operations</span></div><div class="archive-card-copy"><h3>Business email compromise</h3><p>Business email compromise is a scam that uses a believable business conversation to trick someone into sending money, sharing information, or changing an important process.</p></div><div class="archive-card-foot"><span>Scenario study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-identity.html" data-archive-card aria-label="Risky sign-ins — Scenario study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 014</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M24 70H296"/><path class="diagram-trace" d="M24 70H296"/><rect x="50" y="35" width="48" height="70" rx="4"/><rect x="136" y="35" width="48" height="70" rx="4"/><rect x="222" y="35" width="48" height="70" rx="4"/><path d="M65 69l6 6 13-15M151 69l6 6 13-15M237 69l6 6 13-15"/><text x="52" y="128">PATH</text><text x="132" y="128">IDENTITY</text><text x="226" y="128">POLICY</text></svg><span class="archive-visual-caption">Identity &amp; access</span></div><div class="archive-card-copy"><h3>Risky sign-ins</h3><p>A risky sign-in is an authentication event with signals that deserve investigation. The signal helps prioritize work; the surrounding evidence determines whether an account is compromised.</p></div><div class="archive-card-foot"><span>Scenario study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-windows-domain.html" data-archive-card aria-label="Active Directory — Concept study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 015</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M24 70H296"/><path class="diagram-trace" d="M24 70H296"/><rect x="50" y="35" width="48" height="70" rx="4"/><rect x="136" y="35" width="48" height="70" rx="4"/><rect x="222" y="35" width="48" height="70" rx="4"/><path d="M65 69l6 6 13-15M151 69l6 6 13-15M237 69l6 6 13-15"/><text x="52" y="128">PATH</text><text x="132" y="128">IDENTITY</text><text x="226" y="128">POLICY</text></svg><span class="archive-visual-caption">Identity &amp; access</span></div><div class="archive-card-copy"><h3>Active Directory</h3><p>Active Directory Domain Services keeps a shared directory of users, computers, and groups. Domain controllers use it to support domain authentication and centralized administration.</p></div><div class="archive-card-foot"><span>Concept study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-file-shares.html" data-archive-card aria-label="File shares — Concept study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 016</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M24 70H296"/><path class="diagram-trace" d="M24 70H296"/><rect x="50" y="35" width="48" height="70" rx="4"/><rect x="136" y="35" width="48" height="70" rx="4"/><rect x="222" y="35" width="48" height="70" rx="4"/><path d="M65 69l6 6 13-15M151 69l6 6 13-15M237 69l6 6 13-15"/><text x="52" y="128">PATH</text><text x="132" y="128">IDENTITY</text><text x="226" y="128">POLICY</text></svg><span class="archive-visual-caption">Identity &amp; access</span></div><div class="archive-card-copy"><h3>File shares</h3><p>A file share lets other computers access a folder over the network. The network path finds the server and share; the user’s permissions decide what they can do there.</p></div><div class="archive-card-foot"><span>Concept study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-windows-events.html" data-archive-card aria-label="Windows events — Lab application"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 017</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M35 25H105V70H178V110H285"/><path class="diagram-trace" d="M35 25H105V70H178V110H285"/><rect x="20" y="13" width="30" height="24"/><rect x="90" y="58" width="30" height="24"/><rect x="163" y="98" width="30" height="24"/><circle class="diagram-pulse" cx="285" cy="110" r="8"/><text x="67" y="25">COLLECT</text><text x="141" y="60">CORRELATE</text><text x="232" y="88">INTERPRET</text></svg><span class="archive-visual-caption">Cloud &amp; telemetry</span></div><div class="archive-card-copy"><h3>Windows events</h3><p>Windows event logs record activity on a computer. Event IDs tell you what kind of event was recorded; the event’s fields explain who, where, when, and how.</p></div><div class="archive-card-foot"><span>Lab application</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-tls.html" data-archive-card aria-label="TLS — Concept study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 018</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M24 70H100M100 70V30H208M100 70V110H208M208 30H286M208 110H286"/><path class="diagram-trace" d="M24 70H100V30H286"/><circle cx="24" cy="70" r="8"/><rect x="85" y="55" width="30" height="30" rx="3"/><circle cx="208" cy="30" r="6"/><circle cx="208" cy="110" r="6"/><path d="M280 24l12 6-12 6M280 104l12 6-12 6"/><text x="16" y="105">HOST</text><text x="130" y="77">/ NETWORK</text></svg><span class="archive-visual-caption">Networking</span></div><div class="archive-card-copy"><h3>TLS</h3><p>TLS protects data in transit by encrypting it and checking that it has not been changed. In a normal HTTPS connection, it also helps the browser verify the server’s identity.</p></div><div class="archive-card-foot"><span>Concept study</span><span>READ NOTE ↗</span></div></div></a>
-<a class="archive-card" href="kb-tcp.html" data-archive-card aria-label="TCP — Concept study"><div class="archive-card-inner"><div class="archive-card-top"><span>NOTE / 019</span><span class="archive-card-arrow" aria-hidden="true">↗</span></div><div class="archive-visual" aria-hidden="true"><div class="archive-scan"></div><svg viewBox="0 0 320 140" fill="none"><path class="diagram-wire" d="M24 70H100M100 70V30H208M100 70V110H208M208 30H286M208 110H286"/><path class="diagram-trace" d="M24 70H100V30H286"/><circle cx="24" cy="70" r="8"/><rect x="85" y="55" width="30" height="30" rx="3"/><circle cx="208" cy="30" r="6"/><circle cx="208" cy="110" r="6"/><path d="M280 24l12 6-12 6M280 104l12 6-12 6"/><text x="16" y="105">HOST</text><text x="130" y="77">/ NETWORK</text></svg><span class="archive-visual-caption">Networking</span></div><div class="archive-card-copy"><h3>TCP</h3><p>TCP carries an ordered stream of bytes between two endpoints. It tracks delivery and retransmits missing data so applications do not have to handle ordinary packet loss themselves.</p></div><div class="archive-card-foot"><span>Concept study</span><span>READ NOTE ↗</span></div></div></a>
-</div></div>
-<div class="archive-navigation" hidden><div class="archive-position"><span id="archive-range" aria-live="polite">01 — 03</span><span>/ 19</span></div><div class="archive-scrubber"><label class="sr-only" for="archive-scrub">Scroll through study notes</label><input id="archive-scrub" type="range" min="0" max="1000" value="0"><div class="archive-ticks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p id="archive-hint">Drag / swipe to explore <span aria-hidden="true">↔</span></p></div>
-</div>
-<a class="primary-link study-directory-link" href="knowledge.html">Explore all 19 study notes <span>↗</span></a>
-<!-- STUDY ARCHIVE END -->
-</section>
-<section class="bottom-grid content-section" id="about">
-<div class="about">
-<span class="eyebrow">03 / WHOAMI</span>
-<h2>Curiosity is the common thread.</h2>
-<p>Farris Khan. Security / ops tinkerer.<br>A place for notes, projects, and the things I learn along the way.</p>
-<div class="credentials">
-<div>
-<strong>Microsoft Certified: Security Operations Analyst Associate</strong>
-<span>SC-200 · In Progress</span>
-</div>
-<div>
-<strong>Microsoft Certified: Azure Administrator Associate</strong>
-<span>AZ-104 · In Progress</span>
-</div>
-</div>
-<div class="socials" aria-label="Social profiles">github <span>·</span> twitter <span>·</span> linkedin <small>profile links coming soon</small>
-</div>
-</div>
-<section class="terminal" aria-labelledby="terminal-title">
-<div class="panel-bar">
-<h2 id="terminal-title">~/ EXPLORE THE SITE</h2>
-<span>LOCAL SHELL</span>
-</div>
-<div class="terminal-body">
-<div id="terminal-output" role="log" aria-label="Terminal output">
-<p>
-<span class="accent">Welcome, visitor.</span>
-<br>A tiny shell for a curious mind.<br>Try <strong>help</strong>, <strong>ls</strong>, <strong>whoami</strong>, or <strong>cat</strong>.</p>
-</div>
-<form id="terminal-form" autocomplete="off">
-<label for="terminal-input">
-<span class="accent">visitor:~$</span>
-<span class="sr-only">Enter a site command</span>
-</label>
-<input id="terminal-input" name="command" placeholder="help" spellcheck="false" maxlength="120">
-<button type="submit" aria-label="Run command">↵</button>
-</form>
-</div>
-<div class="panel-bottom">Site navigation only. Commands run in your browser.</div>
-</section>
-</section>
-</main>
-<footer class="site-footer wrap">
-<span>© <span id="year">2026</span> khanfarris</span>
-
-<a href="#main">Back to top ↑</a>
-</footer>
-<dialog id="command-dialog" aria-labelledby="command-title">
-<div class="command-heading">
-<h2 id="command-title">Where to?</h2>
-<button id="close-command" aria-label="Close command menu">Esc</button>
-</div>
-<label class="sr-only" for="command-search">Search pages</label>
-<input id="command-search" type="search" placeholder="Search writeups and study notes…" autocomplete="off">
-<div id="command-results">
-</div>
-<p class="command-help">↑ ↓ navigate <span>↵ open</span> <span>esc close</span>
-</p>
-</dialog>
-</body>
-</html>
+<body class="khanos-home"><a class="khanos-skip" href="#main">Skip to workspace</a><div id="khanos-root"><main id="main" class="khanos-fallback"><header><span class="eyebrow">KHANOS / PERSONAL WORKSPACE</span><h1>Farris Khan.</h1><p>Security / ops tinkerer. Taking things apart, figuring out what talks to what, and writing down what I find.</p><p>Microsoft Certified: Security Operations Analyst Associate (SC-200) · In Progress<br>Microsoft Certified: Azure Administrator Associate (AZ-104) · In Progress</p><nav><a href="lifx-pentest.html">LIFX investigation ↗</a><a href="samsung-tv-pentest.html">Samsung TV investigation ↗</a><a href="knowledge.html">Knowledge base ↗</a><a href="shiftrun/">Shiftrun ↗</a></nav><noscript><p>The interactive desktop uses JavaScript. Every study note and investigation is available below.</p></noscript></header><h2>Study notes</h2><div class="fallback-studies">
+<!-- KHANOS STUDIES START -->
+<a class="fallback-note" href="kb-private-addressing.html"><strong>Private IPv4 &amp; NAT</strong><span>A private IP identifies a device inside a network. NAT lets devices using private addresses communicate through an internet-facing address.</span></a>
+<a class="fallback-note" href="kb-subnetting.html"><strong>Subnetting</strong><span>Subnetting divides an IP address range into smaller networks. The subnet mask tells a device which addresses are local and which need a router.</span></a>
+<a class="fallback-note" href="kb-vlsm.html"><strong>VLSM</strong><span>Variable Length Subnet Masking gives each subnet a size that fits its needs, instead of giving every department the same-sized block.</span></a>
+<a class="fallback-note" href="kb-vlans.html"><strong>VLANs</strong><span>A VLAN makes one physical switch behave like several separate local networks. Devices share a local broadcast network only when their ports belong to the same VLAN.</span></a>
+<a class="fallback-note" href="kb-arp.html"><strong>ARP</strong><span>ARP finds the MAC address needed to deliver IPv4 traffic to the next device on a local network. For a remote destination, that device is usually your gateway.</span></a>
+<a class="fallback-note" href="kb-dns.html"><strong>DNS</strong><span>DNS translates names such as portal.example.com into information computers can use, often an IP address. It helps find a destination; it does not establish the connection.</span></a>
+<a class="fallback-note" href="kb-dhcp.html"><strong>DHCP</strong><span>DHCP automatically gives a device an IP address and the network settings it needs. The address is borrowed for a lease period, rather than manually typed into every computer.</span></a>
+<a class="fallback-note" href="kb-syslog.html"><strong>Syslog</strong><span>Syslog is a common way for devices and applications to send event messages to a central place. Instead of opening every firewall or server, an analyst can review their messages together.</span></a>
+<a class="fallback-note" href="kb-mdr.html"><strong>EDR, MDR, and XDR</strong><span>EDR watches devices. XDR brings signals from several security areas together. MDR provides people and processes to investigate and respond using those tools.</span></a>
+<a class="fallback-note" href="kb-siem.html"><strong>SIEM</strong><span>A SIEM collects searchable security data from different systems and applies detection rules. It helps an analyst investigate a sequence of events across the environment.</span></a>
+<a class="fallback-note" href="kb-ztna-sase.html"><strong>ZTNA / SASE</strong><span>ZTNA checks who is requesting access and the conditions of that request before allowing a path to a resource. SASE combines secure access with wider networking and security services.</span></a>
+<a class="fallback-note" href="kb-email-auth.html"><strong>Email authentication</strong><span>SPF, DKIM, and DMARC help check whether a message is authorized to use a domain. They do not prove that the sender is honest or that the request is safe.</span></a>
+<a class="fallback-note" href="kb-bec.html"><strong>Business email compromise</strong><span>Business email compromise is a scam that uses a believable business conversation to trick someone into sending money, sharing information, or changing an important process.</span></a>
+<a class="fallback-note" href="kb-identity.html"><strong>Risky sign-ins</strong><span>A risky sign-in is an authentication event with signals that deserve investigation. The signal helps prioritize work; the surrounding evidence determines whether an account is compromised.</span></a>
+<a class="fallback-note" href="kb-windows-domain.html"><strong>Active Directory</strong><span>Active Directory Domain Services keeps a shared directory of users, computers, and groups. Domain controllers use it to support domain authentication and centralized administration.</span></a>
+<a class="fallback-note" href="kb-file-shares.html"><strong>File shares</strong><span>A file share lets other computers access a folder over the network. The network path finds the server and share; the user’s permissions decide what they can do there.</span></a>
+<a class="fallback-note" href="kb-windows-events.html"><strong>Windows events</strong><span>Windows event logs record activity on a computer. Event IDs tell you what kind of event was recorded; the event’s fields explain who, where, when, and how.</span></a>
+<a class="fallback-note" href="kb-tls.html"><strong>TLS</strong><span>TLS protects data in transit by encrypting it and checking that it has not been changed. In a normal HTTPS connection, it also helps the browser verify the server’s identity.</span></a>
+<a class="fallback-note" href="kb-tcp.html"><strong>TCP</strong><span>TCP carries an ordered stream of bytes between two endpoints. It tracks delivery and retransmits missing data so applications do not have to handle ordinary packet loss themselves.</span></a>
+<!-- KHANOS STUDIES END -->
+</div></main></div></body></html>

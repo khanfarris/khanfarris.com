@@ -1,0 +1,6 @@
+/* Shared tokens for the five KhanOS palettes. */
+:root,:root[data-theme="crimson"]{--p-base:11 12 15;--p-panel:23 24 29;--p-ink:230 232 237;--p-muted:183 188 199;--p-faint:141 148 163;--p-accent:227 76 103;--p-secondary:189 41 69;--p-edge:85 90 102;}
+:root[data-theme="glacier"]{--p-base:12 20 34;--p-panel:22 35 56;--p-ink:231 242 250;--p-muted:169 194 213;--p-faint:129 159 184;--p-accent:155 217 243;--p-secondary:53 127 175;--p-edge:104 142 173;}
+:root[data-theme="orchid"]{--p-base:18 16 28;--p-panel:33 27 50;--p-ink:240 234 248;--p-muted:194 179 213;--p-faint:160 145 184;--p-accent:237 177 203;--p-secondary:149 108 218;--p-edge:150 117 177;}
+:root[data-theme="verdant"]{--p-base:7 19 15;--p-panel:17 37 29;--p-ink:224 242 228;--p-muted:167 198 178;--p-faint:128 167 142;--p-accent:183 244 171;--p-secondary:67 142 117;--p-edge:114 156 122;}
+:root[data-theme="ember"]{--p-base:22 18 15;--p-panel:41 32 25;--p-ink:245 234 218;--p-muted:204 185 158;--p-faint:171 146 119;--p-accent:237 207 150;--p-secondary:199 107 64;--p-edge:172 133 96;}

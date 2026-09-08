@@ -14,19 +14,27 @@ Static portfolio and security study notes, published through the existing GitHub
 3. Preview the site through a local HTTP server. Review the article and directory before publishing.
 4. Commit the source and generated pages together through GitHub Desktop, then push when ready to publish.
 
-The builder writes `kb-*.html`, `knowledge.html`, `knowledge-index.js`, and the marked study-archive section in `index.html`. All article cards and note counts update from the same source. Add an article to the data file and rebuild to include it throughout the site. Edit the source data or builder rather than generated article pages. The three opening previews are selected by slug in the builder's `featured` list; every other article follows automatically.
+The builder writes `kb-*.html`, `knowledge.html`, `knowledge-index.js`, `khanos-content.js`, and the marked fallback study links in `index.html`. KhanOS uses the generated content for its constellation, reader, shell, and search. Add an article to the data file and rebuild to include it throughout the site. Archived articles remain accessible at their existing URLs and are excluded from discovery. Edit the source data or builder rather than generated article pages.
+
+## KhanOS
+
+The homepage is the KhanOS desktop. Whoami and Local Shell open initially; the dock opens the constellation, reader, investigations, and search. Whoami fits its content until manually resized. Double-click a constellation node or press Enter on it to open its note. Existing article URLs and Shiftrun remain available.
+
+Crimson is the default palette: charcoal surfaces, crimson controls, and a midnight-blue particle orbit. The menu offers five palettes without resetting open windows. Theme links use `?theme=crimson`, `glacier`, `orchid`, `verdant`, or `ember`.
+
+`khanos.js` manages the desktop. `khanos-common.css`, `khanos-base.css`, and `khanos.css` provide its styles; `khanos-palettes.js` and `palette-tokens.css` contain the matching color values. The reader calls `StudyExercises.mount(container)` after inserting each article, using the same activities as the standalone study pages.
 
 ## Shared files
 
 - `knowledge.css` styles the directory and study pages.
-- `study-showcase.css` and `study-showcase.js` provide the homepage's animated, scrollable archive. It supports native swiping, mouse dragging, arrow buttons, keyboard navigation, and a position slider. Motion can be paused and respects the reduced-motion preference.
+- `study-showcase.css` and `study-showcase.js` retain the previous scrollable archive implementation. KhanOS now provides the homepage constellation; motion can be paused and respects the reduced-motion preference.
 - `knowledge.js` provides filtering and the shuffled recall deck.
 - `study-exercises.js` supplies eight local interactive exercises: subnetting, VLAN routing, ARP next-hop resolution and caching, DHCP, syslog filtering, incident response roles, Microsoft 365 access, and TCP header sizing. Their calculation and policy models are checked by `node scripts/validate-knowledge.cjs`.
 - `knowledge-index.js` supplies search metadata and recall questions. Load it before `lab.js`.
 - `reading.js` adds article navigation, progress, and code-copy controls.
 - `lab.js` provides site search and homepage interactions.
 
-Article content, directory links, and the horizontally scrollable homepage cards remain available without JavaScript. The investigation pages are retained. The retired ports, protocols, and Linux-command pages have been removed. `typing-test.html` remains available by direct URL and is intentionally absent from navigation, search, and the homepage terminal listing.
+Article content, directory links, and homepage fallback links remain available without JavaScript. The investigation pages are retained. The retired ports, protocols, and Linux-command pages have been removed. `typing-test.html` remains available by direct URL and is intentionally absent from navigation, search, and the homepage terminal listing.
 
 ## Editorial scope
 

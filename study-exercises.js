@@ -186,6 +186,15 @@
       const update=()=>{const n=Number(by(box,'#tcp-options').value),r=models.tcp(n);by(box,'#tcp-option-count').textContent=n;by(box,'#tcp-header-count').textContent=r.header+' bytes';by(box,'.tcp-byte-grid').innerHTML=Array.from({length:r.header},(_,i)=>`<span class="tcp-byte ${i<20?'base-byte':i<20+n?'option-byte':'padding-byte'}" aria-hidden="true">${i<20?'HDR':i<20+n?'OPT':'PAD'}</span>`).join('');by(box,'.tcp-byte-grid').setAttribute('aria-label',`20 base bytes, ${n} option bytes, ${r.padding} padding bytes. ${r.header} bytes total.`);by(box,'.exercise-result').innerHTML=status('Data Offset = '+r.offset,`20 + ${n} + ${r.padding} = ${r.header} header bytes. Divide by 4: the TCP Data Offset field stores ${r.offset}. The next byte is the start of the payload, ${r.header} bytes from the beginning of this TCP header.`,true);};on(box,'#tcp-options','input',update);update();
     }
   };
-  document.querySelectorAll('[data-exercise]').forEach(section=>{const setup=setups[section.dataset.exercise];if(setup)setup(section.querySelector('.exercise-mount'));});
-  document.querySelectorAll('.network-stage').forEach(stage=>{stage.tabIndex=0;stage.setAttribute('role','region');stage.setAttribute('aria-label','Interactive network diagram; scroll horizontally on small screens.');});
+  const mounted=new WeakSet();
+  function mount(container=document){
+    container.querySelectorAll('[data-exercise]').forEach(section=>{
+      const setup=setups[section.dataset.exercise],box=section.querySelector('.exercise-mount');
+      if(!setup||!box||mounted.has(box))return;
+      setup(box);mounted.add(box);
+      box.querySelectorAll('.network-stage').forEach(stage=>{stage.tabIndex=0;stage.setAttribute('role','region');stage.setAttribute('aria-label','Interactive network diagram; scroll horizontally on small screens.');});
+    });
+  }
+  root.StudyExercises={mount};
+  mount();
 })(globalThis);
