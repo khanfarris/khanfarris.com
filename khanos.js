@@ -23,6 +23,7 @@
   root.innerHTML = `<header class="hybrid-top"><div><a class="hybrid-brand" href="index.html">Khan<span>OS</span></a><span class="edition">PERSONAL WORKSPACE</span></div><div><details class="palette-menu"><summary aria-label="Choose color palette"><i class="current-swatch" aria-hidden="true"></i><span class="current-palette">${palette.name}</span><span aria-hidden="true">⌄</span></summary><div class="palette-options"><span class="eyebrow">COLOR / ATMOSPHERE</span>${window.KhanThemes.list.map(p=>`<button data-palette="${p.id}" aria-pressed="${p.id===palette.id}"><span class="palette-dots" aria-hidden="true">${p.swatches.map(c=>`<i style="background:${c}"></i>`).join('')}</span><span>${p.name}<small>${p.subtitle}</small></span><b aria-hidden="true">${p.id===palette.id?'✓':'↗'}</b></button>`).join('')}</div></details><button data-reset>Reset layout</button><button data-motion aria-pressed="${state.motion}">${state.motion?'Pause motion':'Enable motion'}</button><button class="top-search" data-app="search" aria-label="Search notes"><span>⌕ Search</span><kbd>CTRL K</kbd></button><a class="all-directions" href="shiftrun/">Shiftrun ↗</a></div></header>
     <main id="main" class="hybrid-workspace" tabindex="-1" aria-label="Farris Khan’s interactive desktop"><canvas id="signal-backdrop" aria-hidden="true"></canvas><div class="ambient-vignette"></div><span class="ambient-wordmark" aria-hidden="true">k/f</span>
     ${windowHTML('profile','Whoami','k/f',`<div class="window-content identity-card"><div class="identity-monogram" aria-hidden="true">k/f</div><h1>Farris Khan.</h1><p class="role">security / ops tinkerer</p><p class="bio">Taking things apart.<br>Figuring out what talks to what.<br>Writing down what I find.</p><div class="identity-studies"><small>MICROSOFT CERTIFICATIONS</small><div><strong>Security Operations Analyst Associate</strong><span>SC-200 · In Progress</span></div><div><strong>Azure Administrator Associate</strong><span>AZ-104 · In Progress</span></div></div></div>`)}
+    <aside class="featured-project" aria-labelledby="featured-title"><header class="featured-bar"><span class="window-caption"><i aria-hidden="true">▣</i>Featured item</span></header><div class="featured-content"><span class="featured-category">SECURITY OPERATIONS / GAME</span><h2 id="featured-title">Shiftrun<span aria-hidden="true">.</span></h2><p>Work a simulated security shift. Investigate incidents, weigh the evidence, and practice response decisions.</p><a class="featured-launch" href="shiftrun/">Launch Shiftrun <span aria-hidden="true">↗</span></a></div></aside>
     ${windowHTML('shell','Local shell','>_',`<div class="shell-surface"><div class="shell-session"><span><i aria-hidden="true"></i>visitor@khanfarris</span><span>~/ personal lab</span></div><div class="shell-scroll" id="terminal-output" role="log" aria-label="Terminal output" aria-relevant="additions text"><div class="shell-welcome"><span class="shell-overline">KHANOS / LOCAL SHELL</span><h2>Welcome, visitor<span>.</span></h2><p>A tiny shell for a curious mind.<br>Try <strong>help</strong>, <strong>ls</strong>, <strong>whoami</strong>, or <strong>cat</strong>.</p><div class="shell-starters" aria-label="Try a command"><button data-command="help"><span>01</span>help <b>↵</b></button><button data-command="ls"><span>02</span>ls <b>↵</b></button><button data-command="open dns"><span>03</span>open dns <b>↵</b></button></div></div></div><form id="terminal-form" autocomplete="off"><label for="terminal-input"><span>visitor:~$</span><span class="sr-only">Enter a site command</span></label><input id="terminal-input" name="command" placeholder="help" spellcheck="false" autocapitalize="off" maxlength="120"><button type="submit" aria-label="Run command">↵</button></form><div class="shell-footer"><span>Site navigation only. Commands run in your browser.</span><span>↑ ↓ HISTORY</span></div></div>`)}
     ${windowHTML('knowledge','Knowledge / Constellation','⌘',`<div class="knowledge-tools"><label class="knowledge-search"><span aria-hidden="true">⌕</span><input id="knowledge-query" type="search" aria-label="Filter study notes" placeholder="Find a concept…" autocomplete="off"></label><div class="map-mode" role="group" aria-label="Knowledge display"><button data-mode="map" aria-pressed="true">Map</button><button data-mode="list" aria-pressed="false">List</button></div></div>
       <div class="knowledge-categories" role="group" aria-label="Filter by subject"><button data-category="All" aria-pressed="true">All subjects</button>${categories.map(c=>`<button data-category="${esc(c)}" aria-pressed="false" aria-label="${esc(c)}"><i style="--chip:${colors[c]||'#b7f4ab'}" aria-hidden="true"></i>${esc(shortCategories[c]||c)}</button>`).join('')}</div>
@@ -39,6 +40,21 @@
   const windows = new Map($$('[data-window]').map(el => [el.dataset.window, el]));
   const restores = new Map();
   const manuallySized = new Set();
+  const featured = $('.featured-project');
+  const featuredInline = matchMedia('(max-width:1100px), (max-height:1019px)');
+  function placeFeatured() {
+    const parent=featuredInline.matches ? $('.identity-card') : workspace;
+    if(featured.parentElement!==parent)parent.append(featured);
+    featured.classList.toggle('is-inline',featuredInline.matches);
+    if(!featuredInline.matches){
+      const profile=windows.get('profile');
+      if(!profile.hidden && !profile.classList.contains('maximized')){
+        Object.assign(featured.style,{left:profile.offsetLeft+'px',top:(profile.offsetTop+profile.offsetHeight+22)+'px',width:profile.offsetWidth+'px'});
+      }
+    }else featured.removeAttribute('style');
+  }
+  placeFeatured();
+  featuredInline.addEventListener('change',()=>{placeFeatured();fitProfile();});
   function fitProfile() {
     const el=windows.get('profile');
     if(mobile.matches||el.hidden||el.classList.contains('maximized')||manuallySized.has('profile'))return;
@@ -98,6 +114,7 @@
   function geometry(el) {return {x:el.offsetLeft,y:el.offsetTop,w:el.offsetWidth,h:el.offsetHeight};}
   function applyGeometry(el, box) {
     Object.assign(el.style,{left:box.x+'px',top:box.y+'px',width:box.w+'px',height:box.h+'px'});
+    if(el.dataset.window==='profile')placeFeatured();
   }
   function fitted(el, box) {
     const css=getComputedStyle(el), availableW=Math.max(280,workspace.clientWidth-24), availableH=Math.max(220,workspace.clientHeight-126);
