@@ -104,7 +104,7 @@
 | order by TimeGenerated desc</code></pre>
           <p><code>where</code> filters rows; <code>project</code> chooses columns; <code>order by</code> sorts them. <strong>EventID is case-sensitive</strong>—<code>EventId</code> is a different name.</p>
           <figure>
-            <a href="assets/investigations/soc-honeypot/failed-logon.jpg" target="_blank" rel="noopener" aria-label="Open the full Log Analytics failed logon screenshot in a new tab"><img src="assets/investigations/soc-honeypot/failed-logon.jpg" width="1600" height="822" loading="lazy" alt="Azure Log Analytics showing a 4625 event for Administrator on DC-CORP-CENT-2, with a source IP and logon type 3."></a>
+            <a href="assets/investigations/soc-honeypot/failed-logon.jpg" target="_blank" rel="noopener" aria-label="Open the full Log Analytics failed logon image in a new tab"><img src="assets/investigations/soc-honeypot/failed-logon.jpg" width="1600" height="822" loading="lazy" alt="Azure Log Analytics showing a 4625 event for Administrator on DC-CORP-CENT-2, with a source IP and logon type 3."></a>
             <figcaption><span>Evidence 01</span> A Windows security event after collection, viewed in <strong>Azure Log Analytics</strong>. The expanded record shows 4625 and logon type 3 (network). Select the image to read it at full size.</figcaption>
           </figure>
         </div>
@@ -136,7 +136,7 @@
           <figcaption><span>Evidence 03</span> A results excerpt from <strong>Azure Log Analytics</strong>, displayed newest first. Read upward from the bottom to follow the failures to the lockout. Other Windows events are also visible in this unfiltered excerpt.</figcaption>
         </figure>
       </details>
-      <p><strong>What this supports:</strong> the VM received failed login attempts, and the collection and mapping worked. These screenshots alone do not establish whether every login attempt failed. In an investigation, I would also review successful logins and compare the account, source address, time, and logon type.</p>
+      <p><strong>What this supports:</strong> the VM received failed login attempts, and the collection and mapping worked. My saved lab screenshots alone do not establish whether every login attempt failed. In an investigation, I would also review successful logins and compare the account, source address, time, and logon type.</p>
     </section>
 
     <section class="article-section" id="remember">
