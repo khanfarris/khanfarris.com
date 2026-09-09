@@ -33,11 +33,11 @@
       <div class="knowledge-categories" role="group" aria-label="Filter by subject"><button data-category="All" aria-pressed="true">All subjects</button>${categories.map(c=>`<button data-category="${esc(c)}" aria-pressed="false" aria-label="${esc(c)}"><i style="--chip:${colors[c]||'#b7f4ab'}" aria-hidden="true"></i>${esc(shortCategories[c]||c)}</button>`).join('')}</div>
       <div class="knowledge-body"><div class="graph-frame" aria-label="Connected study notes"><div class="graph-space"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg><div class="graph-nodes"></div></div><p class="graph-empty" hidden>No matching concepts.<br>Try a different search or subject.</p><div class="graph-caption"><span>SELECT TO EXPLORE · DOUBLE-CLICK TO OPEN</span><b>${notes.length} NOTES</b></div></div><div class="knowledge-list" aria-label="Study note list" hidden></div><aside class="knowledge-detail" aria-label="Selected study note"></aside></div>
       <footer class="knowledge-footer"><span id="knowledge-count" aria-live="polite"></span><button data-trace aria-pressed="false">Trace connections</button></footer>`,true)}
-    ${windowHTML('cases','Investigations','▣','<div class="window-content case-content"></div>',true)}
+    ${windowHTML('cases','Labs','▣','<div class="window-content case-content"></div>',true)}
     ${windowHTML('note','Study note','≡','<article class="window-content note-sheet"></article>',true)}
     ${windowHTML('search','Search the archive','⌕','<div class="window-content search-body"><input class="command-search" aria-label="Search all study notes" type="search" placeholder="What are you exploring?" autocomplete="off"><span class="eyebrow">STUDY NOTES</span><div class="command-results"></div></div>',true)}
     <div class="desktop-line"><b>KHANFARRIS</b><span>PERSONAL LAB / ${notes.length} NOTES</span></div><span class="desktop-label">© ${new Date().getFullYear()} KHANFARRIS</span>
-    <nav class="hybrid-dock" aria-label="Desktop apps">${[['profile',userIcon,'Whoami'],['knowledge','⌘','Knowledge'],['note','≡','Reader'],['cases','▣','Cases'],['featured',shiftrunIcon,'Shiftrun'],['shell','>_','Shell'],['search','⌕','Search']].map(([id,icon,label])=>{const button=`<button data-app="${id}" aria-controls="app-${id}" ${id==='note'?'hidden':''} ${id==='featured'?'aria-describedby="shiftrun-dock-hint"':''}><b aria-hidden="true">${icon}</b><span>${label}</span></button>`;return id==='featured'?`<div class="dock-shiftrun">${button}<div class="dock-launch-menu"><a href="shiftrun/">Launch Shiftrun <span aria-hidden="true">↗</span></a></div><span id="shiftrun-dock-hint" class="sr-only">Double-click to launch Shiftrun. Press Arrow Up for the launch link.</span></div>`:button;}).join('')}</nav><span class="sr-only" id="desktop-status" role="status"></span></main>`;
+    <nav class="hybrid-dock" aria-label="Desktop apps">${[['profile',userIcon,'Whoami'],['knowledge','⌘','Knowledge'],['note','≡','Reader'],['cases','▣','Labs'],['featured',shiftrunIcon,'Shiftrun'],['shell','>_','Shell'],['search','⌕','Search']].map(([id,icon,label])=>{const button=`<button data-app="${id}" aria-controls="app-${id}" ${id==='note'?'hidden':''} ${id==='featured'?'aria-describedby="shiftrun-dock-hint"':''}><b aria-hidden="true">${icon}</b><span>${label}</span></button>`;return id==='featured'?`<div class="dock-shiftrun">${button}<div class="dock-launch-menu"><a href="shiftrun/">Launch Shiftrun <span aria-hidden="true">↗</span></a></div><span id="shiftrun-dock-hint" class="sr-only">Double-click to launch Shiftrun. Press Arrow Up for the launch link.</span></div>`:button;}).join('')}</nav><span class="sr-only" id="desktop-status" role="status"></span></main>`;
   const $ = selector => root.querySelector(selector);
   const $$ = selector => [...root.querySelectorAll(selector)];
   const workspace = $('.hybrid-workspace');
@@ -196,7 +196,8 @@
 
   const shellPages=[
     {name:'pwning my light bulbs',slug:'lifx',kind:'case',target:'lifx',aliases:['lifx-pentest']},
-    {name:'Azure honeypot investigation',slug:'soc',kind:'case',target:'soc',aliases:['soc-honeypot','honeypot','sentinel','azure']},
+    {name:'Azure honeypot lab',slug:'soc',kind:'case',target:'soc',aliases:['soc-honeypot','honeypot','sentinel','azure']},
+    {name:'Labs',slug:'labs',kind:'app',target:'cases',aliases:['lab','cases','investigations']},
     {name:'whoami',slug:'whoami',kind:'app',target:'profile',aliases:['about']},
     {name:'home lab',slug:'home',kind:'app',target:'shell',aliases:['index','shell']},
     {name:'knowledge base',slug:'knowledge',kind:'app',target:'knowledge',aliases:['notes']},
@@ -432,7 +433,7 @@
       ['Map','Add context to the source IPs.','I adapted a supplied workbook and location dataset. The saved map shows 849 failed logons across four source IP entries. Locations describe IP infrastructure; the map does not establish who was behind the attempts.']
     ]},
     lifx:{category:'IOT / LOCAL CONTROL',title:'A light bulb. An open invitation.',device:'LIFX',transport:'UDP / 56700',steps:[
-      ['Discover','Identify the device.','Host discovery identifies a Lifi Labs device on the local network. The investigation starts with a known device, its address, and its place on the LAN.'],
+      ['Discover','Identify the device.','Host discovery identifies a Lifi Labs device on the local network. The lab starts with a known device, its address, and its place on the LAN.'],
       ['Enumerate','A closed TCP port is not the end.','A TCP scan does not describe UDP services. LIFX local control uses UDP, so the next step changes the transport rather than assuming the device has nothing listening.'],
       ['Interpret','Silence has more than one meaning.','An open|filtered UDP result is inconclusive. A protocol-specific request provides better evidence than treating a silent response as a confirmed open service.'],
       ['Demonstrate','Speak the device’s language.','Correctly formed LIFX messages discover and control the bulb on the local network without credentials. The writeup connects service discovery to the device’s actual protocol.']
@@ -448,8 +449,8 @@
     activeCase=id;caseStep=step;
     const current=data.steps[step];
     const source=data.source||'KALI';
-    const completeLink=data.url?`<a class="case-back case-complete" href="${data.url}?theme=${palette.id}">Read the complete investigation <span aria-hidden="true">↗</span></a>`:'<button class="case-back" type="button" disabled>Read the complete investigation</button>';
-    $('.case-content').innerHTML=`<article class="case-reading"><span class="eyebrow">${data.category}</span><h2>${data.title}</h2><div class="case-schematic" aria-label="Illustrative connection from ${source} to ${data.device}"><strong>${source}</strong><span>${data.transport}<br>────────→</span><strong>${data.device}</strong></div><div class="case-step-head"><b>${String(step+1).padStart(2,'0')}</b><h3>${current[1]}</h3></div><p>${current[2]}</p><div class="case-step-buttons" role="group" aria-label="Investigation stages">${data.steps.map((s,i)=>`<button data-step="${i}" aria-pressed="${i===step}">${s[0]}</button>`).join('')}</div><div class="case-links"><button class="case-back" data-case-back>← All investigations</button>${completeLink}</div></article>`;
+    const completeLink=data.url?`<a class="case-back case-complete" href="${data.url}?theme=${palette.id}">Read the complete lab <span aria-hidden="true">↗</span></a>`:'<button class="case-back" type="button" disabled>Read the complete lab</button>';
+    $('.case-content').innerHTML=`<article class="case-reading"><span class="eyebrow">${data.category}</span><h2>${data.title}</h2><div class="case-schematic" aria-label="Illustrative connection from ${source} to ${data.device}"><strong>${source}</strong><span>${data.transport}<br>────────→</span><strong>${data.device}</strong></div><div class="case-step-head"><b>${String(step+1).padStart(2,'0')}</b><h3>${current[1]}</h3></div><p>${current[2]}</p><div class="case-step-buttons" role="group" aria-label="Lab stages">${data.steps.map((s,i)=>`<button data-step="${i}" aria-pressed="${i===step}">${s[0]}</button>`).join('')}</div><div class="case-links"><button class="case-back" data-case-back>← All labs</button>${completeLink}</div></article>`;
   }
   root.addEventListener('click',event=>{
     const target=event.target.closest('button,a');if(!target)return;
@@ -573,7 +574,7 @@
     const hash=location.hash.slice(1);
     if(hash==='knowledge')showWindow('knowledge',false);
     else if(hash==='about')showWindow('profile',false);
-    else if(hash==='investigations')showWindow('cases',false);
+    else if(['labs','cases','investigations'].includes(hash))showWindow('cases',false);
     else if(hash.startsWith('case-')&&investigations[hash.slice(5)])openShellPage({kind:'case',target:hash.slice(5)});
     else if(hash.startsWith('note-')&&bySlug.has(hash.slice(5)))openReader(hash.slice(5));
   }

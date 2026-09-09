@@ -3,17 +3,17 @@
   const main=document.querySelector('main');
   if(!main)return;
   const header=document.createElement('header');header.className='site-header wrap';
-  header.innerHTML='<a class="wordmark" href="index.html"><span class="brand-mark">[k/f]</span> khanfarris<span class="accent">_</span></a><nav aria-label="Main navigation"><a href="index.html#investigations">Writeups</a><a href="index.html#knowledge">Knowledge base</a><a href="index.html#about">Whoami</a></nav><button class="command-trigger" data-command>⌕ Jump to <kbd>Ctrl K</kbd></button>';
+  header.innerHTML='<a class="wordmark" href="index.html"><span class="brand-mark">[k/f]</span> khanfarris<span class="accent">_</span></a><nav aria-label="Main navigation"><a href="index.html#labs">Labs</a><a href="index.html#knowledge">Knowledge base</a><a href="index.html#about">Whoami</a></nav><button class="command-trigger" data-command>⌕ Jump to <kbd>Ctrl K</kbd></button>';
   document.body.prepend(header);
   main.id='main';const skip=document.createElement('a');skip.href='#main';skip.className='skip-link';skip.textContent='Skip to content';document.body.prepend(skip);
   const title=main.querySelector('.post-title');
   if(title){
     const study=document.body.classList.contains('kb-article');
     const words=main.textContent.trim().split(/\s+/).length;
-    const meta=document.createElement('p');meta.className='reading-meta';meta.textContent=Math.ceil(words/220)+' min read / '+(study?'STUDY NOTE':'FIELD INVESTIGATION');title.after(meta);
+    const meta=document.createElement('p');meta.className='reading-meta';meta.textContent=Math.ceil(words/220)+' min read / '+(study?'STUDY NOTE':'LAB NOTES');title.after(meta);
     const headings=Array.from(main.querySelectorAll('h2'));
     const toc=document.createElement('details');toc.className='toc';
-    const summary=document.createElement('summary');summary.textContent=(study?'In this note / ':'In this investigation / ')+headings.length+' sections';toc.append(summary);
+    const summary=document.createElement('summary');summary.textContent=(study?'In this note / ':'In this lab / ')+headings.length+' sections';toc.append(summary);
     const list=document.createElement('ol');
     headings.forEach((heading,i)=>{if(!heading.id)heading.id='section-'+(i+1);const li=document.createElement('li'),a=document.createElement('a');a.href='#'+heading.id;a.textContent=heading.textContent;li.append(a);list.append(li);});
     toc.append(list);const postMeta=main.querySelector('.post-meta');(postMeta||meta).after(toc);
@@ -23,7 +23,7 @@
       const text=pre.textContent;const button=document.createElement('button');button.className='copy-code';button.textContent='Copy';button.setAttribute('aria-label','Copy code block');
       button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(text);button.textContent='Copied';}catch{button.textContent='Select to copy';const range=document.createRange();range.selectNodeContents(pre.querySelector('code')||pre);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);}setTimeout(()=>button.textContent='Copy',1800);});pre.append(button);
     });
-    if(!study&&!location.pathname.includes('lifx')){const related=document.createElement('aside');related.className='related-reading';const label=document.createElement('span');label.className='eyebrow';label.textContent='NEXT INVESTIGATION';const link=document.createElement('a');link.href='lifx-pentest.html';link.textContent='pwning my light bulbs ↗';related.append(label,link);const footer=main.querySelector('footer');if(footer)footer.before(related);else main.append(related);}
+    if(!study&&!location.pathname.includes('lifx')){const related=document.createElement('aside');related.className='related-reading';const label=document.createElement('span');label.className='eyebrow';label.textContent='NEXT LAB';const link=document.createElement('a');link.href='lifx-pentest.html';link.textContent='pwning my light bulbs ↗';related.append(label,link);const footer=main.querySelector('footer');if(footer)footer.before(related);else main.append(related);}
   }
   const items=Array.from(main.querySelectorAll('.port-item,.protocol-item,.command-item'));
   if(items.length){

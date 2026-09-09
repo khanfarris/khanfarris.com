@@ -115,7 +115,7 @@ for(const file of fs.readdirSync(root).filter(file=>/\.(html|js)$/.test(file))){
  assert.ok(!/knowledge\.html|kb-[a-z0-9-]+\.html/.test(read(file)),`${file}: link to a retired knowledge page`);checks++;
 }
 assert.ok(!/<a\b[^>]*class="fallback-note"/.test(read('index.html')),'Fallback summaries must not link to removed pages');
-assert.ok(read('khanos.js').includes('<button class="case-back" type="button" disabled>Read the complete investigation</button>'));
+assert.ok(read('khanos.js').includes('<button class="case-back" type="button" disabled>Read the complete lab</button>'));
 assert.ok(read('khanos.js').includes('StudyExercises.mount('));
 assert.ok(!read('khanos.js').includes('original-exercise'));
 assert.ok(!read('khanos.js').includes('f/k'));

@@ -20,7 +20,7 @@ Study notes are published only within KhanOS. Link between note bodies with `hre
 
 ## KhanOS
 
-The homepage is the KhanOS desktop. Whoami, Featured item, and Local Shell open initially; the dock opens the constellation, Reader, investigations, and search. Whoami fits its content until manually resized. Double-click a constellation node or press Enter on it to open its note. Shiftrun remains available.
+The homepage is the KhanOS desktop. Whoami, Featured item, and Local Shell open initially; the dock opens the constellation, Reader, Labs, and search. Whoami fits its content until manually resized. Double-click a constellation node or press Enter on it to open its note. Shiftrun remains available. Use `open labs` in the shell or `index.html#labs` to open Labs. The earlier `#investigations` route remains supported for existing bookmarks.
 
 Crimson is the default palette: charcoal surfaces, crimson controls, and a midnight-blue particle orbit. The menu offers five palettes without resetting open windows. Theme links use `?theme=crimson`, `glacier`, `orchid`, `verdant`, or `ember`.
 
@@ -31,13 +31,13 @@ Crimson is the default palette: charcoal surfaces, crimson controls, and a midni
 - `knowledge.css` supplies the shared study and exercise styles used by KhanOS; retain it even though standalone study pages are gone.
 - `study-showcase.css` and `study-showcase.js` retain the previous scrollable archive implementation. KhanOS now provides the homepage constellation; motion can be paused and respects the reduced-motion preference.
 - `study-exercises.js` supplies local interactive exercises for subnetting, VLAN routing, ARP, DHCP, syslog, EDR/MDR roles, Microsoft 365 access, TCP headers, firewall rule order, route selection, switch learning, alert triage, phishing, vulnerability prioritization, and incident recovery decisions. Calculation boundaries, network behavior, and every evidence-case decision are checked by `node scripts/validate-knowledge.cjs`.
-- `knowledge-index.js` supplies search metadata to retained investigation pages and points each result into KhanOS Reader. Load it before `lab.js`.
+- `knowledge-index.js` supplies search metadata to retained lab pages and points each result into KhanOS Reader. Load it before `lab.js`.
 - `reading.js` adds article navigation, progress, and code-copy controls.
 - `lab.js` provides site search and homepage interactions.
 
-The homepage retains plain-text topic summaries without JavaScript. Full study notes and interactive exercises require KhanOS. The Azure honeypot investigation is available in Cases, the shell (`soc` or `honeypot`), and at `soc-honeypot.html`. Its “Read the complete investigation” link opens the step-by-step article, with saved screenshots under `assets/investigations/soc-honeypot/`. `investigation.css` and `investigation.js` provide its reading layout and palette continuity. The original LIFX investigation page is retained for a future writeup redesign; its complete-investigation button remains temporarily disabled in Cases. Their remaining knowledge navigation and search links now open KhanOS. The retired ports, protocols, and Linux-command pages have been removed. `typing-test.html` remains available by direct URL and is intentionally absent from navigation, search, and the homepage terminal listing.
+The homepage retains plain-text topic summaries without JavaScript. Full study notes and interactive exercises require KhanOS. The Azure honeypot lab is available in Labs, the shell (`soc` or `honeypot`), and at `soc-honeypot.html`. Its “Read the complete lab” link opens the step-by-step article, with saved screenshots under `assets/investigations/soc-honeypot/`. `investigation.css` and `investigation.js` provide its reading layout and palette continuity. The original LIFX lab page is retained for a future writeup redesign; its complete-lab button remains temporarily disabled in Labs. Their remaining knowledge navigation and search links now open KhanOS. The retired ports, protocols, and Linux-command pages have been removed. `typing-test.html` remains available by direct URL and is intentionally absent from navigation, search, and the homepage terminal listing.
 
-The Samsung TV investigation is archived. Its original `samsung-tv-pentest.html` and `Samsung_TV_Pentest_Runbook.pdf` remain available by direct URL. The article is labeled archived and has `noindex, nofollow` metadata; it is excluded from Cases, shell commands and listings, site search, homepage navigation, and related-investigation recommendations.
+The Samsung TV lab is archived. Its original `samsung-tv-pentest.html` and `Samsung_TV_Pentest_Runbook.pdf` remain available by direct URL. The article is labeled archived and has `noindex, nofollow` metadata; it is excluded from Labs, shell commands and listings, site search, homepage navigation, and related-lab recommendations.
 
 ## Editorial scope
 

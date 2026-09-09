@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Azure honeypot investigation — Farris Khan</title>
+  <title>Azure honeypot lab — Farris Khan</title>
   <meta name="description" content="A guided Azure honeypot lab: building a Windows VM, collecting failed logins with Azure Monitor Agent, and investigating the logs with KQL and a location map.">
   <link rel="stylesheet" href="khanos-common.css?v=khanos-1">
   <link rel="stylesheet" href="palette-tokens.css?v=khanos-1">
@@ -12,9 +12,9 @@
   <script src="investigation.js?v=soc-lab-1" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#investigation">Skip to investigation</a>
+  <a class="skip-link" href="#investigation">Skip to lab</a>
   <header class="investigation-bar">
-    <a href="index.html#investigations" data-workspace-link><span class="mono">[k/f]</span> <span>Investigations</span></a>
+    <a href="index.html#labs" data-workspace-link><span class="mono">[k/f]</span> <span>Labs</span></a>
     <span class="mono">KHANOS / LAB NOTES</span>
   </header>
   <main id="investigation" class="investigation">
@@ -23,7 +23,7 @@
       <h1>Following failed logins<br>from a VM to a map</h1>
       <p class="intro">I built a Windows honeypot in Azure to practice collecting and reading security logs. A honeypot is a computer deliberately exposed to attract activity that can be observed. The saved map shows 849 failed logons across four source IP entries.</p>
       <p class="byline">Farris Khan <span aria-hidden="true">·</span> September 2026 <span aria-hidden="true">·</span> About 6 minutes</p>
-      <nav class="article-jumps" aria-label="In this investigation">
+      <nav class="article-jumps" aria-label="In this lab">
         <a href="#build">The build <span aria-hidden="true">↓</span></a>
         <a href="#findings">What I found <span aria-hidden="true">↓</span></a>
         <a href="#remember">Things to remember <span aria-hidden="true">↓</span></a>
@@ -163,7 +163,7 @@
 
     <footer class="investigation-footer">
       <p>Based on the <a href="https://www.youtube.com/watch?v=g5JL2RIbThM">Azure honeypot tutorial I followed</a> and my saved lab screenshots. The steps describe this build; portal layouts may change.</p>
-      <a href="index.html#investigations" data-workspace-link>← Back to investigations</a>
+      <a href="index.html#labs" data-workspace-link>← Back to labs</a>
     </footer>
   </main>
 </body>

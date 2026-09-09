@@ -1,17 +1,17 @@
 (() => {
   'use strict';
   const pages = [
-    {name:'Azure honeypot investigation',url:'soc-honeypot.html',type:'Investigation',keywords:'soc azure sentinel windows ama failed logins 4625 honeypot'},
-    {name:'pwning my light bulbs',url:'lifx-pentest.html',type:'Investigation',keywords:'lifx iot udp 56700'},
+    {name:'Azure honeypot lab',url:'soc-honeypot.html',type:'Lab',keywords:'soc azure sentinel windows ama failed logins 4625 honeypot'},
+    {name:'pwning my light bulbs',url:'lifx-pentest.html',type:'Lab',keywords:'lifx iot udp 56700'},
     {name:'whoami',url:'index.html#about',type:'About',keywords:'farris khan certifications security azure'},
     {name:'home lab',url:'index.html',type:'Home',keywords:'map home'},
     {name:'knowledge base',url:'index.html#knowledge',type:'Knowledge constellation',keywords:'notes study review'}
   ].concat(window.knowledgePages || []);
   const $ = selector => document.querySelector(selector);
   if ($('#year')) $('#year').textContent = new Date().getFullYear();
-  // A schematic derived from active investigations; never contacts lab devices.
+  // A schematic derived from active labs; never contacts lab devices.
   const nodes = {
-    bulb:['DEVICE 01 / LIFX','A light bulb with an open door.','A local control protocol. No credentials required. Follow the packets from discovery to control.','lifx-pentest.html','Read the LIFX investigation'],
+    bulb:['DEVICE 01 / LIFX','A light bulb with an open door.','A local control protocol. No credentials required. Follow the packets from discovery to control.','lifx-pentest.html','Read the LIFX lab'],
     host:['WORKBENCH / KALI LINUX','Start with the right questions.','Discover the host. Identify the service. Understand the protocol. Follow the reasoning in the study archive.','index.html#knowledge','Explore the study notes']
   };
   document.querySelectorAll('[data-node]').forEach(button => button.addEventListener('click', () => {
@@ -24,7 +24,7 @@
   let dialog = $('#command-dialog');
   if (!dialog) {
     dialog=document.createElement('dialog'); dialog.id='command-dialog'; dialog.setAttribute('aria-labelledby','command-title');
-    dialog.innerHTML='<div class="command-heading"><h2 id="command-title">Where to?</h2><button id="close-command" aria-label="Close command menu">Esc</button></div><label class="sr-only" for="command-search">Search pages</label><input id="command-search" type="search" placeholder="Search writeups and study notes…" autocomplete="off"><div id="command-results"></div><p class="command-help">↑ ↓ navigate <span>↵ open</span><span>esc close</span></p>';
+    dialog.innerHTML='<div class="command-heading"><h2 id="command-title">Where to?</h2><button id="close-command" aria-label="Close command menu">Esc</button></div><label class="sr-only" for="command-search">Search pages</label><input id="command-search" type="search" placeholder="Search labs and study notes…" autocomplete="off"><div id="command-results"></div><p class="command-help">↑ ↓ navigate <span>↵ open</span><span>esc close</span></p>';
     document.body.append(dialog);
   }
   let selected=0;
