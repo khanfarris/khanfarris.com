@@ -196,7 +196,6 @@
 
   const shellPages=[
     {name:'pwning my light bulbs',slug:'lifx',kind:'case',target:'lifx',aliases:['lifx-pentest']},
-    {name:'pwning my TV',slug:'samsung',kind:'case',target:'samsung',aliases:['samsung-tv-pentest','tv']},
     {name:'whoami',slug:'whoami',kind:'app',target:'profile',aliases:['about']},
     {name:'home lab',slug:'home',kind:'app',target:'shell',aliases:['index','shell']},
     {name:'knowledge base',slug:'knowledge',kind:'app',target:'knowledge',aliases:['notes']},
@@ -429,18 +428,12 @@
       ['Enumerate','A closed TCP port is not the end.','A TCP scan does not describe UDP services. LIFX local control uses UDP, so the next step changes the transport rather than assuming the device has nothing listening.'],
       ['Interpret','Silence has more than one meaning.','An open|filtered UDP result is inconclusive. A protocol-specific request provides better evidence than treating a silent response as a confirmed open service.'],
       ['Demonstrate','Speak the device’s language.','Correctly formed LIFX messages discover and control the bulb on the local network without credentials. The writeup connects service discovery to the device’s actual protocol.']
-    ]},
-    samsung:{category:'IOT / API ENUMERATION',title:'What does a television expose?',device:'SAMSUNG',transport:'TCP / 8001 · 8002',steps:[
-      ['Discover','Locate the television.','The investigation starts with a Samsung TU7000-series television on the local network and identifies the device to examine.'],
-      ['Enumerate','Find the listening services.','Service enumeration identifies remote-control interfaces on TCP ports 8001 and 8002. An exposed interface becomes a lead for further investigation.'],
-      ['Interpret','Read the interface.','API responses reveal device information and the shape of the control interface. A reachable API is evidence of an exposed service; it is not, by itself, proof of compromise.'],
-      ['Conclude','An empty search is not assurance.','An empty exploit search does not establish that a device is secure. The finding is bounded by the interfaces observed and the checks actually performed.']
     ]}
   };
   let activeCase=null,caseStep=0;
   function renderCases() {
     activeCase=null;caseStep=0;
-    $('.case-content').innerHTML='<div class="case-launchers"><button data-case="lifx"><b aria-hidden="true">◉</b><span>LIFX bulb</span><small>UDP / 56700 ↗</small></button><button data-case="samsung"><b aria-hidden="true">▣</b><span>Samsung TV</span><small>API / LOCAL ↗</small></button></div>';
+    $('.case-content').innerHTML='<div class="case-launchers"><button data-case="lifx"><b aria-hidden="true">◉</b><span>LIFX bulb</span><small>UDP / 56700 ↗</small></button></div>';
   }
   function renderCase(id,step=0) {
     const data=investigations[id];if(!data)return;

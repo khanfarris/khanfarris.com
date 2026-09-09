@@ -23,7 +23,7 @@
       const text=pre.textContent;const button=document.createElement('button');button.className='copy-code';button.textContent='Copy';button.setAttribute('aria-label','Copy code block');
       button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(text);button.textContent='Copied';}catch{button.textContent='Select to copy';const range=document.createRange();range.selectNodeContents(pre.querySelector('code')||pre);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);}setTimeout(()=>button.textContent='Copy',1800);});pre.append(button);
     });
-    if(!study){const related=document.createElement('aside');related.className='related-reading';const label=document.createElement('span');label.className='eyebrow';label.textContent='NEXT INVESTIGATION';const link=document.createElement('a');const lifx=location.pathname.includes('lifx');link.href=lifx?'samsung-tv-pentest.html':'lifx-pentest.html';link.textContent=(lifx?'pwning my TV':'pwning my light bulbs')+' ↗';related.append(label,link);const footer=main.querySelector('footer');if(footer)footer.before(related);else main.append(related);}
+    if(!study&&!location.pathname.includes('lifx')){const related=document.createElement('aside');related.className='related-reading';const label=document.createElement('span');label.className='eyebrow';label.textContent='NEXT INVESTIGATION';const link=document.createElement('a');link.href='lifx-pentest.html';link.textContent='pwning my light bulbs ↗';related.append(label,link);const footer=main.querySelector('footer');if(footer)footer.before(related);else main.append(related);}
   }
   const items=Array.from(main.querySelectorAll('.port-item,.protocol-item,.command-item'));
   if(items.length){

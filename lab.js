@@ -2,17 +2,15 @@
   'use strict';
   const pages = [
     {name:'pwning my light bulbs',url:'lifx-pentest.html',type:'Investigation',keywords:'lifx iot udp 56700'},
-    {name:'pwning my TV',url:'samsung-tv-pentest.html',type:'Investigation',keywords:'samsung tizen tcp 8001'},
     {name:'whoami',url:'index.html#about',type:'About',keywords:'farris khan certifications security azure'},
     {name:'home lab',url:'index.html',type:'Home',keywords:'map home'},
     {name:'knowledge base',url:'index.html#knowledge',type:'Knowledge constellation',keywords:'notes study review'}
   ].concat(window.knowledgePages || []);
   const $ = selector => document.querySelector(selector);
   if ($('#year')) $('#year').textContent = new Date().getFullYear();
-  // A schematic derived from the two investigations; never contacts lab devices.
+  // A schematic derived from active investigations; never contacts lab devices.
   const nodes = {
     bulb:['DEVICE 01 / LIFX','A light bulb with an open door.','A local control protocol. No credentials required. Follow the packets from discovery to control.','lifx-pentest.html','Read the LIFX investigation'],
-    tv:['DEVICE 02 / SAMSUNG','More services. More questions.','A Tizen TV, a remote-control API, and a reminder: no public exploit does not mean no risk.','samsung-tv-pentest.html','Read the Samsung investigation'],
     host:['WORKBENCH / KALI LINUX','Start with the right questions.','Discover the host. Identify the service. Understand the protocol. Follow the reasoning in the study archive.','index.html#knowledge','Explore the study notes']
   };
   document.querySelectorAll('[data-node]').forEach(button => button.addEventListener('click', () => {
@@ -85,7 +83,6 @@
   const map=document.querySelector('.topology');if(!map)return;
   const traces={
     bulb:[['01 / DISCOVER','Host discovery identifies a Lifi Labs device on the LAN.'],['02 / WRONG TRANSPORT','All TCP ports are closed. That does not tell us about UDP.'],['03 / ASK DIFFERENTLY','UDP 56700 reports open|filtered. Silence alone is inconclusive.'],['04 / SPEAK THE PROTOCOL','A correctly formed LIFX request discovers and controls the bulb without credentials.']],
-    tv:[['01 / DISCOVER','Locate the Samsung TV on the local network.'],['02 / ENUMERATE','Identify the remote-control services on TCP 8001 and 8002.'],['03 / INSPECT','Examine the API and its authentication model. An exposed service is a lead, not proof of compromise.'],['04 / QUESTION','An empty exploit search is not a clean bill of health. Read the full investigation for the evidence.']],
     host:[['01 / ORIENT','Confirm the local interface and subnet before investigating.'],['02 / DISCOVER','Find the devices on your own network.'],['03 / ENUMERATE','Identify services and distinguish TCP from UDP.'],['04 / DOCUMENT','Record what you observed, what remains uncertain, and what you would test next.']]
   };
   let device='bulb',step=-1;

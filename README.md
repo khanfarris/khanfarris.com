@@ -37,6 +37,8 @@ Crimson is the default palette: charcoal surfaces, crimson controls, and a midni
 
 The homepage retains plain-text topic summaries without JavaScript. Full study notes and interactive exercises require KhanOS. The original investigation pages are retained for a future writeup redesign; “Read the complete investigation” is temporarily disabled in Cases. Their remaining knowledge navigation and search links now open KhanOS. The retired ports, protocols, and Linux-command pages have been removed. `typing-test.html` remains available by direct URL and is intentionally absent from navigation, search, and the homepage terminal listing.
 
+The Samsung TV investigation is archived. Its original `samsung-tv-pentest.html` and `Samsung_TV_Pentest_Runbook.pdf` remain available by direct URL. The article is labeled archived and has `noindex, nofollow` metadata; it is excluded from Cases, shell commands and listings, site search, homepage navigation, and related-investigation recommendations.
+
 ## Editorial scope
 
 Use broad, simple titles and explain unfamiliar terms before using them. Concept notes teach the subject; tool guides cover product navigation, evidence, and routine work, linking to the separate concept note for theory. Include practical support or security-analysis examples and use exercises where interaction explains a real distinction. Do not add a “The Connection” section.
