@@ -18,13 +18,15 @@
   const thumbnail = new URLSearchParams(location.search).has('thumbnail');
   document.body.classList.toggle('in-preview', thumbnail);
   document.body.classList.toggle('reduced-motion', reduced.matches);
+  const backgrounds=window.KhanBackgrounds;
+  let background=backgrounds.initial(location.search);
   const state = {selected:bySlug.has('subnetting') ? 'subnetting' : notes[0].slug, category:'All', query:'', mode:'map', trace:false, active:'shell', z:10, motion:!reduced.matches, reader:null};
   const userIcon = '<svg class="user-icon" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>';
   // Reuse Shiftrun's Lucide shield; currentColor follows the dock's palette accent.
   const shiftrunIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>';
   const windowHTML = (id, title, icon, content, hidden=false) => `<section id="app-${id}" class="hybrid-window window-${id}" data-window="${id}" role="region" aria-labelledby="title-${id}" tabindex="-1" ${hidden?'hidden':''}>
     <header class="window-bar"><span class="window-caption" id="title-${id}"><i aria-hidden="true">${icon}</i>${title}</span><div class="window-controls"><button type="button" data-minimize aria-label="Minimize ${title}" title="Minimize">−</button><button type="button" data-maximize aria-label="Maximize ${title}" title="Maximize">□</button><button type="button" data-close aria-label="Close ${title}" title="Close">×</button></div></header>${content}<svg class="window-tracer" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect pathLength="1000"/></svg><button type="button" class="resize-grip" aria-label="Resize ${title} with arrow keys" title="Drag to resize; arrow keys when focused">◢</button></section>`;
-  root.innerHTML = `<header class="hybrid-top"><div><a class="hybrid-brand" href="index.html">Khan<span>OS</span></a><span class="edition">PERSONAL WORKSPACE</span></div><div><details class="palette-menu"><summary aria-label="Choose color palette"><i class="current-swatch" aria-hidden="true"></i><span class="current-palette">${palette.name}</span><span aria-hidden="true">⌄</span></summary><div class="palette-options"><span class="eyebrow">COLOR / ATMOSPHERE</span>${window.KhanThemes.list.map(p=>`<button data-palette="${p.id}" aria-pressed="${p.id===palette.id}"><span class="palette-dots" aria-hidden="true">${p.swatches.map(c=>`<i style="background:${c}"></i>`).join('')}</span><span>${p.name}<small>${p.subtitle}</small></span><b aria-hidden="true">${p.id===palette.id?'✓':'↗'}</b></button>`).join('')}</div></details><button data-reset>Reset layout</button><button data-motion aria-pressed="${state.motion}">${state.motion?'Pause motion':'Enable motion'}</button></div></header>
+  root.innerHTML = `<header class="hybrid-top"><div><a class="hybrid-brand" href="index.html">Khan<span>OS</span></a><span class="edition">PERSONAL WORKSPACE</span></div><div><details class="palette-menu workspace-menu"><summary aria-label="Choose color palette"><i class="current-swatch" aria-hidden="true"></i><span class="current-palette">${palette.name}</span><span aria-hidden="true">⌄</span></summary><div class="palette-options"><span class="eyebrow">COLOR / ATMOSPHERE</span>${window.KhanThemes.list.map(p=>`<button data-palette="${p.id}" aria-pressed="${p.id===palette.id}"><span class="palette-dots" aria-hidden="true">${p.swatches.map(c=>`<i style="background:${c}"></i>`).join('')}</span><span>${p.name}<small>${p.subtitle}</small></span><b aria-hidden="true">${p.id===palette.id?'✓':'↗'}</b></button>`).join('')}</div></details><details class="background-menu workspace-menu"><summary aria-label="Choose constellation background"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="10" ry="5" transform="rotate(-30 12 12)"/><circle cx="19" cy="5" r="1.5" fill="currentColor" stroke="none"/></svg><span class="background-label">Background · </span><span class="current-background">${background.name}</span><span aria-hidden="true">⌄</span></summary><div class="background-options"><span class="eyebrow">BACKGROUND / CONSTELLATION</span><div class="background-choices" role="group" aria-label="Constellation backgrounds">${backgrounds.list.map(item=>`<button type="button" data-background="${item.id}" aria-pressed="${item.id===background.id}"><canvas width="120" height="76" data-background-preview="${item.id}" aria-hidden="true"></canvas><span>${item.name}<small>${item.subtitle}</small></span><b aria-hidden="true">${item.id===background.id?'✓':'↗'}</b></button>`).join('')}</div><small class="background-saved">Saved on this device</small></div></details><button data-reset>Reset layout</button><button data-motion aria-pressed="${state.motion}">${state.motion?'Pause motion':'Enable motion'}</button></div></header>
     <main id="main" class="hybrid-workspace" tabindex="-1" aria-label="Farris Khan’s interactive desktop"><canvas id="signal-backdrop" aria-hidden="true"></canvas><div class="ambient-vignette"></div><span class="ambient-wordmark" aria-hidden="true">k/f</span>
     ${windowHTML('profile','Whoami',userIcon,`<div class="window-content identity-card"><div class="identity-monogram" aria-hidden="true">k/f</div><h1>Farris Khan<span>.</span></h1><p class="role">security / ops tinkerer</p><div class="identity-studies identity-education"><small>EDUCATION</small><div><strong>Bachelor of Science in Cybersecurity</strong><span>University of South Florida</span></div></div><div class="identity-studies"><small>CERTIFICATIONS</small><div><strong>Security Operations Analyst Associate</strong><span>SC-200 · In Progress</span></div><div><strong>Azure Administrator Associate</strong><span>AZ-104 · In Progress</span></div></div></div>`)}
     ${windowHTML('featured','Featured item',shiftrunIcon,`<div class="window-content featured-content"><span class="featured-category">SECURITY OPERATIONS / GAME</span><h2>Shiftrun<span aria-hidden="true">.</span></h2><p>Work a simulated security shift. Investigate incidents, weigh the evidence, and practice response decisions.</p><a class="featured-launch" href="shiftrun/">Launch Shiftrun <span aria-hidden="true">↗</span></a></div>`)}
@@ -412,7 +414,7 @@
     $('.palette-menu').open=false;
     if(updateURL){const url=new URL(location.href);url.searchParams.set('theme',id);history.replaceState(null,'',url);announce(palette.name+' palette selected.');}
     if(activeCase)renderCase(activeCase,caseStep);
-    renderKnowledge();paintSignalOnce();
+    renderKnowledge();paintSignalOnce();paintBackgroundPreviews();
   }
   $('.command-search').addEventListener('input',renderSearch);
   $('.command-search').addEventListener('keydown',e=>{
@@ -462,6 +464,7 @@
   root.addEventListener('click',event=>{
     const target=event.target.closest('button,a');if(!target)return;
     if (target.hasAttribute('data-palette')) {setPalette(target.dataset.palette);return;}
+    if (target.hasAttribute('data-background')) {setBackground(target.dataset.background);return;}
     if (target.hasAttribute('data-command')) {runShell(target.dataset.command);return;}
     if (target.hasAttribute('data-shell-page')) {openShellPage(shellPages[+target.dataset.shellPage]);return;}
     if (target.hasAttribute('data-app')) {showWindow(target.dataset.app);return;}
@@ -498,21 +501,53 @@
   $('[data-reset]').onclick=resetLayout;
   document.addEventListener('keydown',event=>{
     if ((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='k') {event.preventDefault();showWindow('search');}
-    if (event.key==='Escape'&&$('.palette-menu').open) {event.preventDefault();$('.palette-menu').open=false;$('.palette-menu summary').focus();return;}
+    const openMenu=$('.workspace-menu[open]');
+    if (event.key==='Escape'&&openMenu) {event.preventDefault();openMenu.open=false;openMenu.querySelector('summary').focus();return;}
     if (event.key==='Escape'&&state.active&&!event.defaultPrevented) {event.preventDefault();hideWindow(state.active);}
   });
   document.addEventListener('pointerdown',event=>{
-    if(!event.target.closest('.palette-menu'))$('.palette-menu').open=false;
+    $$('.workspace-menu').forEach(menu=>{if(!menu.contains(event.target))menu.open=false;});
     if(!event.target.closest('.dock-shiftrun'))shiftrunDock.classList.remove('launch-open');
   });
 
-  // Signal's atmosphere is decorative. It never represents real network activity.
-  const canvas=$('#signal-backdrop'),ctx=canvas.getContext('2d');
-  const points=[];
-  for(let u=0;u<44;u++) for(let v=0;v<34;v++) {
-    const a=u/44*Math.PI*2,b=v/34*Math.PI*2,r=1.52+.47*Math.cos(b);
-    points.push({x:r*Math.cos(a),y:.47*Math.sin(b),z:r*Math.sin(a),band:v/34});
+  $$('.workspace-menu').forEach(menu=>{
+    menu.addEventListener('toggle',()=>{
+      if(!menu.open)return;
+      $$('.workspace-menu').forEach(other=>{if(other!==menu)other.open=false;});
+      if(menu.classList.contains('background-menu'))paintBackgroundPreviews();
+    });
+    menu.addEventListener('focusout',event=>{
+      if(event.relatedTarget&&!menu.contains(event.relatedTarget))menu.open=false;
+    });
+    menu.addEventListener('keydown',event=>{
+      if(!menu.open||!['ArrowDown','ArrowUp','Home','End'].includes(event.key))return;
+      const buttons=[...menu.querySelectorAll('button')], current=buttons.indexOf(document.activeElement);
+      const next=event.key==='Home'?0:event.key==='End'?buttons.length-1:event.key==='ArrowDown'?(current+1)%buttons.length:(current<=0?buttons.length-1:current-1);
+      event.preventDefault();buttons[next].focus();
+    });
+  });
+
+  function setBackground(id) {
+    const next=backgrounds.list.find(item=>item.id===id);if(!next)return;
+    background=next;backgrounds.remember(id);
+    $('.current-background').textContent=next.name;
+    $$('[data-background]').forEach(button=>{
+      const selected=button.dataset.background===id;
+      button.setAttribute('aria-pressed',String(selected));button.querySelector('b').textContent=selected?'✓':'↗';
+    });
+    const url=new URL(location.href);url.searchParams.set('background',id);history.replaceState(null,'',url);
+    $('.background-menu').open=false;$('.background-menu summary').focus({preventScroll:true});
+    paintSignalOnce();announce(next.name+' background selected.');
   }
+  function paintBackgroundPreviews() {
+    const rgb=selectedRGB();
+    $$('[data-background-preview]').forEach(preview=>backgrounds.draw(preview.getContext('2d'),{
+      id:preview.dataset.backgroundPreview,width:preview.width,height:preview.height,rgb,preview:true
+    }));
+  }
+
+  // All backgrounds are decorative; they never represent real network activity.
+  const canvas=$('#signal-backdrop'),ctx=canvas.getContext('2d');
   let signalWidth=0,signalHeight=0,angle=.58,frame=0,lastTime=0,renderTime=0;
   const canAnimate=()=>state.motion&&!reduced.matches&&!thumbnail&&!document.hidden;
   const selectedRGB=()=>{
@@ -521,22 +556,7 @@
     return [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16));
   };
   function paintSignalOnce() {
-    if (!ctx || !signalWidth || !signalHeight)return;
-    const w=signalWidth,h=signalHeight;
-    ctx.clearRect(0,0,w,h);
-    const [r,g,b]=selectedRGB(), glow=ctx.createRadialGradient(w*.57,h*.42,20,w*.57,h*.42,Math.min(w*.6,h*.83));
-    glow.addColorStop(0,`rgba(${r},${g},${b},0.075)`);glow.addColorStop(.5,`rgba(${r},${g},${b},0.025)`);glow.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=glow;ctx.fillRect(0,0,w,h);
-    const scale=Math.min(w*.29,h*.47),cx=w*.59,cy=h*.47,co=Math.cos(angle),si=Math.sin(angle),tilt=-.30;
-    const projected=points.map(p=>{
-      const x=p.x*co-p.z*si,z=p.x*si+p.z*co,y=p.y*Math.cos(tilt)-z*Math.sin(tilt),depthZ=p.y*Math.sin(tilt)+z*Math.cos(tilt),depth=4.3/(4.3+depthZ);
-      return {x:cx+x*scale*depth,y:cy+y*scale*depth,z:depthZ,band:p.band};
-    }).sort((a,b)=>b.z-a.z);
-    projected.forEach(p=>{
-      const front=(2.1-p.z)/4.2,alpha=.12+front*.47,size=.6+front*1.35;
-      ctx.beginPath();ctx.fillStyle=`rgba(${r},${g},${b},${alpha})`;ctx.arc(p.x,p.y,size,0,Math.PI*2);ctx.fill();
-      if(front>.85&&p.band<.08) {ctx.beginPath();ctx.fillStyle=`rgba(${r},${g},${b},.045)`;ctx.arc(p.x,p.y,size*3,0,Math.PI*2);ctx.fill();}
-    });
+    backgrounds.draw(ctx,{id:background.id,width:signalWidth,height:signalHeight,angle,rgb:selectedRGB()});
   }
   function animateSignal(time) {
     frame=0;if(!canAnimate())return;

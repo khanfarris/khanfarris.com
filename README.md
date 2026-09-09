@@ -24,6 +24,8 @@ The homepage is the KhanOS desktop. Whoami, Featured item, and Local Shell open 
 
 Crimson is the default palette: charcoal surfaces, crimson controls, and a midnight-blue particle orbit. The menu offers five palettes without resetting open windows. Theme links use `?theme=crimson`, `glacier`, `orchid`, `verdant`, or `ember`.
 
+The background selector offers Orbit (the original), Helix, Ripple, Globe, and Vortex. The choice is remembered on this device and can be shared with `?background=helix` (or another background ID), alongside `theme` and a note hash. All designs follow the current signal color and the workspace motion controls, including reduced motion. `khanos-backgrounds.js` provides the fixed-size meshes and renderer; the desktop owns one animation loop and the menu previews stay still.
+
 `khanos.js` manages the desktop. `khanos-common.css`, `khanos-base.css`, and `khanos.css` provide its styles; `khanos-palettes.js` and `palette-tokens.css` contain the matching color values. The Reader calls `StudyExercises.mount(container)` after inserting each article, preserving the original interactive activities.
 
 ## Shared files
