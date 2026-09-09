@@ -2,7 +2,97 @@
 ((root) => {
   'use strict';
   const ipText = n => [24,16,8,0].map(bits=>Math.floor(n / 2 ** bits) % 256).join('.');
+  const cases={
+    triage:[
+      {id:'maintenance',title:'A scheduled inventory script',evidence:['Device: IT-LAB-04 · 13:00 UTC','Recorded script hash and command match approved change CHG-104.','The owner confirms the exact task and time; reviewed activity stays within that scope.'],question:'Which disposition is best supported?',options:[
+        {id:'malicious',label:'Confirmed malicious activity',why:'The reviewed evidence matches authorized work. The suspicious tool name alone does not support a malicious classification.'},
+        {id:'benign',label:'Document as authorized activity',why:'The specific command, hash, device, time, and approval agree. Record those checks and use the platform’s benign or expected-activity classification.'},
+        {id:'ignore',label:'Ignore all future script alerts',why:'One verified maintenance task does not justify suppressing every script alert. Any tuning should be narrowly scoped and reviewed.'}],answer:'benign'},
+      {id:'encryption',title:'Files are changing right now',evidence:['Device: BILLING-02 · 13:06 UTC','EDR records rapid file encryption by an unapproved executable.','Staff cannot open invoices. No containment action has completed.'],question:'What takes priority?',options:[
+        {id:'respond',label:'Escalate active harm and begin authorized containment',why:'Current encryption and business impact justify urgent response through the incident procedure. Record action results and investigate scope in parallel.'},
+        {id:'routine',label:'Leave it for the next routine scan',why:'The evidence describes active harm. Waiting for routine scanning leaves the affected service and possibly other systems exposed.'},
+        {id:'closed',label:'Close because the EDR detected it',why:'Detection did not establish that the behavior stopped. There is no completed containment result in this record.'}],answer:'respond'},
+      {id:'offline',title:'A request with no confirmation',evidence:['Device: SALES-08 · 13:12 UTC','Suspicious execution was recorded just before sensor contact stopped.','Isolation status: pending. Execution scope has not been established.'],question:'What can you responsibly conclude?',options:[
+        {id:'safe',label:'The offline device is safe',why:'Loss of telemetry is an information gap. The device could still be active on another network.'},
+        {id:'false',label:'The alert is a false positive',why:'No evidence here disproves the suspicious execution. Missing follow-up telemetry is not a benign explanation.'},
+        {id:'unverified',label:'Containment is unverified; arrange follow-up',why:'Record the last contact and pending isolation. Escalate alternate containment through the response owner and continue the scope review.'}],answer:'unverified'}
+    ],
+    incident:[
+      {id:'active',title:'09:10 · Active activity',evidence:['One laptop is running a confirmed malicious process.','Network communication continues.','The response plan authorizes the responder to isolate this laptop.'],question:'What is the next priority?',options:[
+        {id:'contain',label:'Limit the ongoing activity',why:'Use the authorized containment process and verify its result. Preserve relevant evidence and investigate scope alongside the response.'},
+        {id:'close',label:'Close the incident',why:'The malicious activity is still running and no containment or recovery evidence exists.'},
+        {id:'wait',label:'Wait until every affected asset is known',why:'Perfect scope certainty is not a prerequisite for already-authorized containment of active harm.'}],answer:'contain'},
+      {id:'isolated',title:'09:18 · Containment confirmed',evidence:['EDR reports that the laptop’s network isolation completed.','The initial execution timeline has been preserved.','Persistence, affected credentials, and wider scope are still being checked.'],question:'What should happen next?',options:[
+        {id:'restore',label:'Reconnect immediately',why:'Containment does not establish that the system is trustworthy or that attacker access has been removed.'},
+        {id:'remediate',label:'Continue investigation and remediation',why:'Isolation limits a path. The team still needs to establish scope, remove footholds, and protect any affected access before recovery.'},
+        {id:'close',label:'Close because isolation succeeded',why:'The containment action is complete; the incident’s investigation and recovery are not.'}],answer:'remediate'},
+      {id:'rebuilt',title:'11:40 · Rebuild completed',evidence:['The scoped laptop was rebuilt and the entry weakness addressed.','Affected credentials were secured; the scope review is documented.','The business application and monitoring checks have not yet run.'],question:'What remains before closure?',options:[
+        {id:'done',label:'Nothing; the rebuild is enough',why:'A completed rebuild does not demonstrate that the restored service and monitoring work.'},
+        {id:'erase',label:'Delete the investigation record',why:'Keep the evidence and decision record according to the retention procedure. Deleting it is not recovery validation.'},
+        {id:'validate',label:'Validate recovery and service operation',why:'Run the agreed health, application, and monitoring checks and obtain the appropriate service-owner confirmation.'}],answer:'validate'},
+      {id:'validated',title:'13:20 · Agreed checks complete',evidence:['Investigation scope, remediation, and monitoring results are documented.','The service owner confirms the restored workflow works.','Closure criteria are met; improvement tasks have named owners and dates.'],question:'What is supported now?',options:[
+        {id:'closure',label:'Submit for closure under the incident process',why:'This record supports closure review because the agreed evidence and recovery criteria are met. It does not promise that future incidents are impossible.'},
+        {id:'never',label:'Keep it open forever because certainty is impossible',why:'Closure uses defined, evidence-based criteria. It does not require proving that no future security event could ever occur.'},
+        {id:'invent',label:'Report that no information was ever accessed',why:'The record supports completed criteria, not this separate universal claim about information access.'}],answer:'closure'}
+    ],
+    phishing:[
+      {id:'bank',title:'An authenticated supplier request',evidence:['An established supplier mailbox requests new payment details.','SPF, DKIM, and DMARC pass.','No independent verification of the bank change has occurred.'],question:'What should Finance do next?',options:[
+        {id:'pay',label:'Approve because authentication passed',why:'Domain authentication does not establish that the payment instruction is legitimate. A real mailbox can be compromised.'},
+        {id:'verify',label:'Verify using the established supplier contact',why:'Use a known independent channel and the payment-change process. Do not rely on the new contact details in the message.'},
+        {id:'reply',label:'Ask the same sender whether it is genuine',why:'That reply goes back to the potentially compromised channel and is not independent verification.'}],answer:'verify'},
+      {id:'entered',title:'A user reports entering a password',evidence:['The user opened an unexpected payroll link.','They entered their work password on a page later assessed as a credential-harvesting site.','No account-response actions have yet been confirmed.'],question:'What is the appropriate next step?',options:[
+        {id:'account',label:'Escalate for prompt account protection and review',why:'Credential submission establishes a concrete exposure. Follow the account-response process, review sessions and authentication, and record completed actions. Password changes alone may not address every existing session.'},
+        {id:'delete',label:'Delete the email and finish',why:'Mail removal does not address the submitted credential or possible account access.'},
+        {id:'all',label:'Announce that every mailbox is compromised',why:'The record supports exposure of one user’s credentials, not compromise of every account.'}],answer:'account'},
+      {id:'unopened',title:'An unexpected QR sign-in request',evidence:['The employee receives an unfamiliar message asking for immediate sign-in through a QR code.','They have not scanned it or entered information.','The request has not been verified through a trusted channel.'],question:'What should the employee do?',options:[
+        {id:'scan',label:'Scan it on a personal phone to check',why:'Moving to a personal device does not make an untrusted destination safe and complicates the organization’s investigation.'},
+        {id:'compromised',label:'Report a confirmed infection',why:'Receipt alone does not prove that malware executed or an account was compromised.'},
+        {id:'report',label:'Report it through the approved channel',why:'Preserve and report the message without interacting with the destination. The analyst can investigate while accurately recording no reported interaction so far.'}],answer:'report'}
+    ],
+    vulnerability:[
+      {id:'exposed',title:'An exposed gateway and a lab finding',evidence:['A · Gateway: affected version, internet exposed, evidence of exploitation in the wild; fictional base score 8.1.','B · Test server: fictional base score 9.8; powered off on an isolated lab network with no production data.','C · Staff laptop: fictional base score 6.5; exploitation needs local access; regular patch work is scheduled.'],question:'Which finding deserves first attention in this snapshot?',options:[
+        {id:'lab',label:'B · Always choose the highest base score',why:'Base severity alone misses exposure and threat evidence. Keep B tracked, but A presents the immediate reachable, exploited weakness in this scenario.'},
+        {id:'gateway',label:'A · Validate and address the exposed gateway',why:'The affected, reachable gateway and known exploitation make A the strongest immediate priority in this snapshot. Check for exploitation as well as planning remediation.'},
+        {id:'laptop',label:'C · Choose the easiest patch',why:'Ease of remediation can affect scheduling, but it does not outweigh the current evidence of urgent risk on A.'}],answer:'gateway'},
+      {id:'changed',title:'The environment has changed',evidence:['A · Gateway: vendor remediation applied, running version verified, and post-change checks pass.','B · Former test server: now hosts the production booking service, internet reachable and confirmed affected; fictional base score 9.8.','C · Staff laptop: unchanged; regular patch work remains scheduled.'],question:'Where should the priority move?',options:[
+        {id:'server',label:'B · The now-exposed production server',why:'Exposure and business importance changed while A’s remediation was verified. Reassess B promptly, assign ownership, and verify the eventual fix.'},
+        {id:'gateway',label:'A · Keep the original ranking forever',why:'A ranking should change when the evidence changes. Monitor A appropriately, but its verified fix changes the current comparison.'},
+        {id:'none',label:'None · The last report was already reviewed',why:'A prior review does not cover a newly exposed production service. Vulnerability management is a continuing process.'}],answer:'server'}
+    ]
+  };
+  function caseResult(type,id,choice=null){
+    const item=cases[type].find(c=>c.id===id);if(!item)throw Error('Choose a known case.');
+    const selected=choice===null?null:item.options.find(o=>o.id===choice);if(choice!==null&&!selected)throw Error('Choose an available decision.');
+    return {...item,selected,correct:selected?selected.id===item.answer:null};
+  }
   const models = {
+    cases,
+    triage(id,choice=null){return caseResult('triage',id,choice);},
+    incident(id,choice=null){return caseResult('incident',id,choice);},
+    phishing(id,choice=null){return caseResult('phishing',id,choice);},
+    vulnerability(id,choice=null){return caseResult('vulnerability',id,choice);},
+    firewall(source,service,specificFirst=true){
+      if(!['staff','guest'].includes(source)||!['smb','https'].includes(service))throw Error('Choose a known source and service.');
+      const specific={id:'staff-smb',label:'Staff → file server · TCP 445',action:'Allow',matches:source==='staff'&&service==='smb'};
+      const broad={id:'deny-server',label:'Any source → file server · any service',action:'Deny',matches:true};
+      const rules=specificFirst?[specific,broad]:[broad,specific];let match=null;
+      const evaluated=rules.map(rule=>{const stage=match?'skipped':rule.matches?'selected':'miss';if(stage==='selected')match=rule;return {...rule,stage};});
+      return {sourceIP:source==='staff'?'10.20.10.25':'10.20.20.25',port:service==='smb'?445:443,allowed:match.action==='Allow',match:match.id,rules:evaluated};
+    },
+    routing(destination,specific=true,defaultRoute=true){
+      models.subnet(destination,32);
+      const routes=[{prefix:24,network:'10.20.30.0',name:'Server link',hop:'10.99.0.2',enabled:specific},{prefix:16,network:'10.20.0.0',name:'Branch router',hop:'10.99.0.3',enabled:true},{prefix:0,network:'0.0.0.0',name:'Upstream router',hop:'10.99.0.1',enabled:defaultRoute}].map(r=>({...r,matches:r.enabled&&models.subnet(destination,r.prefix).network===r.network}));
+      const chosen=routes.filter(r=>r.matches).sort((a,b)=>b.prefix-a.prefix)[0]||null;
+      return {destination,routes,chosen};
+    },
+    switching(table,source,destination){
+      const devices=[{id:'laptop',label:'Staff laptop',mac:'02:00:00:00:00:11',port:1,vlan:10},{id:'printer',label:'Printer',mac:'02:00:00:00:00:22',port:2,vlan:10},{id:'desktop',label:'Staff desktop',mac:'02:00:00:00:00:33',port:3,vlan:10},{id:'guest',label:'Guest laptop',mac:'02:00:00:00:00:44',port:4,vlan:20}];
+      const sender=devices.find(d=>d.id===source),receiver=devices.find(d=>d.id===destination);
+      if(!sender||!receiver)throw Error('Choose known devices.');
+      const learned={...table,[sender.vlan+':'+sender.mac]:sender.port},known=learned[sender.vlan+':'+receiver.mac];
+      const egress=known?(known===sender.port?[]:[known]):devices.filter(d=>d.vlan===sender.vlan&&d.port!==sender.port).map(d=>d.port);
+      return {devices,sender,receiver,table:learned,egress,mode:known?(known===sender.port?'filtered':'unicast'):'flood'};
+    },
     arp(destination,cacheHit=false,replies=true){
       if(!['printer','website'].includes(destination))throw Error('Choose the printer or website.');
       const local=destination==='printer',ip=local?'10.20.10.50':'192.0.2.80',hop=local?'10.20.10.50':'10.20.10.1',mac=local?'02:00:00:00:00:50':'02:00:00:00:00:01';
@@ -47,7 +137,63 @@
   const on=(box,selector,event,fn)=>by(box,selector).addEventListener(event,fn);
   const checkbox=(id,label,checked=true)=>`<label class="exercise-check" for="${id}"><input id="${id}" type="checkbox" ${checked?'checked':''}><span>${label}</span></label>`;
   const status=(title,text,good=false)=>`<div class="result-label">${good?'●':'◇'} ${esc(title)}</div><p>${esc(text)}</p>`;
+  function decisionExercise(box,type){
+    box.innerHTML=`<div class="exercise-controls"><label for="case-${type}">Evidence snapshot<select id="case-${type}">${cases[type].map((c,i)=>`<option value="${c.id}">${i+1} · ${esc(c.title)}</option>`).join('')}</select></label></div><div class="case-evidence"></div><fieldset class="case-decisions"><legend></legend><div class="case-options"></div></fieldset><div class="exercise-result" role="status" aria-live="polite"></div><p class="exercise-caption">Fictional learning cases. Each decision depends on the evidence shown. No live actions are performed and no answers are saved.</p>`;
+    const render=()=>{
+      const item=models[type](by(box,'select').value);
+      by(box,'.case-evidence').innerHTML=`<span class="eyebrow">CASE RECORD / ${esc(item.id.toUpperCase())}</span><h3>${esc(item.title)}</h3><ul>${item.evidence.map(line=>`<li>${esc(line)}</li>`).join('')}</ul>`;
+      by(box,'legend').textContent=item.question;
+      by(box,'.case-options').innerHTML=item.options.map((o,i)=>`<button type="button" data-choice="${o.id}" aria-pressed="false"><span aria-hidden="true">0${i+1}</span>${esc(o.label)}</button>`).join('');
+      delete by(box,'.exercise-result').dataset.outcome;
+      by(box,'.exercise-result').innerHTML=status('Make a decision','Read the record, choose an action, and compare the explanation. You can try every option.');
+    };
+    on(box,'select','change',render);
+    on(box,'.case-options','click',event=>{
+      const button=event.target.closest('[data-choice]');if(!button)return;
+      const result=models[type](by(box,'select').value,button.dataset.choice);
+      box.querySelectorAll('[data-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+      by(box,'.exercise-result').dataset.outcome=result.correct?'supported':'reconsider';
+      by(box,'.exercise-result').innerHTML=status(result.correct?'Supported by this record':'Reconsider this conclusion',result.selected.why,result.correct);
+    });render();
+  }
   const setups={
+    triage(box){decisionExercise(box,'triage');},
+    incident(box){decisionExercise(box,'incident');},
+    phishing(box){decisionExercise(box,'phishing');},
+    vulnerability(box){decisionExercise(box,'vulnerability');},
+    firewall(box){
+      box.innerHTML=`<div class="exercise-controls"><label for="fw-source">Connection source<select id="fw-source"><option value="staff">Staff · 10.20.10.25</option><option value="guest">Guest · 10.20.20.25</option></select></label><label for="fw-service">Server service<select id="fw-service"><option value="smb">SMB · TCP 445</option><option value="https">HTTPS · TCP 443</option></select></label></div>${checkbox('fw-first','Place the specific staff allow above the broad deny')}<div class="flow-strip"><div><small>SOURCE</small><strong data-flow-source></strong></div><span aria-hidden="true">→</span><div><small>FIREWALL</small><strong data-flow-action></strong></div><span aria-hidden="true">→</span><div><small>DESTINATION</small><strong>10.20.30.10</strong></div></div><ol class="policy-ladder" aria-label="Rules evaluated from top to bottom"></ol><div class="exercise-result" role="status"></div><p class="exercise-caption">Two fictional first-match rules, one destination, and a new TCP connection. Routing, NAT, existing connection state, and additional policies are omitted. The interface does not modify a real firewall.</p>`;
+      const update=()=>{
+        const r=models.firewall(by(box,'#fw-source').value,by(box,'#fw-service').value,by(box,'#fw-first').checked);
+        by(box,'[data-flow-source]').textContent=r.sourceIP;by(box,'[data-flow-action]').textContent=(r.allowed?'ALLOW':'DENY')+' · '+r.port;
+        by(box,'.policy-ladder').innerHTML=r.rules.map((rule,i)=>`<li data-stage="${rule.stage}"><span class="rule-position">0${i+1}</span><div><strong>${esc(rule.action)}</strong><p>${esc(rule.label)}</p><small>${rule.stage==='selected'?'FIRST MATCH · decision made here':rule.stage==='miss'?'NO MATCH · continue':'NOT EVALUATED · earlier rule already matched'}</small></div></li>`).join('');
+        by(box,'.exercise-result').innerHTML=status(r.allowed?'This policy permits the connection':'This policy denies the connection',r.allowed?'Staff SMB matches the specific allow before the broad deny. This is a policy decision only; the server, return path, and file permissions still need to work.':r.rules[0].id==='deny-server'?'The broad deny matches first. The later staff rule cannot override it. Try putting the specific allow first and test both staff and guest traffic.':'The specific staff SMB rule does not match this request. The next rule denies it. A rule for TCP 445 does not also allow TCP 443.',r.allowed);
+      };box.querySelectorAll('input,select').forEach(el=>el.addEventListener('change',update));update();
+    },
+    routing(box){
+      box.innerHTML=`<div class="exercise-controls"><label for="route-destination">Packet destination<select id="route-destination"><option>10.20.30.10</option><option>10.20.40.10</option><option>192.0.2.80</option></select></label><div class="exercise-checks">${checkbox('route-specific','Install the server /24 route')}${checkbox('route-default','Install the default route')}</div></div><div class="route-table table-scroll"></div><div class="flow-strip"><div><small>DESTINATION IP</small><strong data-route-ip></strong></div><span aria-hidden="true">→</span><div><small>SELECTED NEXT HOP</small><strong data-route-hop></strong></div></div><div class="exercise-result" role="status"></div><p class="exercise-caption">A fictional IPv4 router with three possible routes, reachable next hops on 10.99.0.0/24, and no policy routing. This exercise models one forwarding decision, not end-to-end reachability.</p>`;
+      const update=()=>{
+        const r=models.routing(by(box,'select').value,by(box,'#route-specific').checked,by(box,'#route-default').checked);
+        by(box,'.route-table').innerHTML=`<table><caption>Installed routes and matching prefixes</caption><thead><tr><th scope="col">Destination</th><th scope="col">Path</th><th scope="col">Decision</th></tr></thead><tbody>${r.routes.map(route=>`<tr data-selected="${r.chosen===route}"><td><code>${route.network}/${route.prefix}</code></td><td>${esc(route.name)}</td><td>${!route.enabled?'Not installed':r.chosen===route?'SELECTED · longest match':route.matches?'Matches · less specific':'Does not match'}</td></tr>`).join('')}</tbody></table>`;
+        by(box,'[data-route-ip]').textContent=r.destination;by(box,'[data-route-hop]').textContent=r.chosen?r.chosen.hop:'No matching route';
+        by(box,'.exercise-result').innerHTML=status(r.chosen?'Use '+r.chosen.network+'/'+r.chosen.prefix:'Cannot forward: no matching route',r.chosen?`The /${r.chosen.prefix} route is the most specific installed match. Send toward ${r.chosen.name.toLowerCase()} at ${r.chosen.hop}. ${r.chosen.prefix===0?'The default is a fallback, not evidence that the upstream router can deliver this packet.':'Other hops and the return path still need valid routes.'}`:'This destination matches none of the installed routes. There is no default fallback. Inspect the missing route rather than changing an unrelated application permission.',!!r.chosen);
+      };box.querySelectorAll('input,select').forEach(el=>el.addEventListener('change',update));update();
+    },
+    switching(box){
+      box.innerHTML=`<div class="exercise-controls"><label for="switch-flow">Send a unicast frame<select id="switch-flow"><option value="laptop,printer">Staff laptop → printer</option><option value="printer,laptop">Printer → staff laptop</option><option value="desktop,printer">Staff desktop → printer</option><option value="guest,printer">Guest → printer MAC (different VLAN)</option></select></label></div><div class="switch-panel"><div class="switch-chassis-label"><span>SW-01 / LEARNING BRIDGE</span><small>4 ACCESS PORTS</small></div><div class="switch-ports"></div></div><div class="exercise-actions"><button type="button" id="switch-send">Send frame →</button><button type="button" class="quiet-button" id="switch-clear">Clear fictional MAC table</button></div><div class="switch-table table-scroll"></div><div class="exercise-result" role="status"></div><p class="exercise-caption">Four access ports, no trunks, no aging, no port-security restrictions, and all ports in forwarding state. The cross-VLAN choice deliberately supplies a destination MAC; the switch does not route it. A normally configured IP client uses its route and next hop instead.</p>`;
+      let table={};
+      const show=(r,sent)=>{
+        by(box,'.switch-ports').innerHTML=r.devices.map(d=>`<div data-state="${sent&&d.port===r.sender.port?'ingress':sent&&r.egress.includes(d.port)?'egress':'idle'}"><span class="port-jack" aria-hidden="true">${d.port}</span><strong>${esc(d.label)}</strong><small>VLAN ${d.vlan} · MAC :${d.mac.slice(-2)}</small><b>${!sent?'Ready':d.port===r.sender.port?'INCOMING':r.egress.includes(d.port)?'COPY SENT HERE':'NO COPY'}</b></div>`).join('');
+        by(box,'.switch-table').innerHTML=`<table><caption>MAC forwarding table · learned source locations</caption><thead><tr><th scope="col">VLAN</th><th scope="col">MAC address</th><th scope="col">Port</th></tr></thead><tbody>${Object.entries(table).map(([key,port])=>`<tr><td>${key.split(':')[0]}</td><td><code>${key.slice(key.indexOf(':')+1)}</code></td><td>${port}</td></tr>`).join('')||'<tr><td colspan="3">No sources learned yet.</td></tr>'}</tbody></table>`;
+      };
+      const current=()=>{const [s,d]=by(box,'select').value.split(',');return models.switching(table,s,d);};
+      const ready=()=>{show(current(),false);by(box,'.exercise-result').innerHTML=status('Predict the outgoing ports','Start with laptop → printer, send the printer reply, then send laptop → printer again. Which destination locations has the switch actually learned?');};
+      on(box,'#switch-send','click',()=>{
+        const r=current();table=r.table;show(r,true);
+        const result=r.egress.length?'Port'+(r.egress.length>1?'s ':' ')+r.egress.join(', '):'No eligible egress ports';
+        by(box,'.exercise-result').innerHTML=status(r.mode==='unicast'?'Known destination · '+result:r.mode==='flood'?'Unknown unicast · '+result:'Destination behind incoming port',`Learned ${r.sender.mac} on port ${r.sender.port} in VLAN ${r.sender.vlan}. `+(r.mode==='unicast'?'The destination MAC is already known in this VLAN, so the switch forwards only to its learned port.':r.mode==='flood'?'The destination MAC is unknown in this VLAN. Copies go only to other eligible ports in this same VLAN. A guessed MAC cannot cross the VLAN boundary.':'The destination is behind the incoming port, so this switch does not forward the frame back there.'),r.mode==='unicast');
+      });on(box,'#switch-clear','click',()=>{table={};ready();});on(box,'select','change',ready);ready();
+    },
     arp(box){
       box.innerHTML=`<div class="exercise-controls"><label for="arp-destination">Send an IPv4 packet to<select id="arp-destination"><option value="printer">Local printer · 10.20.10.50</option><option value="website">Remote website · 192.0.2.80</option></select></label>${checkbox('arp-replies','Next hop answers ARP')}</div><div class="arp-topology" aria-label="Laptop, printer, and gateway share VLAN 10. The website is outside this subnet."><div class="arp-lan"><span class="arp-zone">VLAN 10 · 10.20.10.0/24 · ONE SWITCH</span><div class="arp-devices"><div class="arp-device" data-arp-node="laptop"><span>YOUR LAPTOP</span><strong>10.20.10.25</strong><small>MAC ends in :25</small></div><div class="arp-device" data-arp-node="printer"><span>PRINTER</span><strong>10.20.10.50</strong><small>MAC ends in :50</small></div><div class="arp-device" data-arp-node="gateway"><span>GATEWAY</span><strong>10.20.10.1</strong><small>MAC ends in :01</small></div></div><div class="arp-wire" aria-hidden="true"></div></div><div class="arp-outside"><span aria-hidden="true">↓ Routed path</span><strong>Remote website · 192.0.2.80</strong><small>Outside this VLAN; never receives the laptop’s ARP broadcast</small></div></div><div class="arp-phase" aria-hidden="true"><span>01 / ROUTE</span><span>02 / RESOLVE</span><span>03 / DELIVER</span></div><div class="exercise-result" role="status"></div><div class="arp-frame" hidden><div><span>ETHERNET DESTINATION · NEXT HOP</span><strong id="arp-frame-mac"></strong></div><div><span>IP DESTINATION · FINAL TARGET</span><strong id="arp-frame-ip"></strong></div></div><div class="arp-cache"><span>LAPTOP ARP CACHE · IPv4 → MAC</span><ul id="arp-cache-list"></ul></div><div class="exercise-actions"><button type="button" id="arp-next">Start delivery →</button><button type="button" class="quiet-button" id="arp-clear">Clear fictional cache</button></div><p class="exercise-caption">A fixed /24 network with a default route, no proxy ARP, and no cache expiry during the exercise. MAC addresses are abbreviated in the diagram. Clear the cache to test an unanswered lookup. Nothing is sent on your actual network.</p>`;
       const cache=new Map();let plan,step=-1;

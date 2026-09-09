@@ -53,7 +53,38 @@ for(const a of data.articles){
  for(const [,id] of a.body.matchAll(/data-exercise="([a-z0-9-]+)"/g)){allExercises.add(id);assert.ok(read('study-exercises.js').includes(id+'(box)'),`No exercise implementation for ${id}`);}
  checks+=14;
 }
-for(const id of ['subnet','vlan','arp','dhcp','syslog','response','m365','tcp'])eq(allExercises.has(id),true);
+for(const id of ['subnet','vlan','arp','dhcp','syslog','response','m365','tcp','triage','incident','phishing','vulnerability','firewall','routing','switching'])eq(allExercises.has(id),true);
+for(const source of ['staff','guest'])for(const service of ['smb','https'])for(const specificFirst of [false,true]){
+ const r=m.firewall(source,service,specificFirst);
+ eq(r.allowed,source==='staff'&&service==='smb'&&specificFirst);
+ eq(r.rules.filter(rule=>rule.stage==='selected').length,1);
+ eq(r.match,r.allowed?'staff-smb':'deny-server');
+ if(!specificFirst)eq(r.rules[1].stage,'skipped');
+}
+for(const [ip,prefix] of [['10.20.30.0',24],['10.20.30.255',24],['10.20.29.255',16],['10.20.31.0',16],['10.20.0.0',16],['10.20.255.255',16],['10.21.0.0',0],['192.0.2.80',0]]){
+ eq(m.routing(ip).chosen.prefix,prefix);
+ eq(m.routing(ip,false).chosen.prefix,prefix===24?16:prefix);
+ eq(m.routing(ip,true,false).chosen?.prefix??null,prefix===0?null:prefix);
+}
+for(const value of ['','10.20.30.999','10.20.30','bad']){assert.throws(()=>m.routing(value));checks++;}
+let frame=m.switching({},'laptop','printer');
+eq(frame.mode,'flood');eq(frame.egress.join(','),'2,3');eq(Object.keys(frame.table).length,1);
+const firstTable=frame.table;
+frame=m.switching(firstTable,'printer','laptop');eq(frame.mode,'unicast');eq(frame.egress.join(','),'1');eq(Object.keys(frame.table).length,2);eq(Object.keys(firstTable).length,1);
+frame=m.switching(frame.table,'laptop','printer');eq(frame.mode,'unicast');eq(frame.egress.join(','),'2');
+frame=m.switching(frame.table,'guest','printer');eq(frame.mode,'flood');eq(frame.egress.length,0);
+frame=m.switching(frame.table,'laptop','laptop');eq(frame.mode,'filtered');eq(frame.egress.length,0);
+const collision=m.switching({'20:02:00:00:00:00:22':4},'laptop','printer');eq(collision.mode,'flood');eq(collision.egress.join(','),'2,3');
+for(const [type,answers] of Object.entries({triage:['benign','respond','unverified'],incident:['contain','remediate','validate','closure'],phishing:['verify','account','report'],vulnerability:['gateway','server']})){
+ eq(m.cases[type].length,answers.length);
+ for(const [i,item] of m.cases[type].entries()){
+  eq(m[type](item.id).correct,null);
+  eq(item.answer,answers[i]);
+  for(const option of item.options){const r=m[type](item.id,option.id);eq(r.correct,option.id===answers[i]);assert.ok(r.selected.why.length>60);checks++;}
+  assert.throws(()=>m[type](item.id,'unknown'));checks++;
+ }
+ assert.throws(()=>m[type]('unknown'));checks++;
+}
 for(const target of ['printer','website'])for(const cached of [false,true])for(const replies of [false,true]){
  const r=m.arp(target,cached,replies);
  eq(r.hop,target==='printer'?'10.20.10.50':'10.20.10.1');

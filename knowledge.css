@@ -312,6 +312,27 @@ summary:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
 .arp-frame>div+div{margin-top:14px;padding:14px;border:1px solid #345849;background:#0b1914}
 .arp-frame strong{font:500 1.1rem/1.8 var(--mono);color:var(--accent);overflow-wrap:anywhere}
 @media(max-width:600px){.arp-devices{grid-template-columns:1fr}.arp-device:after,.arp-wire{display:none}.arp-lan{padding:16px}.arp-phase{font-size:.7rem}.arp-frame strong{font-size:.95rem}}
+/* Evidence cases and packet-path exercises use the same surfaces in the desktop reader. */
+.case-evidence{border:1px solid var(--exercise-line);border-left:3px solid var(--cyan);padding:22px;background:linear-gradient(120deg,#7cdce80a,transparent)}
+.case-evidence h3{font-size:1.2rem;line-height:1.5;margin:12px 0 16px}.case-evidence ul{margin:0;padding-left:22px}.case-evidence li{font-size:1rem;line-height:1.8;margin:10px 0}
+.case-decisions{border:0;padding:0;min-width:0;margin:28px 0}.case-decisions legend{font:500 1rem/1.6 var(--mono);padding:0 0 16px;color:var(--cyan)}
+.case-options{display:grid;gap:10px}.exercise .case-options button{display:flex;align-items:center;gap:18px;text-align:left;padding:16px 18px;border:1px solid var(--exercise-line);background:#7cdce806;color:inherit;font:400 .95rem/1.6 var(--mono);min-height:56px}
+.case-options button>span{font-size:1.35rem;color:var(--cyan);opacity:.7}.exercise .case-options button[aria-pressed=true]{border-color:var(--cyan);box-shadow:inset 3px 0 var(--cyan);background:#7cdce810}.exercise .case-options button:hover{background:#7cdce815;color:var(--cyan)}
+.exercise-result[data-outcome=reconsider]{border-left-color:var(--amber)}.exercise-result[data-outcome=supported]{border-left-color:var(--cyan)}
+.flow-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:24px 0}.flow-strip>div{flex:1;min-width:0;border:1px solid var(--exercise-line);padding:16px;background:#7cdce806;border-radius:6px}.flow-strip>span{color:var(--cyan)}
+.flow-strip small{font:.75rem/1.6 var(--mono);letter-spacing:.06em;color:var(--cyan);display:block;margin-bottom:7px}.flow-strip strong{font:500 .95rem/1.6 var(--mono);overflow-wrap:anywhere}
+.policy-ladder{list-style:none;padding:0!important;margin:12px 0 24px}.policy-ladder li{display:flex;gap:22px;border:1px solid var(--exercise-line);padding:20px;margin:10px 0;background:#7cdce804}
+.policy-ladder li[data-stage=selected]{border-color:var(--cyan);background:#7cdce80c;box-shadow:inset 3px 0 var(--cyan)}.policy-ladder li[data-stage=skipped]{border-style:dashed;opacity:.65}.rule-position{font:400 1.7rem/1.4 var(--mono);color:var(--cyan)}
+.policy-ladder strong{font:500 1.05rem/1.5 var(--mono)}.policy-ladder p{font-size:.95rem;margin:6px 0!important}.policy-ladder small{font:.75rem/1.7 var(--mono);color:var(--cyan)}
+.exercise table caption{text-align:left;padding:10px 0 14px;font:.85rem/1.6 var(--mono);color:var(--cyan)}.route-table tr[data-selected=true]{background:#7cdce812;box-shadow:inset 3px 0 var(--cyan)}
+.switch-panel{border:1px solid var(--exercise-line);border-radius:10px;padding:22px;background:linear-gradient(135deg,#7cdce808,transparent)}.switch-chassis-label{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font:.8rem/1.6 var(--mono);color:var(--cyan);border-bottom:1px solid var(--exercise-line);padding-bottom:18px}
+.switch-ports{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding-top:20px}.switch-ports>div{min-width:0;text-align:center;padding:16px 8px;border:1px solid var(--exercise-line);border-radius:6px}
+.port-jack{display:block;border:2px solid var(--exercise-line);border-top:5px double var(--exercise-line);width:44px;height:38px;line-height:30px;margin:0 auto 16px;font:500 1.2rem/30px var(--mono);color:var(--cyan);background:#7cdce807;border-radius:2px}
+.switch-ports strong{display:block;font:.9rem/1.7 var(--mono)}.switch-ports small{display:block;font:.75rem/1.7 var(--mono);margin:6px 0 12px}.switch-ports b{font:500 .7rem/1.6 var(--mono);letter-spacing:.04em;color:var(--cyan)}
+.switch-ports [data-state=ingress]{border-color:var(--amber);background:#ffca7a08}.switch-ports [data-state=ingress] .port-jack{border-color:var(--amber);color:var(--amber)}.switch-ports [data-state=egress]{border-color:var(--cyan);background:#7cdce80d}.switch-ports [data-state=egress] .port-jack{border-color:var(--cyan);box-shadow:0 0 20px #7cdce820}
+.exercise button:focus-visible,.exercise select:focus-visible{outline:2px solid var(--cyan);outline-offset:4px}
+@media(max-width:600px){.flow-strip{flex-direction:column}.flow-strip>div{width:100%}.flow-strip>span{transform:rotate(90deg)}.switch-ports{grid-template-columns:repeat(2,minmax(0,1fr))}.case-evidence{padding:18px}.policy-ladder li{gap:14px;padding:16px}}
+@container(max-width:540px){.flow-strip{flex-direction:column}.flow-strip>div{width:100%}.flow-strip>span{transform:rotate(90deg)}.switch-ports{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @keyframes study-reveal{from{opacity:.3;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media(max-width:760px){
   .kb-article .container{width:calc(100% - 36px)}

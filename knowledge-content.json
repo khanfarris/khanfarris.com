@@ -251,6 +251,86 @@
     "arpInspection": [
       "Cisco — Dynamic ARP Inspection",
       "https://www.cisco.com/c/en/us/support/docs/switches/lan-switch-software/222274-troubleshoot-dynamic-arp-inspection-dai.html"
+    ],
+    "incidentGuide": [
+      "NIST SP 800-61 Rev. 3 — Incident response",
+      "https://csrc.nist.gov/pubs/sp/800/61/r3/final"
+    ],
+    "triageGuide": [
+      "Microsoft — Investigate security alerts",
+      "https://learn.microsoft.com/en-us/defender-xdr/investigate-alerts"
+    ],
+    "ransomware": [
+      "CISA — StopRansomware Guide",
+      "https://www.cisa.gov/stopransomware/ransomware-guide"
+    ],
+    "phishingGuide": [
+      "CISA — Recognize and report phishing",
+      "https://www.cisa.gov/sites/default/files/2024-09/Secure-Our-World-Phishing-Tip-Sheet.pdf"
+    ],
+    "kev": [
+      "CISA — Known Exploited Vulnerabilities Catalog",
+      "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
+    ],
+    "cvss": [
+      "FIRST — CVSS v4.0 User Guide",
+      "https://www.first.org/cvss/v4.0/user-guide"
+    ],
+    "firewallGuide": [
+      "NIST SP 800-41 Rev. 1 — Firewalls and firewall policy",
+      "https://csrc.nist.gov/pubs/sp/800/41/r1/final"
+    ],
+    "routingGuide": [
+      "Cisco — Route selection and longest-prefix matching",
+      "https://www.cisco.com/c/en/us/support/docs/ip/enhanced-interior-gateway-routing-protocol-eigrp/8651-21.html"
+    ],
+    "switchingGuide": [
+      "Cisco — Unicast flooding in switched networks",
+      "https://www.cisco.com/c/en/us/support/docs/switches/catalyst-6000-series-switches/23563-143.html"
+    ],
+    "vpnRouting": [
+      "Microsoft — VPN routing decisions",
+      "https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/vpn/vpn-routing"
+    ],
+    "vpnGuide": [
+      "Microsoft — VPN technical guide",
+      "https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/vpn/vpn-guide"
+    ],
+    "riskGuide": [
+      "NIST SP 800-30 Rev. 1 — Risk assessments",
+      "https://csrc.nist.gov/pubs/sp/800/30/r1/final"
+    ],
+    "controlTests": [
+      "NIST SP 800-53A Rev. 5 — Assessing controls",
+      "https://csrc.nist.gov/pubs/sp/800/53/a/r5/final"
+    ],
+    "learningGuide": [
+      "NIST SP 800-50 Rev. 1 — Security learning programs",
+      "https://www.nist.gov/publications/building-cybersecurity-and-privacy-learning-program"
+    ],
+    "changeGuide": [
+      "NIST SP 800-128 — Security-focused configuration management",
+      "https://csrc.nist.gov/pubs/sp/800/128/upd1/final"
+    ],
+    "ipconfig": [
+      "Microsoft — ipconfig",
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ipconfig"
+    ],
+    "connectionTest": [
+      "Microsoft — Test-NetConnection",
+      "https://learn.microsoft.com/en-us/powershell/module/nettcpip/test-netconnection"
+    ],
+    "macMemory": [
+      "Apple — Memory usage in Activity Monitor",
+      "https://support.apple.com/guide/activity-monitor/view-memory-usage-actmntr1004/mac"
+    ],
+    "writingAudience": [
+      "Google — Writing for your audience",
+      "https://developers.google.com/tech-writing/one/audience"
+    ],
+    "writingSteps": [
+      "Google — Writing procedures",
+      "https://developers.google.com/style/procedures"
     ]
   },
   "articles": [
@@ -270,7 +350,9 @@
       ],
       "related": [
         "subnetting",
-        "vlans"
+        "vlans",
+        "firewalls",
+        "vpns"
       ],
       "keywords": ""
     },
@@ -290,7 +372,8 @@
       ],
       "related": [
         "vlsm",
-        "dhcp"
+        "dhcp",
+        "routing"
       ],
       "keywords": ""
     },
@@ -330,7 +413,9 @@
       ],
       "related": [
         "subnetting",
-        "ztna-sase"
+        "ztna-sase",
+        "switching",
+        "firewalls"
       ],
       "keywords": ""
     },
@@ -355,7 +440,9 @@
         "subnetting",
         "vlans",
         "dhcp",
-        "dns"
+        "dns",
+        "switching",
+        "routing"
       ]
     },
     {
@@ -373,7 +460,9 @@
       ],
       "related": [
         "dhcp",
-        "tls"
+        "tls",
+        "troubleshooting",
+        "vpns"
       ],
       "keywords": ""
     },
@@ -394,7 +483,9 @@
       ],
       "related": [
         "dns",
-        "vlans"
+        "vlans",
+        "switching",
+        "troubleshooting"
       ],
       "keywords": ""
     },
@@ -415,7 +506,9 @@
       ],
       "related": [
         "siem",
-        "sentinel"
+        "sentinel",
+        "firewalls",
+        "alert-triage"
       ],
       "keywords": ""
     },
@@ -437,7 +530,10 @@
       ],
       "related": [
         "sentinelone",
-        "blackpoint"
+        "blackpoint",
+        "alert-triage",
+        "malware",
+        "incident-response"
       ],
       "keywords": ""
     },
@@ -502,7 +598,9 @@
       ],
       "related": [
         "syslog",
-        "sentinel"
+        "sentinel",
+        "alert-triage",
+        "incident-response"
       ],
       "keywords": ""
     },
@@ -566,7 +664,9 @@
       ],
       "related": [
         "timus",
-        "m365"
+        "m365",
+        "vpns",
+        "security-controls"
       ],
       "keywords": ""
     },
@@ -587,7 +687,8 @@
       ],
       "related": [
         "bec",
-        "dns"
+        "dns",
+        "phishing"
       ],
       "keywords": ""
     },
@@ -608,7 +709,9 @@
       ],
       "related": [
         "email-auth",
-        "identity"
+        "identity",
+        "phishing",
+        "incident-response"
       ],
       "keywords": ""
     },
@@ -629,7 +732,9 @@
       ],
       "related": [
         "m365",
-        "bec"
+        "bec",
+        "alert-triage",
+        "security-controls"
       ],
       "keywords": ""
     },
@@ -650,7 +755,9 @@
       ],
       "related": [
         "windows-server",
-        "file-shares"
+        "file-shares",
+        "troubleshooting",
+        "security-controls"
       ],
       "keywords": ""
     },
@@ -694,7 +801,9 @@
       ],
       "related": [
         "windows-domain",
-        "timus"
+        "timus",
+        "vpns",
+        "troubleshooting"
       ],
       "keywords": ""
     },
@@ -761,7 +870,9 @@
       ],
       "related": [
         "windows-domain",
-        "sentinel"
+        "sentinel",
+        "alert-triage",
+        "troubleshooting"
       ],
       "keywords": ""
     },
@@ -804,7 +915,8 @@
       ],
       "related": [
         "tcp",
-        "dns"
+        "dns",
+        "firewalls"
       ],
       "keywords": ""
     },
@@ -825,7 +937,9 @@
       ],
       "related": [
         "tcp-streams",
-        "tls"
+        "tls",
+        "firewalls",
+        "routing"
       ],
       "keywords": ""
     },
@@ -851,6 +965,357 @@
       ],
       "keywords": "",
       "archived": true
+    },
+    {
+      "slug": "alert-triage",
+      "title": "Alert triage",
+      "category": "Security operations",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "Triage means deciding what an alert shows, how urgent it is, and who needs to act next. An alert starts a question; it does not finish an investigation.",
+      "body": "<h2>Start with the difference between an event and an alert</h2><p>An <strong>event</strong> is something recorded: a sign-in, a process starting, or a blocked connection. An <strong>alert</strong> is a tool calling attention to one or more events. An <strong>incident</strong> is a security situation that needs coordinated investigation or response; several alerts may belong to it. Opening ten alerts does not necessarily mean ten separate attacks.</p><p><strong>Triage</strong> is the first assessment. You gather enough context to decide urgency, assign an owner, and choose the next useful action. You may then investigate further, escalate, or close the alert with a supported explanation.</p>\n<h2>Read an alert like a short case file</h2><ol><li><strong>Identify the scope:</strong> which customer, device, account, and time zone? Is this a user laptop or a server supporting everyone?</li><li><strong>Read the trigger:</strong> which behavior matched the detection? A scary alert title is less useful than its underlying events.</li><li><strong>Check the context:</strong> parent process, command, file location, sign-in details, related messages, and approved work.</li><li><strong>Read the action result:</strong> was something detected, blocked, quarantined, or isolated? Did the requested action actually succeed?</li><li><strong>Choose and record the next step:</strong> what evidence is missing, who owns it, and when will they review it?</li></ol>\n<section class=\"exercise\" data-exercise=\"triage\" aria-label=\"One alert, three different stories\"><div class=\"exercise-heading\"><span class=\"eyebrow\">INTERACTIVE / FICTIONAL EXAMPLE</span><h2>One alert, three different stories</h2><p>Change the evidence behind a suspicious script alert. Choose the conclusion the record supports.</p></div><div class=\"exercise-mount\"></div><noscript><p>A script approved for a documented maintenance task may be benign. Active encryption requires urgent response. A disconnected sensor leaves an investigation gap; it does not prove safety.</p></noscript></section>\n<h2>Severity, confidence, and priority are different</h2><p><strong>Severity</strong> describes potential seriousness. <strong>Confidence</strong> describes how strongly the evidence supports the detection. <strong>Priority</strong> combines those with current impact, asset importance, ongoing activity, and your response procedures. A medium-severity alert showing active harm on a business-critical system can need attention before a high-severity alert already verified as authorized testing.</p><p>A familiar administrator name is context, not proof of authorization. Confirm the exact task, device, time, and approval. A legitimate tool can be used maliciously. Conversely, a command that looks unusual may be part of normal maintenance.</p>\n<h2>Classify only what you can support</h2><p>A <strong>true positive</strong> generally means the detection correctly identified the security activity of concern. A <strong>false positive</strong> means the detection incorrectly identified that condition. Some products separately label real but authorized activity a <strong>benign positive</strong>. Use the platform’s definitions and explain the reason in the ticket. “Unconfirmed” is an investigation state, not a synonym for false positive.</p>\n<div class=\"field-note\"><strong>A useful handoff</strong><p>“At 14:08 UTC, the endpoint recorded a document launching a script. The isolation request is pending because the sensor is offline. The response lead owns alternate containment; execution scope remains under review.” This tells the next analyst what happened and what has not been verified.</p></div>\n<h2>Where this helps at work</h2><p>In a managed service provider (MSP), an IT/security company supporting several customers, alerts arrive from different tools and environments. Confirm the customer before taking action. Read the MDR provider’s investigation and completed actions, then make the customer-side tasks explicit. Avoid duplicate containment requests or closing a ticket just because another team touched it.</p>",
+      "question": "An EDR alert says “isolation requested,” but the device is offline. What can you report?",
+      "answer": "Report that isolation was requested and remains unverified. Record the last sensor contact, escalate alternate containment through the response owner, and keep scope open. A requested action is not a completed action.",
+      "sources": [
+        "triageGuide",
+        "incidentGuide"
+      ],
+      "related": [
+        "mdr",
+        "siem",
+        "incident-response",
+        "windows-events",
+        "technical-documentation"
+      ],
+      "keywords": "SOC escalation queue severity priority false positive benign positive"
+    },
+    {
+      "slug": "incident-response",
+      "title": "Incident response",
+      "category": "Security operations",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "Incident response is the coordinated work of understanding a security incident, limiting harm, restoring trustworthy service, and learning from what happened.",
+      "body": "<h2>What makes response different from an alert review?</h2><p>An alert review may answer one question. An incident can involve devices, accounts, email, business operations, and several teams at once. <strong>Incident response</strong> gives that work an owner and a plan. The objective is to reduce harm while establishing what happened and restoring a service people can trust.</p><p>Preparation belongs here too: contact lists, available logs, tested backups, response authority, and practiced procedures determine what you can do when a real incident arrives. NIST’s current incident-response guidance integrates response with wider cybersecurity risk management. The stages below are a practical learning sequence, not a rule that every incident moves through neatly once.</p>\n<h2>Learn the words that describe action state</h2>\n<div class=\"table-scroll\"><table><thead><tr><th scope=\"col\">Activity</th><th scope=\"col\">What it means</th><th scope=\"col\">Fictional laptop case</th></tr></thead><tbody><tr><td>Investigation</td><td>Establish facts, scope, and remaining unknowns.</td><td>Review the process timeline and related sign-ins.</td></tr><tr><td>Containment</td><td>Limit further harm or attacker access.</td><td>Verify that network isolation took effect.</td></tr><tr><td>Eradication</td><td>Remove the cause and remaining attacker footholds.</td><td>Rebuild if needed; remove persistence and address exposed credentials.</td></tr><tr><td>Recovery</td><td>Restore service and validate it.</td><td>Test the rebuilt laptop and monitor after controlled reconnection.</td></tr><tr><td>Closure and improvement</td><td>Confirm agreed criteria and record lessons.</td><td>Document scope, action results, business validation, and follow-up owners.</td></tr></tbody></table></div>\n<p><strong>Persistence</strong> is a way an attacker keeps access, such as an unauthorized startup task. Deleting the first suspicious file does not establish that no other foothold exists. Likewise, containment reduces immediate harm but may leave the affected system unusable.</p>\n<section class=\"exercise\" data-exercise=\"incident\" aria-label=\"Can this incident be closed?\"><div class=\"exercise-heading\"><span class=\"eyebrow\">INTERACTIVE / FICTIONAL EXAMPLE</span><h2>Can this incident be closed?</h2><p>Move through the evidence snapshots from one fictional laptop incident. Decide whether to contain, continue cleanup, validate recovery, or consider closure.</p></div><div class=\"exercise-mount\"></div><noscript><p>Isolation alone is containment. Closure requires the agreed investigation, remediation, recovery, and documentation checks, not merely a quiet alert queue.</p></noscript></section>\n<h2>Build a timeline and keep authority clear</h2><p>Record timestamps with their time zone, affected assets, source records, action owners, and actual results. Keep <strong>observations</strong> separate from <strong>interpretations</strong>: “one account sent 40 messages” is an observation; “the attacker stole every mailbox” needs different evidence.</p><p>Use the response plan’s authority for disruptive action. During active harm, authorized containment and evidence preservation may happen in parallel. Do not let routine paperwork delay an urgent authorized response. Also do not erase a device reflexively: you may destroy information needed to understand the incident. The response lead coordinates those tradeoffs.</p>\n<h2>Communicate the current state</h2><p>A useful update names confirmed impact, completed actions, unresolved questions, the next owner, and a realistic next update time. “No additional affected devices found in the reviewed logs” is narrower and more defensible than “nothing else was affected.” Specify which records and time window you reviewed.</p>\n<div class=\"field-note\"><strong>At an MSP</strong><p>An MDR team may contain a laptop while the customer’s IT team resets access and restores service. Track that handoff. Somebody must verify each action and decide whether the customer’s recovery requirements are satisfied.</p></div>\n<h2>After service returns</h2><p>Confirm the original weakness has been addressed, check that monitoring works, and obtain the relevant service owner’s validation. Capture lessons as concrete work: a missing log source to enable, a recovery procedure to test, or a control to improve. Follow-up work can have separate tickets and owners; record what remains instead of calling it completed.</p>",
+      "question": "Why does “the device is isolated” not mean “the incident is resolved”?",
+      "answer": "Isolation limits a network path. It does not establish the original cause, remove persistence, secure affected accounts, restore service, or validate recovery. Those tasks need their own evidence and owners.",
+      "sources": [
+        "incidentGuide",
+        "ransomware"
+      ],
+      "related": [
+        "alert-triage",
+        "malware",
+        "bec",
+        "change-management",
+        "technical-documentation"
+      ],
+      "keywords": "containment eradication recovery evidence timeline handoff incident response IR"
+    },
+    {
+      "slug": "phishing",
+      "title": "Phishing",
+      "category": "Security operations",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "Phishing uses a deceptive message to persuade someone to reveal information or take an unsafe action. The important question is what the message is trying to make the recipient do.",
+      "body": "<h2>Look beyond spelling mistakes</h2><p>A phishing message might ask for a password, an MFA code, a payment, an attachment download, or approval for an application to access an account. It can arrive through email, text, collaboration chat, a QR code, or a phone conversation. Polished writing and a familiar logo do not make it trustworthy.</p><p><strong>Spear phishing</strong> targets a particular person or organization. <strong>Credential harvesting</strong> uses a fake sign-in page to collect authentication information. <strong>Social engineering</strong> is the broader act of manipulating people; phishing is one delivery method. Some attacks use a compromised real account, so the address can look completely familiar.</p>\n<h2>Inspect the request, identity, and destination</h2><ul><li><strong>Request:</strong> is the sender asking for an unusual action, secrecy, urgent payment, or bypassing a normal process?</li><li><strong>Identity:</strong> compare the display name, full sender address, and reply-to address with a trusted record.</li><li><strong>Destination:</strong> inspect the actual link through approved analysis tools. The displayed text may differ from its target.</li><li><strong>Context:</strong> verify the business request using a known contact channel, not the phone number included in the suspicious message.</li></ul>\n<p>In the fictional address <code>https://login.example.com.verify-access.example.net/</code>, the hostname ends in <code>example.net</code>. Having <code>example.com</code> earlier in the name does not make it part of that organization’s domain. Domain boundaries vary, so use approved tools and trusted records for unfamiliar names. HTTPS protects a connection; it does not prove an honest sender or page.</p>\n<section class=\"exercise\" data-exercise=\"phishing\" aria-label=\"Read the request before trusting the badge\"><div class=\"exercise-heading\"><span class=\"eyebrow\">INTERACTIVE / FICTIONAL EXAMPLE</span><h2>Read the request before trusting the badge</h2><p>Compare three fictional messages. Decide which next action fits each message and the recipient’s actions so far.</p></div><div class=\"exercise-mount\"></div><noscript><p>Passing email authentication does not validate a payment request. Verify unusual banking changes independently; escalate a reported credential submission; report unexpected credential links through the approved channel.</p></noscript></section>\n<h2>Work a reported-phishing ticket</h2><ol><li>Thank the user and preserve the original report and message using the approved reporting method.</li><li>Capture message identifiers, sender and recipients, time zone, attachment names, and analysis findings.</li><li>Establish what the user did: received, clicked, downloaded, executed, entered credentials, or approved an MFA prompt. These are different exposure states.</li><li>Use mail and security records to check delivery, related recipients, and available click or execution evidence. Missing telemetry does not prove that nobody interacted.</li><li>Coordinate the appropriate response: mail removal, account investigation, or endpoint investigation under the applicable procedure.</li></ol>\n<h2>Authentication is one part of the evidence</h2><p>SPF, DKIM, and DMARC help assess domain authentication. They do not assess whether the sender’s request is honest. An attacker-controlled lookalike domain or compromised mailbox can send authenticated mail. Use the separate <a href=\"#note-email-auth\">Email authentication</a> note for those mechanisms and <a href=\"#note-bec\">Business email compromise</a> for payment and mailbox investigations.</p>\n<div class=\"field-note\"><strong>A practical first response</strong><p>“Thanks for reporting this. Please leave the message available for investigation and use the reporting process. Tell us whether you opened the link, entered information, or approved a prompt.” Calm, specific questions improve the evidence; blaming the user discourages future reports.</p></div>\n<p>A public file-analysis service may share submitted samples. Use the organization’s approved analysis environment for customer messages and attachments. The goal is to investigate the report without exposing its contents or interacting with the attack on your everyday workstation.</p>",
+      "question": "A message passes DMARC and asks Finance to change a supplier’s bank details. Is it safe to approve?",
+      "answer": "No. DMARC concerns authenticated domain alignment, not the truth of the payment instruction. Verify the change through a trusted, independent supplier contact and the established payment process.",
+      "sources": [
+        "phishingGuide",
+        "dmarc",
+        "bec"
+      ],
+      "related": [
+        "email-auth",
+        "bec",
+        "security-awareness",
+        "incident-response"
+      ],
+      "keywords": "social engineering spear phishing credential harvesting QR smishing vishing reported email"
+    },
+    {
+      "slug": "malware",
+      "title": "Malware",
+      "category": "Security operations",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "Malware is software used to cause harm or gain unauthorized access. Investigating it means understanding what ran and what changed, not just recognizing a threatening filename.",
+      "body": "<h2>What malware can do</h2><p><strong>Malicious software</strong> can steal information, disrupt a device, give someone remote control, or help another attack stage begin. A suspicious download is not automatically an infection: delivery, execution, and successful harm are separate events. Your evidence should show which of them occurred.</p>\n<div class=\"table-scroll\"><table><thead><tr><th scope=\"col\">Term</th><th scope=\"col\">Plain meaning</th></tr></thead><tbody><tr><td>Trojan</td><td>Software presented as something useful that also carries malicious behavior.</td></tr><tr><td>Worm</td><td>Malware able to spread between systems without someone manually copying each infection.</td></tr><tr><td>Ransomware</td><td>Malware that blocks access, commonly by encrypting files. Some extortion attacks also steal data.</td></tr><tr><td>Infostealer</td><td>Malware aimed at information such as stored credentials, cookies, or documents.</td></tr><tr><td>Loader or downloader</td><td>A component that introduces another malicious component.</td></tr></tbody></table></div>\n<p>These categories can overlap. Legitimate administrative tools can also be used during an intrusion. Seeing PowerShell, a remote-management application, or a script is not sufficient by itself to label the activity malicious.</p>\n<h2>Reconstruct a process story</h2><p>A <strong>process</strong> is a running instance of a program. A <strong>parent process</strong> started another process, called its child. A <strong>process tree</strong> shows that relationship. In a fictional case, a document viewer starts a command interpreter, which downloads an executable and creates a startup task. That sequence gives you more to investigate than the executable name alone.</p><p>Collect the relevant account, device, timestamps, command lines, file path, cryptographic hash, network destinations, and action results. A <strong>hash</strong> is a fingerprint of file contents that helps compare copies. Matching a known malicious hash can be useful; a new hash does not prove a file is safe.</p>\n<h2>Read the protection result carefully</h2><ul><li><strong>Blocked:</strong> an attempted action was prevented; verify what was blocked and when.</li><li><strong>Quarantined:</strong> an object was placed under a security tool’s control; earlier execution may still need review.</li><li><strong>Process terminated:</strong> that running process was stopped; another foothold may remain.</li><li><strong>Device isolated:</strong> network communication is restricted according to the product’s behavior; this is containment.</li></ul>\n<p>Antivirus and endpoint detection tools help detect or stop behavior. The <a href=\"#note-mdr\">EDR, MDR, and XDR</a> note explains how endpoint signals and analysts work together. Here, the focus is the activity you need to understand.</p>\n<h2>A fictional infection ticket</h2><p>An employee opened an attachment at 09:12 UTC. At 09:14, the EDR recorded a suspicious script and confirmed device isolation. Record those facts. Review the earlier activity, whether additional payloads ran, persistence, affected accounts, and other devices with related evidence. “Isolated” supports a containment update; it does not support “no data was stolen.”</p>\n<div class=\"field-note\"><strong>What to do next</strong><p>Follow the response plan and owner’s direction for containment, evidence collection, cleanup or rebuilding, and account protection. Avoid casually rebooting or deleting evidence. If active harm is spreading, the response lead must balance immediate containment with preservation rather than waiting for perfect certainty.</p></div>\n<h2>Recovery should address the entry point</h2><p>Validate the rebuilt or remediated system, close the original weakness, restore needed data from verified sources, and monitor for recurrence. A clean scan is one observation, not universal proof of recovery. Document the scope examined and the checks completed so another analyst can explain why restoration was allowed.</p>",
+      "question": "Why should you review the process timeline after an antivirus tool quarantines a file?",
+      "answer": "Quarantine describes the file’s current handling. The timeline may show that it executed earlier, launched other processes, established persistence, or accessed credentials. Those possibilities require separate investigation.",
+      "sources": [
+        "ransomware",
+        "behavior",
+        "incidentGuide"
+      ],
+      "related": [
+        "mdr",
+        "alert-triage",
+        "incident-response",
+        "vulnerability-management"
+      ],
+      "keywords": "AV antivirus infection ransomware process tree persistence hash infostealer"
+    },
+    {
+      "slug": "vulnerability-management",
+      "title": "Vulnerability management",
+      "category": "Security operations",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "Vulnerability management is the repeated work of finding weaknesses, deciding which matter most, fixing or reducing them, and verifying the result.",
+      "body": "<h2>A finding is the start of the work</h2><p>A <strong>vulnerability</strong> is a weakness that could be used to cause harm. Examples include an unpatched service, a weak configuration, or excessive access. A <strong>vulnerability assessment</strong> identifies and evaluates weaknesses. <strong>Vulnerability management</strong> is the ongoing process that turns findings into owned, verified improvements.</p><p>A scanner can help discover software versions, exposed services, and configuration issues. Its report is evidence to evaluate, not a complete description of business risk. A penetration test goes further by attempting authorized exploitation within agreed rules; running a vulnerability scan does not make the activity a penetration test.</p>\n<h2>Configure an assessment with a purpose</h2><ol><li><strong>Define scope:</strong> confirm the customer, asset list, network ranges, exclusions, and maintenance constraints.</li><li><strong>Choose the viewpoint:</strong> an external scan shows an internet-facing view; an internal scan shows what is reachable from its network position.</li><li><strong>Choose depth:</strong> an authenticated scan uses authorized credentials to inspect local details. An unauthenticated scan has a more limited external view.</li><li><strong>Confirm coverage:</strong> record unreachable assets, failed authentication, and skipped checks. Missing results are not the same as clean results.</li><li><strong>Validate findings:</strong> check the detected version, affected configuration, vendor guidance, and existing mitigations before planning work.</li></ol>\n<h2>Understand the labels</h2><p>A <strong>CVE</strong> is an identifier for a publicly disclosed vulnerability. It is not a severity score. <strong>CVSS</strong> describes vulnerability severity with a score and vector, the details used to calculate it. Record the version and score type; a base score alone is not a complete business-priority calculation.</p><p>CISA’s <strong>Known Exploited Vulnerabilities (KEV)</strong> catalog identifies vulnerabilities with evidence of exploitation in the wild. KEV inclusion is an urgency signal, not proof that your particular device has been compromised. Absence from the catalog is not proof of safety. Combine threat evidence with exposure, prerequisites, asset importance, and current controls.</p>\n<section class=\"exercise\" data-exercise=\"vulnerability\" aria-label=\"Which finding gets attention first?\"><div class=\"exercise-heading\"><span class=\"eyebrow\">INTERACTIVE / FICTIONAL EXAMPLE</span><h2>Which finding gets attention first?</h2><p>Compare three fictional findings, then change the environment. Choose a first priority and read the reasoning.</p></div><div class=\"exercise-mount\"></div><noscript><p>An exposed, affected gateway with known exploitation may outrank a higher base score on a contained test system. If that test system becomes a critical exposed service, reassess the priority. Example scores are invented and do not refer to real CVEs.</p></noscript></section>\n<h2>Close the loop after a fix</h2><p>Assign an owner and target date. Plan patching through <a href=\"#note-change-management\">Change management</a>, including service testing and recovery options. If a patch cannot be applied immediately, document a specific mitigation, its evidence, and an expiry or review date. A mitigation reduces exposure; it may not remove the vulnerable software.</p><p>After the change, verify the running version and required restart, rescan with comparable coverage, and test the application. If the scanner loses access, do not interpret the missing finding as remediation. A suspected exploited weakness also needs an incident-response review; patching alone does not remove an attacker already present.</p>\n<div class=\"field-note\"><strong>A useful finding record</strong><p>Asset and owner → evidence and affected version → exposure and likely impact → priority rationale → fix or mitigation → verification result. This is the bridge between a scan report and completed security work.</p></div>",
+      "question": "A scanner reports no findings on a server, but authentication failed. What should you conclude?",
+      "answer": "The assessment has a coverage gap. Confirm which checks ran, repair authorized scan access, and repeat the relevant assessment. You cannot treat an unauthenticated or unreachable result as proof that the server is patched.",
+      "sources": [
+        "kev",
+        "cvss",
+        "changeGuide"
+      ],
+      "related": [
+        "risk",
+        "security-controls",
+        "change-management",
+        "firewalls",
+        "malware"
+      ],
+      "keywords": "vulnerability assessment scanning CVE CVSS KEV patching exposure remediation authenticated scan"
+    },
+    {
+      "slug": "risk",
+      "title": "Risk",
+      "category": "Security operations",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "Risk describes how a possible event could harm something important and how likely that harm is. It helps a team decide where to spend attention and effort.",
+      "body": "<h2>Turn a vague worry into a clear statement</h2><p>“Our network is insecure” is difficult to act on. A more useful statement is: “If a stolen support account can remotely administer the billing server without an additional check, an intruder could interrupt invoicing.” It names the route to harm and the business consequence.</p><p>A risk assessment does not promise to predict the future precisely. It makes assumptions, evidence, and uncertainty visible so an accountable owner can choose a response. A beginner’s job is often to help collect those facts rather than invent a numerical probability.</p>\n<div class=\"table-scroll\"><table><thead><tr><th scope=\"col\">Term</th><th scope=\"col\">Meaning</th><th scope=\"col\">Fictional example</th></tr></thead><tbody><tr><td>Asset</td><td>Something of value.</td><td>Billing service and customer records.</td></tr><tr><td>Threat</td><td>A potential source or event that could cause harm.</td><td>Someone using stolen credentials.</td></tr><tr><td>Vulnerability</td><td>A weakness that the event could exploit.</td><td>Remote administration without the required additional verification.</td></tr><tr><td>Likelihood</td><td>How plausible the harmful event is in this environment.</td><td>Consider exposure, observed attacks, and controls.</td></tr><tr><td>Impact</td><td>The consequence if it happens.</td><td>Delayed invoices, service outage, or exposed records.</td></tr><tr><td>Control</td><td>A safeguard that changes the risk.</td><td>Strong authentication and restricted administration paths.</td></tr></tbody></table></div>\n<h2>Consider more than confidentiality</h2><p><strong>Confidentiality</strong> means information stays available only to authorized parties. <strong>Integrity</strong> means it stays accurate and protected from unauthorized alteration. <strong>Availability</strong> means the service is usable when needed. These are often called the CIA triad. A ransomware outage is an availability problem even before you establish whether information was stolen.</p><p>Business impact depends on the asset. A short outage on a disposable practice machine differs from the same outage on the only scheduling system at a busy office. Ask the service owner about consequences, dependencies, and acceptable downtime.</p>\n<h2>What can an organization do about a risk?</h2><ul><li><strong>Reduce it:</strong> implement safeguards or change the process.</li><li><strong>Avoid it:</strong> stop the activity or remove the risky exposure.</li><li><strong>Share or transfer part of it:</strong> use a contractual arrangement or insurance. Operational responsibility does not simply disappear.</li><li><strong>Accept it:</strong> an authorized risk owner records why the remaining risk is tolerable, for how long, and under which conditions.</li></ul>\n<p><strong>Inherent risk</strong> considers the scenario before relevant controls. <strong>Residual risk</strong> is what remains after controls. A control does not make risk automatically zero. A failed control or a changed environment should trigger another look.</p>\n<h2>Work through the decision</h2><p>A fictional company has one billing server and no verified restore test. Backups show “successful,” but their recoverability is unknown. Identify the asset and outage consequence, then propose a controlled restore test to a separate environment. This turns an assumption into evidence without overwriting the working service.</p><details><summary>What would a useful risk record contain?</summary><p>Service owner; scenario and business impact; current controls; evidence and gaps; likelihood and impact using the organization’s scale; proposed treatment; accountable decision owner; target and review dates. A successful backup job is evidence of a job result. A successful restore test supplies different evidence about recovery.</p></details>\n<h2>Use scores as a conversation aid</h2><p>A high/medium/low matrix can organize priorities, but ratings depend on defined criteria. Do not mistake a vulnerability’s CVSS base score for the organization’s complete risk rating. Explain why a finding matters here and what observation would change your assessment.</p>",
+      "question": "How are a vulnerability and a risk different?",
+      "answer": "A vulnerability is a weakness. A risk describes possible harm involving an asset, a threat or event, likelihood, impact, and relevant controls. The same weakness can create different risk in different environments.",
+      "sources": [
+        "riskGuide",
+        "controlTests"
+      ],
+      "related": [
+        "security-controls",
+        "vulnerability-management",
+        "incident-response"
+      ],
+      "keywords": "CIA triad confidentiality integrity availability likelihood impact residual inherent risk assessment"
+    },
+    {
+      "slug": "security-controls",
+      "title": "Security controls",
+      "category": "Security operations",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "A security control is a safeguard intended to reduce risk. To know whether it works, you need a clear objective and evidence from the systems and people it covers.",
+      "body": "<h2>A product is not the same as a working control</h2><p>Buying a firewall does not establish that guest devices are separated from a file server. The control is the implemented restriction: the intended traffic is denied, required traffic still works, and changes are managed. Tools help deliver a control; configuration, coverage, people, and verification determine whether it works.</p><p>Start with a requirement that can be tested. “Have good access security” is vague. “Standard staff accounts cannot administer the billing server” gives you a population, a prohibited action, and an expected result.</p>\n<h2>Describe what a control does</h2>\n<div class=\"table-scroll\"><table><thead><tr><th scope=\"col\">Function</th><th scope=\"col\">Purpose</th><th scope=\"col\">Example</th></tr></thead><tbody><tr><td>Preventive</td><td>Reduce the chance of an unwanted action.</td><td>A rule blocks guest access to a server network.</td></tr><tr><td>Detective</td><td>Reveal activity or a failure.</td><td>An alert identifies unexpected privileged sign-ins.</td></tr><tr><td>Corrective or recovery</td><td>Limit consequences or restore an acceptable state.</td><td>An account-response procedure or tested data restoration.</td></tr></tbody></table></div>\n<p>You can also describe how a control is delivered: <strong>technical</strong> measures such as access policies, <strong>administrative</strong> measures such as approvals and training, and <strong>physical</strong> measures such as controlled server-room entry. These classifications overlap. One safeguard can serve more than one purpose.</p>\n<h2>Design the test before declaring success</h2><ol><li><strong>Objective:</strong> what should be allowed or prevented, and for whom?</li><li><strong>Coverage:</strong> which users, devices, applications, or locations should be included? Check exclusions.</li><li><strong>Implementation:</strong> examine the active configuration, not just a design document.</li><li><strong>Behavior:</strong> test an authorized case that should succeed and an unauthorized case that should fail, within approved test scope.</li><li><strong>Evidence:</strong> save the result, time, environment, and limitations. Assign an owner to any gap.</li></ol>\n<p>NIST assessment guidance uses examination, interviews, and tests as complementary methods. A policy document shows intended behavior. An administrator can explain operation. A controlled test can show observed behavior. One does not always substitute for the others.</p>\n<h2>A fictional guest-network control</h2><p>The goal is: guests can use the internet but cannot initiate connections to the file server. A VLAN alone establishes a separate broadcast domain. Check routing and enforcement too. From a permitted test guest device, test the agreed blocked service and a permitted destination. Review the corresponding rule or log evidence.</p><details><summary>The rule exists, but a guest test succeeds. What does that mean?</summary><p>There is a control gap to investigate. Possible explanations include wrong rule order, the wrong source network, another routed path, or a host on the wrong VLAN. Record the actual test and address the cause. Do not declare the entire network exposed solely from one result, or ignore that result because the policy document says access is blocked.</p></details>\n<h2>Keep controls working over time</h2><p><strong>Least privilege</strong> grants only the access needed. <strong>Defense in depth</strong> uses complementary safeguards so one failure is less likely to cause complete loss. Neither means adding random restrictions: each layer should have a purpose and an owner.</p><p>Review configuration drift, exceptions, failed agents, and new assets. A compensating control is an alternative measure intended to address a requirement when the normal measure cannot be used; document its justification and test its effectiveness. Mark time-limited exceptions for review rather than letting them quietly become permanent.</p>",
+      "question": "Why test a permitted connection as well as a blocked one after a firewall change?",
+      "answer": "A control must enforce the intended restriction while preserving required service. A deny-all mistake could pass only the negative test. Together, permitted and denied cases help verify the actual objective.",
+      "sources": [
+        "controlTests",
+        "riskGuide",
+        "firewallGuide"
+      ],
+      "related": [
+        "risk",
+        "firewalls",
+        "vlans",
+        "identity",
+        "security-awareness"
+      ],
+      "keywords": "preventive detective corrective technical administrative physical least privilege defense in depth control gaps testing"
+    },
+    {
+      "slug": "security-awareness",
+      "title": "Security awareness",
+      "category": "Security operations",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "Security awareness helps people recognize risky situations and know what to do next. Its value is safer behavior and faster reporting, not just completed training slides.",
+      "body": "<h2>Make the useful action obvious</h2><p>An employee may not need to explain a phishing campaign’s infrastructure. They do need to know how to report a suspicious request, independently verify a payment change, and respond if they entered credentials. <strong>Awareness</strong> makes a risk recognizable. <strong>Training</strong> teaches a task. A continuing learning program supports both and checks whether the guidance works.</p><p>Different roles face different situations. Finance needs payment-verification practice. Administrators need to recognize unusual access requests and protect privileged accounts. Everyone benefits from knowing the reporting route and being able to use it without fear of embarrassment.</p>\n<h2>Build a small learning cycle</h2><ol><li><strong>Choose a real need:</strong> for example, users do not know where to report a suspicious email.</li><li><strong>Teach one behavior:</strong> demonstrate the approved reporting button or channel with a safe example.</li><li><strong>Practice:</strong> use an authorized simulation or discussion that fits the audience.</li><li><strong>Measure:</strong> check whether reports reach the right team and contain enough context.</li><li><strong>Improve:</strong> remove confusing steps and repeat when roles or threats change.</li></ol>\n<p>A platform such as KnowBe4 can help deliver training and simulations. The learning objective, scope, and follow-up process remain the organization’s responsibility. Tool navigation belongs in a separate tool guide; this note is about designing useful security habits.</p>\n<h2>Use simulations to learn</h2><p>A simulated phishing message tests behavior under a designed set of conditions. Obtain the appropriate campaign approval, use an agreed audience, and keep the landing page and reporting process safe. Do not collect real passwords. A campaign should also test the support process: if someone reports it, does the team know what to do?</p><p>A click rate is not a complete measure of awareness. Message difficulty, audience, email security tools, and delivery affect results. Training completion measures participation, not mastery. Compare equivalent exercises and pair the figures with reporting quality, response time, and observed process improvements.</p>\n<h2>A fictional first-week exercise</h2><p>A new employee receives a message saying “Approve this unexpected MFA prompt so IT can update your laptop.” Ask them to choose a next step: approve it, ask the sender for reassurance, or deny the prompt and contact the known support channel.</p><details><summary>Work through the safer response</summary><p>Deny the unexpected prompt and use the established support channel to report it. The sender who initiated the suspicious request is not an independent verifier. If the employee already approved it, respond calmly and start the relevant account review. That information is valuable evidence, not a reason to shame the reporter.</p></details>\n<h2>Turn incidents into useful teaching</h2><p>After a real report, explain the relevant clue and the expected action using anonymized examples where appropriate. Avoid exposing customer details or naming individual employees in general training material. A short lesson about a specific decision is easier to remember than a long list of theoretical dangers.</p>\n<div class=\"field-note\"><strong>An analyst’s contribution</strong><p>Keep the reporting instructions accurate, investigate reports consistently, and tell users what happens next. A prompt, respectful response makes it more likely that the next person will report a problem early.</p></div>",
+      "question": "Why is a lower simulated-phishing click rate not enough to prove a training program works?",
+      "answer": "The result depends on the message, audience, delivery, and security tooling. Also check reporting behavior, response quality, practical decision-making, and whether the organization fixes the problems the exercise reveals.",
+      "sources": [
+        "learningGuide",
+        "phishingGuide"
+      ],
+      "related": [
+        "phishing",
+        "security-controls",
+        "technical-documentation"
+      ],
+      "keywords": "KnowBe4 awareness training phishing simulations culture reporting"
+    },
+    {
+      "slug": "firewalls",
+      "title": "Firewalls",
+      "category": "Networking",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "A firewall decides which network traffic is permitted across a boundary. A useful rule describes who can reach what service, in which direction, and why.",
+      "body": "<h2>Turn “open the port” into a specific request</h2><p>An application needs a client to reach a service, not every device to reach everything. Start with the <strong>source</strong>, <strong>destination</strong>, <strong>protocol</strong>, and <strong>destination port</strong>. A port is a numbered service endpoint in TCP or UDP. TCP 443 commonly carries HTTPS; TCP 445 commonly carries SMB file sharing. A port number is a clue, not proof of the application or its safety.</p><p>In a fictional office, staff on <code>10.20.10.0/24</code> need SMB access to one file server, <code>10.20.30.10</code>. Guests on <code>10.20.20.0/24</code> do not. That is a specific access requirement you can implement and test.</p>\n<h2>Read a rule from left to right</h2>\n<div class=\"table-scroll\"><table><thead><tr><th scope=\"col\">Field</th><th scope=\"col\">Example</th><th scope=\"col\">Meaning</th></tr></thead><tbody><tr><td>Source</td><td>10.20.10.0/24</td><td>The staff subnet initiating the connection.</td></tr><tr><td>Destination</td><td>10.20.30.10</td><td>The file server being contacted.</td></tr><tr><td>Protocol and destination port</td><td>TCP 445</td><td>The requested SMB service.</td></tr><tr><td>Action</td><td>Allow</td><td>Permit matching traffic at this enforcement point.</td></tr><tr><td>Placement and logging</td><td>Before the general deny; log as required</td><td>Order and visibility affect the result.</td></tr></tbody></table></div>\n<p>Many rule lists use <strong>first matching rule</strong> behavior: the first matching entry determines the result. A broad deny placed first can hide a later allow. A broad allow placed first can bypass a later restriction. Products differ in evaluation stages, policy types, and defaults; inspect the actual platform’s effective policy.</p>\n<section class=\"exercise\" data-exercise=\"firewall\" aria-label=\"Follow a connection through the rules\"><div class=\"exercise-heading\"><span class=\"eyebrow\">INTERACTIVE / FICTIONAL EXAMPLE</span><h2>Follow a connection through the rules</h2><p>Choose staff or guest traffic and a service. Move the specific staff rule above or below the broad deny, then inspect the first match.</p></div><div class=\"exercise-mount\"></div><noscript><p>In this fictional first-match policy, staff SMB is allowed only when its specific allow precedes the broad deny. Guest traffic and other service requests are denied by this rule list.</p></noscript></section>\n<h2>Stateful does not mean “everything is allowed back”</h2><p>A <strong>stateful firewall</strong> tracks connections or flows so it can recognize return traffic associated with permitted communication. You normally do not need a broad rule allowing any new inbound connection just to receive replies. The details depend on the protocol and platform.</p><p>A network firewall controls traffic at a network boundary. A <strong>host firewall</strong> runs on the endpoint. A permitted network path can still fail at the host firewall or service. Even a successful TCP connection does not grant application or file permissions.</p>\n<h2>Trace the path before changing policy</h2><ol><li>Confirm the client’s address, the resolved destination, protocol, and port.</li><li>Check whether routing actually sends this flow through the firewall you are examining.</li><li>Review matching-rule information, action, and timestamps in available logs.</li><li>Check the destination listener and host firewall if the network boundary permits the flow.</li><li>Test the intended permitted case and a case that must remain denied after an approved change.</li></ol>\n<p><strong>NAT</strong> changes addresses or ports; filtering decides permission. A firewall may perform both, but they are separate jobs. Address translation can change which addresses a rule or log shows. Check the platform’s evaluation order before comparing the original client address with a translated address.</p>\n<div class=\"field-note\"><strong>At work</strong><p>For a firewall request, record the service owner, business reason, exact flow, intended duration, test cases, and rollback. “Allow any/any to see if it works” is a poor substitute for understanding which part of the path failed.</p></div>",
+      "question": "A staff allow rule is below a deny-all rule in a first-match policy. Which wins?",
+      "answer": "The earlier matching deny wins. The later allow is never reached for that traffic. Place the approved specific allow correctly, then verify both required access and traffic that must remain blocked.",
+      "sources": [
+        "firewallGuide",
+        "nsgOrder"
+      ],
+      "related": [
+        "routing",
+        "vlans",
+        "private-addressing",
+        "syslog",
+        "security-controls",
+        "change-management"
+      ],
+      "keywords": "ACL rule order stateful filtering ports TCP UDP inbound outbound NAT"
+    },
+    {
+      "slug": "routing",
+      "title": "Routing",
+      "category": "Networking",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "Routing chooses the next hop for an IP packet. Each router uses its own routing information to move the packet toward its destination.",
+      "body": "<h2>Where does a packet go next?</h2><p>A laptop sending to another subnet needs a path beyond its local network. A <strong>router</strong> forwards IP packets between networks. Its <strong>routing table</strong> describes destination networks and how to reach them. The <strong>next hop</strong> is the next router on the path, or the destination itself when directly reachable on the local link.</p><p>A laptop also has routing information. Its <strong>default gateway</strong> is commonly the next hop used when no more specific route applies. The router then makes its own forwarding decision. The laptop does not need a complete list of every router between it and a website.</p>\n<h2>Read the prefix before the metric</h2><p>A <strong>prefix</strong>, such as <code>10.20.30.0/24</code>, describes a network range. In ordinary destination-based forwarding, choose the <strong>longest matching prefix</strong> among the installed routes: the most specific destination range that contains the packet’s destination. A <code>/24</code> match beats a <code>/16</code> match; either beats the default <code>0.0.0.0/0</code>.</p>\n<div class=\"table-scroll\"><table><thead><tr><th scope=\"col\">Installed destination</th><th scope=\"col\">Fictional path</th><th scope=\"col\">When it is used</th></tr></thead><tbody><tr><td>10.20.30.0/24</td><td>Server link</td><td>Addresses from 10.20.30.0 through 10.20.30.255.</td></tr><tr><td>10.20.0.0/16</td><td>Branch router</td><td>Other destinations inside 10.20.0.0/16.</td></tr><tr><td>0.0.0.0/0</td><td>Upstream router</td><td>Destinations without a more specific match.</td></tr></tbody></table></div>\n<section class=\"exercise\" data-exercise=\"routing\" aria-label=\"Choose the next hop\"><div class=\"exercise-heading\"><span class=\"eyebrow\">INTERACTIVE / FICTIONAL EXAMPLE</span><h2>Choose the next hop</h2><p>Change the packet destination and remove an installed route. Watch which prefixes match and which one wins.</p></div><div class=\"exercise-mount\"></div><noscript><p>10.20.30.10 matches /24, /16, and /0; /24 wins. Remove /24 and the /16 route wins instead. With no matching route, the router cannot forward this packet.</p></noscript></section>\n<p>A <strong>metric</strong> helps compare paths according to an operating system or routing protocol’s rules. <strong>Administrative distance</strong>, on platforms using that term, ranks route sources when choosing what to install for the same destination prefix. These do not mean a low-cost default route beats a more specific installed route. The exercise omits equal-cost paths and policy-based routing to focus on prefix matching.</p>\n<h2>How routes appear</h2><ul><li><strong>Connected routes:</strong> networks attached to the device’s active interfaces.</li><li><strong>Static routes:</strong> entries an administrator deliberately configures.</li><li><strong>Dynamic routes:</strong> routes learned through protocols such as OSPF or BGP. Those protocols exchange reachability information; they are not needed for every small lab.</li></ul>\n<h2>A route is a path decision, not a guarantee</h2><p>The chosen next hop must be reachable, downstream routers need suitable routes, policy must permit the traffic, and a reply needs a return path. A routing entry alone proves none of those. If a specific route disappears and a default route wins, the packet may be sent somewhere that cannot deliver it.</p><p>For local Ethernet delivery, ARP resolves the next hop’s IPv4 address to a MAC address. For remote traffic, the Ethernet destination changes at each routed link while the final IP destination normally stays the same, except where translation occurs. Read <a href=\"#note-arp\">ARP</a> to work through that distinction.</p>\n<h2>Troubleshoot an office-to-branch failure</h2><p>Record source and destination addresses. Inspect the selected route, outgoing interface, and next hop, then check the return direction. Traceroute-style tools can suggest where replies stop, but some routers filter or limit those replies. A missing hop response is not conclusive evidence that the router cannot forward application traffic.</p>",
+      "question": "A destination matches both 10.20.0.0/16 and 10.20.30.0/24. Which installed route is selected for 10.20.30.10?",
+      "answer": "The /24 route, because it is the longest matching prefix. If it is removed, /16 may become the match, but choosing that path does not prove it can deliver the packet.",
+      "sources": [
+        "routingGuide",
+        "arp",
+        "connectionTest"
+      ],
+      "related": [
+        "subnetting",
+        "arp",
+        "firewalls",
+        "vpns",
+        "switching"
+      ],
+      "keywords": "route table next hop default gateway longest prefix match static dynamic OSPF BGP"
+    },
+    {
+      "slug": "switching",
+      "title": "Switching",
+      "category": "Networking",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "An Ethernet switch learns where devices are connected and forwards frames within a VLAN. It learns from source MAC addresses and looks up destination MAC addresses.",
+      "body": "<h2>What a switch actually forwards</h2><p>A <strong>frame</strong> is the Ethernet unit delivered across a local link. Its header includes a source and destination <strong>MAC address</strong>, the link-layer addresses used for delivery. A <strong>switch</strong> connects local devices and decides which port or ports should receive each frame.</p><p>At this layer, the switch is making a MAC-based decision within a VLAN. A router makes an IP-based decision between networks. Some managed switches support both Layer 2 switching and Layer 3 routing; identify which function you are troubleshooting rather than guessing from the box’s name.</p>\n<h2>Learn source, look up destination</h2><ol><li>A frame arrives on a port in a particular VLAN.</li><li>The switch learns the source MAC address on that incoming port and VLAN.</li><li>It looks up the destination MAC address in its forwarding table.</li><li>If known on another eligible port, it forwards there. If the destination belongs behind the same incoming port, it does not send the frame back out that port.</li><li>If the unicast destination is unknown, it normally floods copies to eligible forwarding ports in that VLAN except the incoming port.</li></ol>\n<p><strong>Unicast</strong> means one destination. <strong>Broadcast</strong> means all devices in the broadcast domain. An unknown unicast is still addressed to one MAC; copying it across eligible ports does not change that destination into a broadcast address. Devices that receive a frame do not necessarily accept it as their own.</p>\n<section class=\"exercise\" data-exercise=\"switching\" aria-label=\"Teach a switch where devices live\"><div class=\"exercise-heading\"><span class=\"eyebrow\">INTERACTIVE / FICTIONAL EXAMPLE</span><h2>Teach a switch where devices live</h2><p>Send a frame, then send a reply. Watch the MAC table fill and the highlighted egress ports change.</p></div><div class=\"exercise-mount\"></div><noscript><p>With an empty table, a staff laptop’s frame to its printer floods eligible VLAN 10 ports. A printer reply teaches the printer’s source MAC and is forwarded to the already learned laptop port. The VLAN 20 guest port receives neither frame.</p></noscript></section>\n<h2>Ports and VLANs</h2><p>An <strong>access port</strong> commonly carries one data VLAN to an endpoint. A <strong>trunk</strong> carries multiple VLANs between devices, usually using tags to identify them. Voice VLANs, native VLANs, and platform-specific settings add detail; the key is that VLAN membership follows configuration, not which devices happen to share a physical switch.</p><p>A switch’s MAC table maps MAC addresses to ports and VLANs. An endpoint’s ARP cache maps IPv4 addresses to MAC addresses. They answer different questions. The switch can learn from an ordinary frame; it does not need to run a fresh ARP query to populate every forwarding entry.</p>\n<h2>Why loops matter</h2><p>Redundant links can create a Layer 2 loop. Frames may circulate and multiply, filling the network with traffic. <strong>Spanning Tree Protocol (STP)</strong> and its variants help maintain a loop-free forwarding topology by controlling which redundant paths forward. A port that is deliberately not forwarding may be protecting the network. Do not bypass that state without understanding the topology.</p>\n<h2>A useful switch-port investigation</h2><p>Start with link state and the connected device. Check the assigned VLAN, MAC-table entry, interface errors, port-security events, and relevant STP state. If a device gets an address from the wrong subnet, inspect the VLAN and DHCP path. If a link is up but traffic fails, that physical connection alone does not prove the policy, address, and forwarding configuration are correct.</p><p>Before changing a remote switch, preserve the configuration and a recovery path. A mistaken uplink or management-VLAN change can disconnect your own support session and many users at once.</p>",
+      "question": "What does a switch learn when a frame arrives, and how is that different from ARP?",
+      "answer": "The switch learns the source MAC on the incoming port and VLAN, then looks up the destination MAC. ARP is a separate IPv4-to-MAC resolution process used by endpoints and routers for local delivery.",
+      "sources": [
+        "switchingGuide",
+        "vlan",
+        "arp"
+      ],
+      "related": [
+        "vlans",
+        "arp",
+        "routing",
+        "dhcp",
+        "change-management"
+      ],
+      "keywords": "switch ports MAC table CAM learning flooding unicast broadcast trunk access STP"
+    },
+    {
+      "slug": "vpns",
+      "title": "VPNs",
+      "category": "Networking",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "A VPN creates a logical connection across another network. In a typical remote-access VPN, an authenticated, encrypted tunnel carries selected traffic between a device and an organization.",
+      "body": "<h2>What the tunnel connects</h2><p><strong>Virtual private network</strong> describes a logical private connection built over another network. A <strong>remote-access VPN</strong> connects a user’s device to an organization. A <strong>site-to-site VPN</strong> connects network gateways, such as two offices. IPsec and TLS-based VPNs are common approaches, but products differ in authentication, routing, and policy.</p><p>Imagine a remote employee who needs a file server on the office network. The home router cannot normally deliver traffic directly to that company’s private address. The VPN provides a tunnel to the company gateway, and routing directs the relevant traffic into it. The server and application still enforce their own access requirements.</p>\n<h2>Five questions behind “the VPN is connected”</h2><ol><li><strong>Authentication:</strong> did the expected user or device successfully prove its identity?</li><li><strong>Tunnel:</strong> was the connection established with the expected gateway?</li><li><strong>Routing:</strong> does the destination use the VPN interface?</li><li><strong>Name resolution:</strong> does the internal name resolve to the right address using the intended DNS service?</li><li><strong>Permission:</strong> do network policy and the destination service allow the requested action?</li></ol>\n<p>A green connection icon mostly answers one part of this chain. It does not establish that every internal server is reachable or that the user can read its files.</p>\n<h2>Split tunnel and full tunnel</h2>\n<div class=\"table-scroll\"><table><thead><tr><th scope=\"col\">Design</th><th scope=\"col\">Typical behavior</th><th scope=\"col\">Support implication</th></tr></thead><tbody><tr><td>Split tunnel</td><td>Configured company destinations use the tunnel; other traffic uses another path.</td><td>Inspect the route for the failing destination, not just the tunnel state.</td></tr><tr><td>Full or force tunnel</td><td>The VPN is the intended default path for traffic.</td><td>Gateway capacity and filtering may affect internet access too; specific routes and exclusions still matter.</td></tr></tbody></table></div>\n<p>Check both IPv4 and IPv6 behavior, DNS handling, and explicit exceptions. “Full tunnel” is a configuration intent, not proof that every possible packet traverses the gateway. See <a href=\"#note-routing\">Routing</a> for longest-prefix matching.</p>\n<h2>A fictional file-share failure</h2><p>The VPN connects, but <code>files.example.internal</code> fails to resolve. A test to the verified server IP reaches TCP 445. That narrows the immediate issue toward name resolution: check the VPN’s DNS settings and internal name handling. It does not establish that the user has file permissions or that using the IP as a permanent workaround is appropriate.</p><details><summary>What if the name resolves and TCP 445 works, but the share says “Access denied”?</summary><p>Move to account and resource authorization: expected identity, group membership, share permissions, and filesystem permissions. Reopening the network path does not grant rights to the files. Record which layer your tests actually passed.</p></details>\n<h2>Watch for overlapping networks</h2><p>If the employee’s home network and the company subnet use the same address range, a more specific local route may send traffic to the home network instead of the company. Check the actual selected route. This is one reason address planning matters beyond a subnetting exercise.</p>\n<h2>VPN, ZTNA, and permissions</h2><p>A VPN can provide network access, while a ZTNA service often brokers access to particular applications based on identity and device context. Neither label makes every deployment secure by itself. Configure narrow access, current endpoints, appropriate authentication, monitoring, and ownership. Never assume that tunnel access should also mean administrator access.</p>",
+      "question": "A VPN is connected and a file server answers on TCP 445, but a share returns Access denied. Where should the investigation go next?",
+      "answer": "Review the identity used for the share and its share/filesystem permissions. The successful TCP test supports service reachability, not authorization to read files.",
+      "sources": [
+        "vpnRouting",
+        "vpnGuide",
+        "smb"
+      ],
+      "related": [
+        "routing",
+        "dns",
+        "file-shares",
+        "ztna-sase",
+        "firewalls"
+      ],
+      "keywords": "VPN remote access site to site split tunnel force full tunnel IPsec TLS overlapping subnets"
+    },
+    {
+      "slug": "troubleshooting",
+      "title": "Troubleshooting",
+      "category": "IT operations",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "Troubleshooting is a controlled process of narrowing a problem with evidence. Start with what fails, compare what still works, and test one explanation at a time.",
+      "body": "<h2>Translate “it is broken” into a testable problem</h2><p>Ask what the user was trying to do, the exact error, when it started, and whether it ever worked. Establish <strong>scope</strong>: one application, one account, one device, one office, or everyone? Check recent changes, but remember that events close together in time are not automatically cause and effect.</p><p>A <strong>hypothesis</strong> is a possible explanation you can test. “DNS may be failing because the service works by verified IP but not by name” is testable. “Windows is acting weird” does not point to a useful test.</p>\n<h2>Work from observation to confirmation</h2><ol><li>Record the expected and actual behavior, time zone, device, and affected user.</li><li>Compare a known-working case under similar conditions.</li><li>Choose a low-impact test that can distinguish between explanations.</li><li>Interpret exactly what the result proves, including what it does not prove.</li><li>Apply an authorized fix, then repeat the original failing task.</li><li>Document the result and any remaining limitations.</li></ol>\n<h2>Look at the same foundations on Windows and macOS</h2>\n<div class=\"table-scroll\"><table><thead><tr><th scope=\"col\">Question</th><th scope=\"col\">Windows starting point</th><th scope=\"col\">macOS starting point</th></tr></thead><tbody><tr><td>Is one process consuming resources?</td><td>Task Manager: processes, CPU, memory, disk.</td><td>Activity Monitor: CPU, memory pressure, disk.</td></tr><tr><td>Are network settings expected?</td><td>Settings and ipconfig /all.</td><td>System Settings → Network; inspect the active connection’s details.</td></tr><tr><td>What happened at the failure time?</td><td>Relevant application/system records in Event Viewer.</td><td>Relevant application logs and Console.</td></tr><tr><td>Is storage nearly full?</td><td>Storage settings and the affected volume.</td><td>Storage settings and the affected volume.</td></tr></tbody></table></div>\n<p>A <strong>process</strong> is a running program. A <strong>service</strong> or background daemon performs work without necessarily displaying a window. High resource usage is a symptom to correlate with the workload; it is not automatically malware. On macOS, memory pressure gives more context than unused RAM alone. Interface labels can differ by operating-system version.</p>\n<h2>Separate the layers of a connection</h2><p>For a failed business application, check link or Wi-Fi, address configuration, route, name resolution, service reachability, then identity and permissions. These checks can overlap, but keeping their meanings separate prevents random fixes.</p><p>On Windows, <code>ipconfig /all</code> displays configuration. For an approved test against a known lab server, <code>Test-NetConnection 10.20.30.10 -Port 445</code> tests TCP reachability. A successful result does not establish permission to open its files. On either operating system, a failed ping may reflect ICMP filtering rather than a completely unreachable application.</p>\n<h2>Use a comparison to narrow the cause</h2><p>In a fictional office, one user cannot open the finance share from two devices. A different authorized user can open it from both. That points toward user-specific identity or authorization rather than a broken switch cable. Review the account and permissions instead of restarting the network.</p><details><summary>What changes if every user fails only on one laptop?</summary><p>Investigate device-specific configuration, connectivity, time, cached authentication, or client software. The comparison changes the next hypothesis; it still does not prove a particular root cause by itself.</p></details>\n<h2>Remember what a server supports</h2><p>A Windows Server may provide DNS, DHCP, domain authentication, or shared files to many users. Identify its role and dependencies before restarting a service or the host. Collect relevant health and event evidence first. A disruptive “try a reboot” action may interrupt the support session, erase useful transient evidence, and affect customers who never reported the original problem.</p>",
+      "question": "One user fails on two devices while another authorized user succeeds on both. What does this comparison help you prioritize?",
+      "answer": "User-specific identity or permissions become a stronger hypothesis than a device-wide connectivity failure. Review the exact account, group membership, and resource authorization, and verify with an appropriate test.",
+      "sources": [
+        "ipconfig",
+        "connectionTest",
+        "macMemory",
+        "eventViewer"
+      ],
+      "related": [
+        "dns",
+        "dhcp",
+        "windows-events",
+        "file-shares",
+        "change-management",
+        "technical-documentation"
+      ],
+      "keywords": "Windows Windows Server macOS OS support troubleshooting processes services Task Manager Activity Monitor diagnostics"
+    },
+    {
+      "slug": "change-management",
+      "title": "Change management",
+      "category": "IT operations",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "Change management makes a system change deliberate, reviewable, and recoverable. Success means the intended result works and required services still work afterward.",
+      "body": "<h2>A small setting can have a large reach</h2><p>Changing a switch port, firewall rule, server service, or access policy can affect more than the original ticket. A management-VLAN change can disconnect your own remote session. A broad deny rule can interrupt several applications. <strong>Change management</strong> is the process for understanding and controlling that impact.</p><p>A <strong>baseline</strong> is a known reference configuration. A <strong>change record</strong> describes the proposed difference, reason, expected impact, and evidence. A <strong>rollback</strong> is a planned way to return to an acceptable earlier state if the change does not meet its criteria.</p>\n<h2>Write the change before making it</h2><ul><li><strong>Purpose and scope:</strong> which customer, devices, accounts, or services are included, and why?</li><li><strong>Current and proposed state:</strong> the exact configuration difference.</li><li><strong>Dependencies and impact:</strong> who could lose access, including the person making the change?</li><li><strong>Authorization and timing:</strong> the appropriate approver, implementer, maintenance window, and communication.</li><li><strong>Validation:</strong> what observable results will show success and protect required behavior?</li><li><strong>Recovery:</strong> rollback steps, prerequisites, decision threshold, and an alternate access path where needed.</li></ul>\n<p>Preserve the current configuration through the platform’s supported method. Some changes cannot be undone with a simple inverse command. A database conversion or major upgrade may require a tested restore path. Confirm the recovery method rather than treating the word “backup” as enough.</p>\n<h2>A fictional firewall change</h2><p>The application owner requests that staff reach a new file server. Document the staff subnet, server address, TCP 445, evaluation order, and the required restriction on guest access. Confirm routing and server readiness before adding the rule.</p><p>Your validation plan needs two outcomes: an authorized staff connection works, and the guest test remains blocked. Also check relevant existing services. If the staff test still fails, inspect logs and the destination service; do not keep widening access until the symptom disappears.</p><details><summary>What belongs in this change’s rollback plan?</summary><p>The original policy or rule identifiers, the exact new rule to remove or prior configuration to restore, who makes that decision, and which checks confirm the restored state. Include a way to recover management access if the change can disconnect the normal session. A rollback that depends on an already-lost connection is incomplete.</p></details>\n<h2>Implementation is not verification</h2><p>A successful save message shows that a configuration operation was accepted. It does not show that the intended traffic works or that the rule reached every relevant device. Record actual before-and-after tests, policy deployment status, and the affected service owner’s result where appropriate.</p><p>Make one controlled change or a clearly defined change set so you can reason about its effects. If a test fails, follow the agreed decision point rather than continuing improvised modifications beyond the approved scope.</p>\n<h2>Urgent changes still need ownership</h2><p>An active incident may require an emergency process with expedited authority. Capture the decision, implementation, verification, and subsequent review under that process. “Emergency” changes the timing and workflow; it does not make the action result or customer impact irrelevant.</p>\n<p>After the change, update the configuration record, affected diagrams, and applicable knowledge articles. The next analyst should not have to reconstruct the current network from a months-old ticket and a guess.</p>",
+      "question": "Why is a configuration backup not always a complete rollback plan?",
+      "answer": "You also need a supported restoration method, access to execute it, prerequisites, decision criteria, and validation. If the change disconnects your management session, a backup alone does not restore your ability to reach the device.",
+      "sources": [
+        "changeGuide",
+        "firewallGuide"
+      ],
+      "related": [
+        "firewalls",
+        "switching",
+        "vulnerability-management",
+        "technical-documentation",
+        "troubleshooting"
+      ],
+      "keywords": "change control rollback maintenance configuration baseline approval emergency change verification"
+    },
+    {
+      "slug": "technical-documentation",
+      "title": "Technical documentation",
+      "category": "IT operations",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "Useful technical documentation lets another person understand the evidence or repeat a task without guessing. Its structure should match what that reader needs to do.",
+      "body": "<h2>Choose the document for the job</h2><p>A support team needs several kinds of writing. A <strong>ticket note</strong> records what happened in one case. A <strong>knowledge-base article</strong> teaches a reusable concept or solution. A <strong>standard operating procedure (SOP)</strong> defines a repeatable process and its responsibilities. A <strong>runbook</strong> usually gives operational steps for a particular situation. Teams use these labels differently; make the purpose and audience clear.</p><p>A beginner study note explains why a concept works. A production procedure must also identify the supported environment, required access, decision points, expected results, and recovery steps. Understanding a lab exercise does not establish that the same commands are approved for every customer.</p>\n<h2>Write a ticket another analyst can inherit</h2><ul><li><strong>Context:</strong> customer, affected service, device or account, impact, and the relevant time zone.</li><li><strong>Evidence:</strong> observations and references to the records used.</li><li><strong>Actions:</strong> what was requested, attempted, completed, or failed, by whom and when.</li><li><strong>Interpretation:</strong> the current conclusion and its limits.</li><li><strong>Next step:</strong> outstanding work, accountable owner, and next update or review time.</li></ul>\n<p>“Checked everything; looks fine” gives the reader no reproducible basis. “The tested staff laptop reached the file server on TCP 445 at 15:20 UTC; the user still receives Access denied when opening the share” describes a result and the unresolved problem.</p>\n<h2>Build a procedure around decisions</h2><ol><li>Name the task and explain when the procedure applies.</li><li>List prerequisites: access, supported versions, customer scope, and any required approval.</li><li>Use numbered actions in the order they should be performed.</li><li>Show the expected result and what to do if it differs.</li><li>Include validation, rollback or escalation, owner, and review date.</li></ol>\n<p>Replace vague verbs such as “handle” or “process” with the action the reader should take. Define new terms where they first matter. Use examples with fictional addresses and clearly marked placeholders. Keep credentials, secrets, and unnecessary customer personal information out of reusable articles.</p>\n<h2>Practice an evidence-based update</h2><p>Fictional record: one laptop raised an alert at 10:05 UTC. The EDR confirmed isolation at 10:07. The investigation has not yet established whether other accounts or devices are affected. The response lead owns the scope review.</p><details><summary>Reveal a client-facing update supported by this record</summary><p>“One laptop generated a security alert at 10:05 UTC and was isolated at 10:07. The response lead is investigating the activity and checking for related impact on other accounts and devices. We will provide the next update at 10:30 UTC.” The update reports confirmed actions and an owned next step. It does not claim that the infection is removed or that no other systems are affected.</p></details>\n<p>The time commitment in a real update must be achievable and agreed. Generic reassurance cannot replace the case’s actual facts. If new evidence changes the conclusion, update the record rather than leaving contradictory statements unexplained.</p>\n<h2>Review documentation like a small test</h2><p>Ask another appropriate reader to follow the procedure in a safe, representative environment. Note missing prerequisites and ambiguous choices. After a system or process changes, revise the relevant document and identify its owner. A beautiful article with obsolete instructions is less useful than a clear, maintained one.</p>",
+      "question": "What is missing from “we are investigating and will update you soon”?",
+      "answer": "It omits confirmed scope or impact, the evidence and action state, the responsible next owner, and a specific achievable update time. Fill those in from the actual case rather than using one universal sentence.",
+      "sources": [
+        "writingAudience",
+        "writingSteps",
+        "incidentGuide"
+      ],
+      "related": [
+        "incident-response",
+        "alert-triage",
+        "change-management",
+        "troubleshooting",
+        "security-awareness"
+      ],
+      "keywords": "documentation KB SOP runbook tickets client communication evidence handoff"
     }
   ]
 }

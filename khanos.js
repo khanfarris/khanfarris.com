@@ -7,11 +7,12 @@
   const bySlug = new Map(notes.map((note, i) => [note.slug, {...note, index:i}]));
   const categories = [...new Set(notes.map(n => n.category))];
   let palette=window.KhanThemes.initial;
-  const categoryOrder=['Networking','Security operations','Identity & access','Cloud & telemetry'];
-  const colorsOf = () => Object.fromEntries(categoryOrder.map((c,i)=>[c,palette.categories[i]]));
+  const categoryOrder=['Networking','Security operations','Identity & access','Cloud & telemetry','IT operations'];
+  const colorsOf = () => Object.fromEntries(categoryOrder.map((c,i)=>[c,palette.categories[i]||palette.ink]));
   let colors=colorsOf();
   const colorOf = n => colors[n.category] || palette.accent;
-  const shortCategories = {'Networking':'Networks', 'Security operations':'Security', 'Identity & access':'Identity', 'Cloud & telemetry':'Telemetry'};
+  const searchText = n => `${n.title} ${n.category} ${n.principle} ${n.keywords||''}`.toLowerCase();
+  const shortCategories = {'Networking':'Networks', 'Security operations':'Security', 'Identity & access':'Identity', 'Cloud & telemetry':'Telemetry', 'IT operations':'IT operations'};
   const mobile = matchMedia('(max-width:760px)');
   const reduced = matchMedia('(prefers-reduced-motion:reduce)');
   const thumbnail = new URLSearchParams(location.search).has('thumbnail');
@@ -284,6 +285,11 @@
 
   // Relationships come from the existing archive, including links listed in either direction.
   const columns=5, rows=Math.ceil(notes.length/columns);
+  // Keep a readable row height as the study archive grows; the map can scroll.
+  $('.graph-space').style.setProperty('--graph-height',Math.max(370,rows*92)+'px');
+  $('.graph-frame').tabIndex=0;
+  $('.graph-frame').setAttribute('role','region');
+  $('.graph-frame').setAttribute('aria-label','Study constellation. Scroll to explore all notes; select a note and press Enter to open it.');
   const positions=notes.map((n,i)=>({x:11+(i%columns)*19+(Math.floor(i/columns)%2?2:0),y:10+Math.floor(i/columns)*(77/Math.max(1,rows-1))+(i%2?1:0)}));
   const edgeSet=new Set(), edges=[];
   notes.forEach((n,i)=>(n.related||[]).forEach(slug=>{
@@ -304,7 +310,7 @@
   $('.graph-nodes').addEventListener('keydown',event=>{const node=event.target.closest('[data-select]');if(node&&event.key==='Enter'){event.preventDefault();openReader(node.dataset.select);}});
   function matchingNotes() {
     const query=state.query.trim().toLowerCase();
-    return notes.filter(n=>(state.category==='All'||n.category===state.category)&&(!query||`${n.title} ${n.category} ${n.principle}`.toLowerCase().includes(query)));
+    return notes.filter(n=>(state.category==='All'||n.category===state.category)&&(!query||searchText(n).includes(query)));
   }
   function renderKnowledge() {
     const matches=matchingNotes(), matching=new Set(matches.map(n=>n.slug));
@@ -370,7 +376,7 @@
   function renderReader(slug) {
     const n=bySlug.get(slug);if(!n)return;
     state.reader=slug;
-    $('.note-sheet').innerHTML=`<span class="eyebrow">${esc(n.category)} / ${esc(n.basis)}</span><h2>${esc(n.title)}</h2><p class="note-principle">${esc(n.principle)}</p><div class="note-body">${readableBody(n)}</div>${n.connection?`<p>${esc(n.connection)}</p>`:''}${n.question?`<section class="note-recall"><span>RECALL / BEFORE REVEALING</span><p>${esc(n.question)}</p><details><summary>Reveal the explanation</summary><p>${esc(n.answer)}</p></details></section>`:''}<h3>Continue the connection</h3><div class="note-connections">${connections(slug).map(other=>`<button data-read="${esc(other.slug)}">${esc(other.title)} ↗</button>`).join('')}</div>`;
+    $('.note-sheet').innerHTML=`<span class="eyebrow">${esc(n.category)} / ${esc(n.basis)}</span><h2>${esc(n.title)}</h2><p class="note-principle">${esc(n.principle)}</p><div class="note-body">${readableBody(n)}</div>${n.question?`<section class="note-recall"><span>RECALL / BEFORE REVEALING</span><p>${esc(n.question)}</p><details><summary>Reveal the explanation</summary><p>${esc(n.answer)}</p></details></section>`:''}<h3>Related notes</h3><div class="note-connections">${connections(slug).map(other=>`<button data-read="${esc(other.slug)}">${esc(other.title)} ↗</button>`).join('')}</div>`;
     $('#title-note').innerHTML=`<i aria-hidden="true">≡</i>${esc(n.title)}`;
     if(n.references?.length){const refs=document.createElement('section');refs.className='note-references';refs.innerHTML='<h3>Technical references</h3><ul>'+n.references.map(ref=>`<li><a href="${esc(ref.url)}" target="_blank" rel="noopener">${esc(ref.title)} ↗</a></li>`).join('')+'</ul>';$('.note-connections').previousElementSibling.before(refs);}
     window.StudyExercises.mount($('.note-sheet'));
@@ -379,7 +385,7 @@
   function openReader(slug) {renderReader(slug);selectNote(slug,true);showWindow('note');announce('Opened '+bySlug.get(slug).title+'.');}
   function renderSearch() {
     const query=$('.command-search').value.trim().toLowerCase();
-    const matches=notes.filter(n=>`${n.title} ${n.category} ${n.principle}`.toLowerCase().includes(query));
+    const matches=notes.filter(n=>searchText(n).includes(query));
     $('.command-results').innerHTML=matches.length?matches.map(n=>`<button class="command-result" data-read="${esc(n.slug)}">${esc(n.title)}<span>${esc(shortCategories[n.category]||n.category)} ↗</span></button>`).join(''):'<p class="search-empty">No matching notes. Try a broader concept.</p>';
   }
   function setPalette(id,updateURL=true) {

@@ -189,5 +189,155 @@ window.knowledgePages = [
     "category": "Networking",
     "question": "A TCP segment starts at sequence 1000 and carries 100 data bytes. Is tcp.stream == 1100 the way to find the next bytes?",
     "answer": "No. Sequence 1100 would describe the next data-byte position in this simplified example. tcp.stream is Wireshark’s separate identifier for the whole connection. Filter the right stream, then inspect sequence and acknowledgement numbers inside it."
+  },
+  {
+    "name": "Alert triage",
+    "url": "index.html#note-alert-triage",
+    "type": "Concept",
+    "keywords": "Security operations Concept study Triage means deciding what an alert shows, how urgent it is, and who needs to act next. An alert starts a question; it does not finish an investigation. SOC escalation queue severity priority false positive benign positive",
+    "slug": "alert-triage",
+    "category": "Security operations",
+    "question": "An EDR alert says “isolation requested,” but the device is offline. What can you report?",
+    "answer": "Report that isolation was requested and remains unverified. Record the last sensor contact, escalate alternate containment through the response owner, and keep scope open. A requested action is not a completed action."
+  },
+  {
+    "name": "Incident response",
+    "url": "index.html#note-incident-response",
+    "type": "Concept",
+    "keywords": "Security operations Concept study Incident response is the coordinated work of understanding a security incident, limiting harm, restoring trustworthy service, and learning from what happened. containment eradication recovery evidence timeline handoff incident response IR",
+    "slug": "incident-response",
+    "category": "Security operations",
+    "question": "Why does “the device is isolated” not mean “the incident is resolved”?",
+    "answer": "Isolation limits a network path. It does not establish the original cause, remove persistence, secure affected accounts, restore service, or validate recovery. Those tasks need their own evidence and owners."
+  },
+  {
+    "name": "Phishing",
+    "url": "index.html#note-phishing",
+    "type": "Concept",
+    "keywords": "Security operations Concept study Phishing uses a deceptive message to persuade someone to reveal information or take an unsafe action. The important question is what the message is trying to make the recipient do. social engineering spear phishing credential harvesting QR smishing vishing reported email",
+    "slug": "phishing",
+    "category": "Security operations",
+    "question": "A message passes DMARC and asks Finance to change a supplier’s bank details. Is it safe to approve?",
+    "answer": "No. DMARC concerns authenticated domain alignment, not the truth of the payment instruction. Verify the change through a trusted, independent supplier contact and the established payment process."
+  },
+  {
+    "name": "Malware",
+    "url": "index.html#note-malware",
+    "type": "Concept",
+    "keywords": "Security operations Concept study Malware is software used to cause harm or gain unauthorized access. Investigating it means understanding what ran and what changed, not just recognizing a threatening filename. AV antivirus infection ransomware process tree persistence hash infostealer",
+    "slug": "malware",
+    "category": "Security operations",
+    "question": "Why should you review the process timeline after an antivirus tool quarantines a file?",
+    "answer": "Quarantine describes the file’s current handling. The timeline may show that it executed earlier, launched other processes, established persistence, or accessed credentials. Those possibilities require separate investigation."
+  },
+  {
+    "name": "Vulnerability management",
+    "url": "index.html#note-vulnerability-management",
+    "type": "Concept",
+    "keywords": "Security operations Concept study Vulnerability management is the repeated work of finding weaknesses, deciding which matter most, fixing or reducing them, and verifying the result. vulnerability assessment scanning CVE CVSS KEV patching exposure remediation authenticated scan",
+    "slug": "vulnerability-management",
+    "category": "Security operations",
+    "question": "A scanner reports no findings on a server, but authentication failed. What should you conclude?",
+    "answer": "The assessment has a coverage gap. Confirm which checks ran, repair authorized scan access, and repeat the relevant assessment. You cannot treat an unauthenticated or unreachable result as proof that the server is patched."
+  },
+  {
+    "name": "Risk",
+    "url": "index.html#note-risk",
+    "type": "Concept",
+    "keywords": "Security operations Concept study Risk describes how a possible event could harm something important and how likely that harm is. It helps a team decide where to spend attention and effort. CIA triad confidentiality integrity availability likelihood impact residual inherent risk assessment",
+    "slug": "risk",
+    "category": "Security operations",
+    "question": "How are a vulnerability and a risk different?",
+    "answer": "A vulnerability is a weakness. A risk describes possible harm involving an asset, a threat or event, likelihood, impact, and relevant controls. The same weakness can create different risk in different environments."
+  },
+  {
+    "name": "Security controls",
+    "url": "index.html#note-security-controls",
+    "type": "Concept",
+    "keywords": "Security operations Concept study A security control is a safeguard intended to reduce risk. To know whether it works, you need a clear objective and evidence from the systems and people it covers. preventive detective corrective technical administrative physical least privilege defense in depth control gaps testing",
+    "slug": "security-controls",
+    "category": "Security operations",
+    "question": "Why test a permitted connection as well as a blocked one after a firewall change?",
+    "answer": "A control must enforce the intended restriction while preserving required service. A deny-all mistake could pass only the negative test. Together, permitted and denied cases help verify the actual objective."
+  },
+  {
+    "name": "Security awareness",
+    "url": "index.html#note-security-awareness",
+    "type": "Concept",
+    "keywords": "Security operations Concept study Security awareness helps people recognize risky situations and know what to do next. Its value is safer behavior and faster reporting, not just completed training slides. KnowBe4 awareness training phishing simulations culture reporting",
+    "slug": "security-awareness",
+    "category": "Security operations",
+    "question": "Why is a lower simulated-phishing click rate not enough to prove a training program works?",
+    "answer": "The result depends on the message, audience, delivery, and security tooling. Also check reporting behavior, response quality, practical decision-making, and whether the organization fixes the problems the exercise reveals."
+  },
+  {
+    "name": "Firewalls",
+    "url": "index.html#note-firewalls",
+    "type": "Concept",
+    "keywords": "Networking Concept study A firewall decides which network traffic is permitted across a boundary. A useful rule describes who can reach what service, in which direction, and why. ACL rule order stateful filtering ports TCP UDP inbound outbound NAT",
+    "slug": "firewalls",
+    "category": "Networking",
+    "question": "A staff allow rule is below a deny-all rule in a first-match policy. Which wins?",
+    "answer": "The earlier matching deny wins. The later allow is never reached for that traffic. Place the approved specific allow correctly, then verify both required access and traffic that must remain blocked."
+  },
+  {
+    "name": "Routing",
+    "url": "index.html#note-routing",
+    "type": "Concept",
+    "keywords": "Networking Concept study Routing chooses the next hop for an IP packet. Each router uses its own routing information to move the packet toward its destination. route table next hop default gateway longest prefix match static dynamic OSPF BGP",
+    "slug": "routing",
+    "category": "Networking",
+    "question": "A destination matches both 10.20.0.0/16 and 10.20.30.0/24. Which installed route is selected for 10.20.30.10?",
+    "answer": "The /24 route, because it is the longest matching prefix. If it is removed, /16 may become the match, but choosing that path does not prove it can deliver the packet."
+  },
+  {
+    "name": "Switching",
+    "url": "index.html#note-switching",
+    "type": "Concept",
+    "keywords": "Networking Concept study An Ethernet switch learns where devices are connected and forwards frames within a VLAN. It learns from source MAC addresses and looks up destination MAC addresses. switch ports MAC table CAM learning flooding unicast broadcast trunk access STP",
+    "slug": "switching",
+    "category": "Networking",
+    "question": "What does a switch learn when a frame arrives, and how is that different from ARP?",
+    "answer": "The switch learns the source MAC on the incoming port and VLAN, then looks up the destination MAC. ARP is a separate IPv4-to-MAC resolution process used by endpoints and routers for local delivery."
+  },
+  {
+    "name": "VPNs",
+    "url": "index.html#note-vpns",
+    "type": "Concept",
+    "keywords": "Networking Concept study A VPN creates a logical connection across another network. In a typical remote-access VPN, an authenticated, encrypted tunnel carries selected traffic between a device and an organization. VPN remote access site to site split tunnel force full tunnel IPsec TLS overlapping subnets",
+    "slug": "vpns",
+    "category": "Networking",
+    "question": "A VPN is connected and a file server answers on TCP 445, but a share returns Access denied. Where should the investigation go next?",
+    "answer": "Review the identity used for the share and its share/filesystem permissions. The successful TCP test supports service reachability, not authorization to read files."
+  },
+  {
+    "name": "Troubleshooting",
+    "url": "index.html#note-troubleshooting",
+    "type": "Concept",
+    "keywords": "IT operations Concept study Troubleshooting is a controlled process of narrowing a problem with evidence. Start with what fails, compare what still works, and test one explanation at a time. Windows Windows Server macOS OS support troubleshooting processes services Task Manager Activity Monitor diagnostics",
+    "slug": "troubleshooting",
+    "category": "IT operations",
+    "question": "One user fails on two devices while another authorized user succeeds on both. What does this comparison help you prioritize?",
+    "answer": "User-specific identity or permissions become a stronger hypothesis than a device-wide connectivity failure. Review the exact account, group membership, and resource authorization, and verify with an appropriate test."
+  },
+  {
+    "name": "Change management",
+    "url": "index.html#note-change-management",
+    "type": "Concept",
+    "keywords": "IT operations Concept study Change management makes a system change deliberate, reviewable, and recoverable. Success means the intended result works and required services still work afterward. change control rollback maintenance configuration baseline approval emergency change verification",
+    "slug": "change-management",
+    "category": "IT operations",
+    "question": "Why is a configuration backup not always a complete rollback plan?",
+    "answer": "You also need a supported restoration method, access to execute it, prerequisites, decision criteria, and validation. If the change disconnects your management session, a backup alone does not restore your ability to reach the device."
+  },
+  {
+    "name": "Technical documentation",
+    "url": "index.html#note-technical-documentation",
+    "type": "Concept",
+    "keywords": "IT operations Concept study Useful technical documentation lets another person understand the evidence or repeat a task without guessing. Its structure should match what that reader needs to do. documentation KB SOP runbook tickets client communication evidence handoff",
+    "slug": "technical-documentation",
+    "category": "IT operations",
+    "question": "What is missing from “we are investigating and will update you soon”?",
+    "answer": "It omits confirmed scope or impact, the evidence and action state, the responsible next owner, and a specific achievable update time. Fill those in from the actual case rather than using one universal sentence."
   }
 ];
