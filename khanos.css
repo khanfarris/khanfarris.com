@@ -107,7 +107,7 @@ body{background:var(--bg);color:var(--fg)}
 @media(prefers-reduced-motion:reduce){.featured-launch,.featured-launch>span{transition:none}.featured-launch:hover>span{transform:none}}
 .window-profile{height:auto;min-height:0;max-height:calc(100% - 126px)}
 .identity-card{flex:0 1 auto;min-height:0;padding:26px}
-.identity-studies{display:block;margin-top:23px;padding-top:18px}
+.identity-studies{display:block;clear:both;margin-top:23px;padding-top:18px}
 .identity-studies>small{display:block;font:10px/1.7 var(--mono);letter-spacing:1px;margin-bottom:12px;color:rgb(var(--p-faint))}
 .identity-studies>div+div{margin-top:15px}
 .identity-studies strong{display:block;font:500 13px/1.55 var(--sans);color:var(--fg)}

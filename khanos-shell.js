@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const identity='Farris Khan\nsecurity / ops tinkerer\nMicrosoft Certified: Security Operations Analyst Associate (SC-200) · In Progress\nMicrosoft Certified: Azure Administrator Associate (AZ-104) · In Progress';
+  const identity='Farris Khan\nsecurity / ops tinkerer\n\nEducation\nUniversity of South Florida\nInstitution\nBachelor of Science in Cybersecurity\nDegree\n\nCertifications\nMicrosoft Certified: Security Operations Analyst Associate (SC-200) · In Progress\nMicrosoft Certified: Azure Administrator Associate (AZ-104) · In Progress';
   const help='help       available commands\nls         browse the site\nwhoami     meet Farris\nopen dns   open a study note\ncat        toggle the companion\nclear      clear this terminal\n\nTip: use ↑ / ↓ for command history.';
   function resolve(value,pages) {
     const command=String(value).trim().toLowerCase();
