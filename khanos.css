@@ -51,6 +51,7 @@ body{background:var(--bg);color:var(--fg)}
 .shell-transcript.is-cleared{min-height:var(--shell-viewport-height);padding-top:var(--shell-page-inset)}
 .shell-welcome{max-width:630px;margin-top:0;padding-bottom:25px}
 .shell-overline{font:12px var(--mono);letter-spacing:2.3px;color:var(--accent)}
+.shell-overline .shell-brand-name{color:var(--fg)}
 .shell-welcome h2{font:400 clamp(32px,3.4vw,55px)/1.08 var(--display);letter-spacing:-2px;margin:21px 0;color:var(--fg)}
 .shell-welcome h2>span{color:var(--accent)}
 .shell-welcome p{color:rgb(var(--p-muted));font:15px/1.95 var(--mono);margin:0 0 32px}
