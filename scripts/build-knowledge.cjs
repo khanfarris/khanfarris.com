@@ -46,10 +46,22 @@ write(url(a.slug),head(a.title,a.principle).replace('</head>',a.archived?'<meta 
 </main>${footer}`);
 });
 const categories=[...new Set(articles.map(a=>a.category))];
-write('knowledge.html',head('Knowledge base',articles.length+' beginner-friendly concept notes and interactive exercises for security operations.')+`
-<body class="lab-page kb-directory"><main class="wrap">
-<p class="brand"><a href="index.html#knowledge">personal lab</a></p>
-<header class="knowledge-intro"><div><p class="eyebrow">02 / KNOWLEDGE BASE</p><h1>Learn it.<br>Work through it<span class="accent">_</span></h1><p class="knowledge-deck">Networking and security, explained from the beginning. Concept notes and examples you can work through.</p></div><div class="knowledge-tally"><strong>${articles.length}</strong><span>STUDY NOTES</span><p>Understand the basics.<br>See them at work.<br>Try it yourself.</p></div></header>
+const directoryHead=`<!doctype html>
+<html lang="en" data-theme="crimson"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Knowledge base — KhanOS</title>
+<meta name="description" content="${articles.length} beginner-friendly concept notes and interactive exercises for security operations."><meta name="theme-color" content="#0b0c0f">
+<link rel="canonical" href="https://khanfarris.com/knowledge.html">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="khanos-common.css?v=khanos-1"><link rel="stylesheet" href="knowledge.css?v=arp-1"><link rel="stylesheet" href="knowledge-directory.css?v=khanos-directory-1">
+<script src="khanos-palettes.js?v=khanos-1" defer></script><script src="knowledge-index.js?v=concepts-19" defer></script><script src="knowledge.js" defer></script><script src="knowledge-directory.js?v=khanos-directory-1" defer></script>
+</head>`;
+write('knowledge.html',directoryHead+`
+<body class="kb-directory"><a class="directory-skip" href="#main">Skip to study notes</a>
+<header class="directory-topbar"><div><a class="directory-brand" href="index.html" data-desktop>Khan<span>OS</span></a><span class="directory-edition">KNOWLEDGE BASE</span></div><nav aria-label="Workspace"><details class="directory-palette" hidden><summary aria-label="Choose color palette"><i aria-hidden="true"></i><span>Crimson</span><b aria-hidden="true">⌄</b></summary><div class="directory-palette-options"></div></details><a class="directory-return" href="index.html" data-desktop>Back to desktop <span aria-hidden="true">↗</span></a></nav></header>
+<div class="directory-ambient" aria-hidden="true"></div>
+<main id="main" class="wrap directory-window" tabindex="-1"><div class="directory-titlebar"><span><i aria-hidden="true">⌘</i> Knowledge / Library</span><span>${articles.length} NOTES <b aria-hidden="true">·</b> ${categories.length} SUBJECTS</span></div><div class="directory-content">
+<header class="knowledge-intro"><div><p class="eyebrow">PERSONAL LAB / STUDY ARCHIVE</p><h1>Knowledge base<span class="accent">.</span></h1><p class="knowledge-tagline">Learn it. Work through it.</p><p class="knowledge-deck">Networking and security, explained from the beginning. Concept notes and examples you can work through.</p><a class="directory-constellation" href="index.html#knowledge" data-desktop><span aria-hidden="true">⌘</span> Open constellation <span aria-hidden="true">↗</span></a></div><div class="knowledge-tally"><div class="tally-orbit" aria-hidden="true"><i></i><i></i><i></i></div><strong>${articles.length}</strong><span>STUDY NOTES</span><p>Understand the basics.<br>See them at work.<br>Try it yourself.</p></div></header>
 <details class="basis-guide"><summary>About these study notes</summary><p><strong>Concept notes</strong> explain how a topic works. Study labels distinguish reading, practiced calculations, and lab application. Exercises use fictional examples; a tool guide does not imply production experience.</p></details>
 <section class="study-routes" aria-label="Study starting points">
 <a href="kb-subnetting.html"><span class="eyebrow">01 / NETWORKING</span><h2>How devices communicate ↗</h2><p>Subnetting · VLANs · DNS · DHCP</p></a>
@@ -57,10 +69,10 @@ write('knowledge.html',head('Knowledge base',articles.length+' beginner-friendly
 <a href="kb-identity.html"><span class="eyebrow">03 / IDENTITY & ACCESS</span><h2>How access is controlled ↗</h2><p>Risky sign-ins · Active Directory · ZTNA / SASE</p></a>
 </section>
 <section class="review-console" aria-labelledby="review-heading" hidden><div><span class="eyebrow">RETRIEVAL PRACTICE / NO TIMER</span><h2 id="review-heading">Explain it in your own words</h2><p id="review-question">Try a question, then compare your reasoning with the example answer.</p><details id="review-answer" hidden><summary>Show an example answer</summary><p></p><a id="review-link">Read the full note ↗</a></details></div><button id="next-review" type="button">Start a quick review →</button></section>
-<section aria-labelledby="notes-heading"><div class="section-heading"><h2 id="notes-heading">All study notes<span class="accent">_</span></h2><span class="section-aside">The reasoning behind the answer.</span></div>
+<section aria-labelledby="notes-heading"><div class="section-heading"><h2 id="notes-heading">All study notes<span class="accent">.</span></h2><span class="section-aside">The reasoning behind the answer.</span></div>
 <div class="knowledge-controls" hidden><label for="knowledge-search">Find a topic</label><input id="knowledge-search" type="search" placeholder="Try subnetting, DNS, VLANs, or SIEM…" autocomplete="off"><div class="knowledge-filters" role="group" aria-label="Filter by subject"><button type="button" data-category="All" aria-pressed="true">All</button>${categories.map(c=>`<button type="button" data-category="${esc(c)}" aria-pressed="false">${esc(c)}</button>`).join('')}</div><p id="knowledge-count" role="status"></p></div>
 <div class="knowledge-list">${articles.map((a,i)=>`<a class="knowledge-entry" data-slug="${a.slug}" data-category="${esc(a.category)}" href="${url(a.slug)}"><span class="note-number">${String(i+1).padStart(2,'0')}</span><div><span class="eyebrow">${esc(a.category)}</span><h3>${esc(a.title)}</h3><p>${esc(a.principle)}</p></div><span class="study-basis">${esc(a.basis)}</span><span class="entry-arrow" aria-hidden="true">↗</span></a>`).join('\n')}</div><p id="knowledge-empty" hidden>No matching notes. Try another term or reset the subject filter.</p></section>
-</main>${footer}`);
+</div></main><footer class="directory-footer wrap"><span>© <span id="year">2026</span> KHANFARRIS</span><a href="index.html#knowledge" data-desktop>Open constellation ↗</a><a href="#main">Back to top ↑</a></footer></body></html>`);
 write('knowledge-index.js','// Generated by scripts/build-knowledge.cjs.\nwindow.knowledgePages = '+JSON.stringify(articles.map(a=>({name:a.title,url:url(a.slug),type:a.kind||'Concept',keywords:a.category+' '+a.basis+' '+a.principle+' '+(a.keywords||''),slug:a.slug,category:a.category,question:a.question,answer:a.answer})),null,2)+';');
 // KhanOS consumes the same publication-ready source; archived articles stay out of discovery.
 write('khanos-content.js','// Generated by scripts/build-knowledge.cjs.\nwindow.KHAN_NOTES = '+JSON.stringify(articles.map(a=>({...a,related:a.related.filter(slug=>!find(slug).archived),references:a.sources.map(key=>({title:refs[key][0],url:refs[key][1]}))}))).replace(/</g,'\\u003c')+';');

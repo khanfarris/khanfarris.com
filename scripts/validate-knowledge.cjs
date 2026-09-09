@@ -65,7 +65,7 @@ for(const target of ['printer','website'])for(const cached of [false,true])for(c
  eq(r.steps.some(s=>s.id==='unanswered'),!cached&&!replies);
 }
 assert.throws(()=>m.arp('unknown'));
-for(const file of ['knowledge.js','reading.js','lab.js','study-showcase.js','study-exercises.js','knowledge-index.js','khanos.js','khanos-shell.js','khanos-palettes.js','khanos-content.js']){new vm.Script(read(file),{filename:file});checks++;}
+for(const file of ['knowledge.js','knowledge-directory.js','reading.js','lab.js','study-showcase.js','study-exercises.js','knowledge-index.js','khanos.js','khanos-shell.js','khanos-palettes.js','khanos-content.js']){new vm.Script(read(file),{filename:file});checks++;}
 const searchContext={window:{}};vm.createContext(searchContext);vm.runInContext(read('knowledge-index.js'),searchContext);
 eq(searchContext.window.knowledgePages.length,data.articles.filter(a=>!a.archived).length);
 eq((read('knowledge.html').match(/class="knowledge-entry"/g)||[]).length,data.articles.filter(a=>!a.archived).length);

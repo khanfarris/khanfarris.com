@@ -27,6 +27,7 @@ Crimson is the default palette: charcoal surfaces, crimson controls, and a midni
 ## Shared files
 
 - `knowledge.css` styles the directory and study pages.
+- `knowledge-directory.css` and `knowledge-directory.js` give the standalone directory its KhanOS appearance and palette picker. Its template lives in `scripts/build-knowledge.cjs`; filtering and quick review still use `knowledge.js`.
 - `study-showcase.css` and `study-showcase.js` retain the previous scrollable archive implementation. KhanOS now provides the homepage constellation; motion can be paused and respects the reduced-motion preference.
 - `knowledge.js` provides filtering and the shuffled recall deck.
 - `study-exercises.js` supplies eight local interactive exercises: subnetting, VLAN routing, ARP next-hop resolution and caching, DHCP, syslog filtering, incident response roles, Microsoft 365 access, and TCP header sizing. Their calculation and policy models are checked by `node scripts/validate-knowledge.cjs`.
