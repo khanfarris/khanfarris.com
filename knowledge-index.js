@@ -2,7 +2,7 @@
 window.knowledgePages = [
   {
     "name": "Private IPv4 & NAT",
-    "url": "kb-private-addressing.html",
+    "url": "index.html#note-private-addressing",
     "type": "Concept",
     "keywords": "Networking Concept study A private IP identifies a device inside a network. NAT lets devices using private addresses communicate through an internet-facing address. ",
     "slug": "private-addressing",
@@ -12,7 +12,7 @@ window.knowledgePages = [
   },
   {
     "name": "Subnetting",
-    "url": "kb-subnetting.html",
+    "url": "index.html#note-subnetting",
     "type": "Concept",
     "keywords": "Networking Practiced calculations Subnetting divides an IP address range into smaller networks. The subnet mask tells a device which addresses are local and which need a router. ",
     "slug": "subnetting",
@@ -22,7 +22,7 @@ window.knowledgePages = [
   },
   {
     "name": "VLSM",
-    "url": "kb-vlsm.html",
+    "url": "index.html#note-vlsm",
     "type": "Concept",
     "keywords": "Networking Practiced calculations Variable Length Subnet Masking gives each subnet a size that fits its needs, instead of giving every department the same-sized block. ",
     "slug": "vlsm",
@@ -32,7 +32,7 @@ window.knowledgePages = [
   },
   {
     "name": "VLANs",
-    "url": "kb-vlans.html",
+    "url": "index.html#note-vlans",
     "type": "Concept",
     "keywords": "Networking Concept study A VLAN makes one physical switch behave like several separate local networks. Devices share a local broadcast network only when their ports belong to the same VLAN. ",
     "slug": "vlans",
@@ -42,7 +42,7 @@ window.knowledgePages = [
   },
   {
     "name": "ARP",
-    "url": "kb-arp.html",
+    "url": "index.html#note-arp",
     "type": "Concept",
     "keywords": "Networking Concept study ARP finds the MAC address needed to deliver IPv4 traffic to the next device on a local network. For a remote destination, that device is usually your gateway. address resolution protocol MAC Ethernet broadcast cache next hop gateway spoofing poisoning",
     "slug": "arp",
@@ -52,7 +52,7 @@ window.knowledgePages = [
   },
   {
     "name": "DNS",
-    "url": "kb-dns.html",
+    "url": "index.html#note-dns",
     "type": "Concept",
     "keywords": "Networking Scenario study DNS translates names such as portal.example.com into information computers can use, often an IP address. It helps find a destination; it does not establish the connection. ",
     "slug": "dns",
@@ -62,7 +62,7 @@ window.knowledgePages = [
   },
   {
     "name": "DHCP",
-    "url": "kb-dhcp.html",
+    "url": "index.html#note-dhcp",
     "type": "Concept",
     "keywords": "Networking Concept study DHCP automatically gives a device an IP address and the network settings it needs. The address is borrowed for a lease period, rather than manually typed into every computer. ",
     "slug": "dhcp",
@@ -72,7 +72,7 @@ window.knowledgePages = [
   },
   {
     "name": "Syslog",
-    "url": "kb-syslog.html",
+    "url": "index.html#note-syslog",
     "type": "Concept",
     "keywords": "Cloud & telemetry Concept study Syslog is a common way for devices and applications to send event messages to a central place. Instead of opening every firewall or server, an analyst can review their messages together. ",
     "slug": "syslog",
@@ -82,7 +82,7 @@ window.knowledgePages = [
   },
   {
     "name": "EDR, MDR, and XDR",
-    "url": "kb-mdr.html",
+    "url": "index.html#note-mdr",
     "type": "Concept",
     "keywords": "Security operations Concept study EDR watches devices. XDR brings signals from several security areas together. MDR provides people and processes to investigate and respond using those tools. ",
     "slug": "mdr",
@@ -92,7 +92,7 @@ window.knowledgePages = [
   },
   {
     "name": "SIEM",
-    "url": "kb-siem.html",
+    "url": "index.html#note-siem",
     "type": "Concept",
     "keywords": "Security operations Concept study A SIEM collects searchable security data from different systems and applies detection rules. It helps an analyst investigate a sequence of events across the environment. ",
     "slug": "siem",
@@ -102,7 +102,7 @@ window.knowledgePages = [
   },
   {
     "name": "ZTNA / SASE",
-    "url": "kb-ztna-sase.html",
+    "url": "index.html#note-ztna-sase",
     "type": "Concept",
     "keywords": "Identity & access Concept study ZTNA checks who is requesting access and the conditions of that request before allowing a path to a resource. SASE combines secure access with wider networking and security services. ",
     "slug": "ztna-sase",
@@ -112,7 +112,7 @@ window.knowledgePages = [
   },
   {
     "name": "Email authentication",
-    "url": "kb-email-auth.html",
+    "url": "index.html#note-email-auth",
     "type": "Concept",
     "keywords": "Security operations Scenario study SPF, DKIM, and DMARC help check whether a message is authorized to use a domain. They do not prove that the sender is honest or that the request is safe. ",
     "slug": "email-auth",
@@ -122,7 +122,7 @@ window.knowledgePages = [
   },
   {
     "name": "Business email compromise",
-    "url": "kb-bec.html",
+    "url": "index.html#note-bec",
     "type": "Concept",
     "keywords": "Security operations Scenario study Business email compromise is a scam that uses a believable business conversation to trick someone into sending money, sharing information, or changing an important process. ",
     "slug": "bec",
@@ -132,7 +132,7 @@ window.knowledgePages = [
   },
   {
     "name": "Risky sign-ins",
-    "url": "kb-identity.html",
+    "url": "index.html#note-identity",
     "type": "Concept",
     "keywords": "Identity & access Scenario study A risky sign-in is an authentication event with signals that deserve investigation. The signal helps prioritize work; the surrounding evidence determines whether an account is compromised. ",
     "slug": "identity",
@@ -142,7 +142,7 @@ window.knowledgePages = [
   },
   {
     "name": "Active Directory",
-    "url": "kb-windows-domain.html",
+    "url": "index.html#note-windows-domain",
     "type": "Concept",
     "keywords": "Identity & access Concept study Active Directory Domain Services keeps a shared directory of users, computers, and groups. Domain controllers use it to support domain authentication and centralized administration. ",
     "slug": "windows-domain",
@@ -152,7 +152,7 @@ window.knowledgePages = [
   },
   {
     "name": "File shares",
-    "url": "kb-file-shares.html",
+    "url": "index.html#note-file-shares",
     "type": "Concept",
     "keywords": "Identity & access Concept study A file share lets other computers access a folder over the network. The network path finds the server and share; the user’s permissions decide what they can do there. ",
     "slug": "file-shares",
@@ -162,7 +162,7 @@ window.knowledgePages = [
   },
   {
     "name": "Windows events",
-    "url": "kb-windows-events.html",
+    "url": "index.html#note-windows-events",
     "type": "Concept",
     "keywords": "Cloud & telemetry Lab application Windows event logs record activity on a computer. Event IDs tell you what kind of event was recorded; the event’s fields explain who, where, when, and how. ",
     "slug": "windows-events",
@@ -172,7 +172,7 @@ window.knowledgePages = [
   },
   {
     "name": "TLS",
-    "url": "kb-tls.html",
+    "url": "index.html#note-tls",
     "type": "Concept",
     "keywords": "Networking Concept study TLS protects data in transit by encrypting it and checking that it has not been changed. In a normal HTTPS connection, it also helps the browser verify the server’s identity. ",
     "slug": "tls",
@@ -182,7 +182,7 @@ window.knowledgePages = [
   },
   {
     "name": "TCP",
-    "url": "kb-tcp.html",
+    "url": "index.html#note-tcp",
     "type": "Concept",
     "keywords": "Networking Concept study TCP carries an ordered stream of bytes between two endpoints. It tracks delivery and retransmits missing data so applications do not have to handle ordinary packet loss themselves. ",
     "slug": "tcp",

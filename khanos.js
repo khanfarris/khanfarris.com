@@ -361,7 +361,7 @@
       [...el.attributes].forEach(attr=>{if (/^on/i.test(attr.name)||(/^(href|src)$/i.test(attr.name)&&/^\s*javascript:/i.test(attr.value))) el.removeAttribute(attr.name);});
     });
     template.content.querySelectorAll('a').forEach(link=>{
-      const href=link.getAttribute('href')||'', match=href.match(/^(?:\.\/)?kb-(.+)\.html(?:#.*)?$/);
+      const href=link.getAttribute('href')||'', match=href.match(/^#note-([a-z0-9-]+)$/);
       if (match&&bySlug.has(match[1])) {link.dataset.read=match[1];link.href='#note-'+match[1];}
       else if (/^https?:/i.test(href)) {link.target='_blank';link.rel='noopener';}
     });
@@ -431,7 +431,7 @@
     const data=investigations[id];if(!data)return;
     activeCase=id;caseStep=step;
     const current=data.steps[step];
-    $('.case-content').innerHTML=`<article class="case-reading"><span class="eyebrow">${data.category}</span><h2>${data.title}</h2><div class="case-schematic" aria-label="Illustrative connection from Kali to ${data.device}"><strong>KALI</strong><span>${data.transport}<br>────────→</span><strong>${data.device}</strong></div><div class="case-step-head"><b>${String(step+1).padStart(2,'0')}</b><h3>${current[1]}</h3></div><p>${current[2]}</p><div class="case-step-buttons" role="group" aria-label="Investigation stages">${data.steps.map((s,i)=>`<button data-step="${i}" aria-pressed="${i===step}">${s[0]}</button>`).join('')}</div><div class="case-links"><button class="case-back" data-case-back>← All investigations</button><a class="case-back" href="${id === 'lifx' ? 'lifx-pentest.html' : 'samsung-tv-pentest.html'}" target="_blank" rel="noopener">Read the complete investigation ↗</a></div></article>`;
+    $('.case-content').innerHTML=`<article class="case-reading"><span class="eyebrow">${data.category}</span><h2>${data.title}</h2><div class="case-schematic" aria-label="Illustrative connection from Kali to ${data.device}"><strong>KALI</strong><span>${data.transport}<br>────────→</span><strong>${data.device}</strong></div><div class="case-step-head"><b>${String(step+1).padStart(2,'0')}</b><h3>${current[1]}</h3></div><p>${current[2]}</p><div class="case-step-buttons" role="group" aria-label="Investigation stages">${data.steps.map((s,i)=>`<button data-step="${i}" aria-pressed="${i===step}">${s[0]}</button>`).join('')}</div><div class="case-links"><button class="case-back" data-case-back>← All investigations</button><button class="case-back" type="button" disabled>Read the complete investigation</button></div></article>`;
   }
   root.addEventListener('click',event=>{
     const target=event.target.closest('button,a');if(!target)return;

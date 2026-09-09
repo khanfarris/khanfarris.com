@@ -11,31 +11,31 @@ Static portfolio and security study notes, published through the existing GitHub
    node scripts/build-knowledge.cjs
    ```
 
-3. Preview the site through a local HTTP server. Review the article and directory before publishing.
-4. Commit the source and generated pages together through GitHub Desktop, then push when ready to publish.
+3. Run `node scripts/validate-knowledge.cjs`, then preview the constellation and Reader through a local HTTP server.
+4. Commit the source and generated files together through GitHub Desktop, then push when ready to publish.
 
-The builder writes `kb-*.html`, `knowledge.html`, `knowledge-index.js`, `khanos-content.js`, and the marked fallback study links in `index.html`. KhanOS uses the generated content for its constellation, reader, shell, and search. Add an article to the data file and rebuild to include it throughout the site. Archived articles remain accessible at their existing URLs and are excluded from discovery. Edit the source data or builder rather than generated article pages.
+The builder writes `khanos-content.js`, `knowledge-index.js`, and the marked fallback summaries in `index.html`. KhanOS uses the generated content for its constellation, Reader, shell, and search. Add an article to the data file and rebuild to include it throughout the desktop. Archived articles remain in the source data but are excluded from publication and discovery. Edit the source data or builder rather than generated output.
+
+Study notes are published only within KhanOS. Link between note bodies with `href="#note-dns"`, or link from another page with `index.html#note-dns` (replace `dns` with the note's slug). The former `knowledge.html` directory and `kb-*.html` pages have been removed and are no longer generated.
 
 ## KhanOS
 
-The homepage is the KhanOS desktop. Whoami and Local Shell open initially; the dock opens the constellation, reader, investigations, and search. Whoami fits its content until manually resized. Double-click a constellation node or press Enter on it to open its note. Existing article URLs and Shiftrun remain available.
+The homepage is the KhanOS desktop. Whoami, Featured item, and Local Shell open initially; the dock opens the constellation, Reader, investigations, and search. Whoami fits its content until manually resized. Double-click a constellation node or press Enter on it to open its note. Shiftrun remains available.
 
 Crimson is the default palette: charcoal surfaces, crimson controls, and a midnight-blue particle orbit. The menu offers five palettes without resetting open windows. Theme links use `?theme=crimson`, `glacier`, `orchid`, `verdant`, or `ember`.
 
-`khanos.js` manages the desktop. `khanos-common.css`, `khanos-base.css`, and `khanos.css` provide its styles; `khanos-palettes.js` and `palette-tokens.css` contain the matching color values. The reader calls `StudyExercises.mount(container)` after inserting each article, using the same activities as the standalone study pages.
+`khanos.js` manages the desktop. `khanos-common.css`, `khanos-base.css`, and `khanos.css` provide its styles; `khanos-palettes.js` and `palette-tokens.css` contain the matching color values. The Reader calls `StudyExercises.mount(container)` after inserting each article, preserving the original interactive activities.
 
 ## Shared files
 
-- `knowledge.css` styles the directory and study pages.
-- `knowledge-directory.css` and `knowledge-directory.js` give the standalone directory its KhanOS appearance and palette picker. Its template lives in `scripts/build-knowledge.cjs`; filtering and quick review still use `knowledge.js`.
+- `knowledge.css` supplies the shared study and exercise styles used by KhanOS; retain it even though standalone study pages are gone.
 - `study-showcase.css` and `study-showcase.js` retain the previous scrollable archive implementation. KhanOS now provides the homepage constellation; motion can be paused and respects the reduced-motion preference.
-- `knowledge.js` provides filtering and the shuffled recall deck.
-- `study-exercises.js` supplies eight local interactive exercises: subnetting, VLAN routing, ARP next-hop resolution and caching, DHCP, syslog filtering, incident response roles, Microsoft 365 access, and TCP header sizing. Their calculation and policy models are checked by `node scripts/validate-knowledge.cjs`.
-- `knowledge-index.js` supplies search metadata and recall questions. Load it before `lab.js`.
+- `study-exercises.js` supplies local interactive exercises for subnetting, VLAN routing, ARP, DHCP, syslog, EDR/MDR roles, Microsoft 365 access, TCP headers, firewall rule order, route selection, switch learning, alert triage, phishing, vulnerability prioritization, and incident recovery decisions. Calculation boundaries, network behavior, and every evidence-case decision are checked by `node scripts/validate-knowledge.cjs`.
+- `knowledge-index.js` supplies search metadata to retained investigation pages and points each result into KhanOS Reader. Load it before `lab.js`.
 - `reading.js` adds article navigation, progress, and code-copy controls.
 - `lab.js` provides site search and homepage interactions.
 
-Article content, directory links, and homepage fallback links remain available without JavaScript. The investigation pages are retained. The retired ports, protocols, and Linux-command pages have been removed. `typing-test.html` remains available by direct URL and is intentionally absent from navigation, search, and the homepage terminal listing.
+The homepage retains plain-text topic summaries without JavaScript. Full study notes and interactive exercises require KhanOS. The original investigation pages are retained for a future writeup redesign; “Read the complete investigation” is temporarily disabled in Cases. Their remaining knowledge navigation and search links now open KhanOS. The retired ports, protocols, and Linux-command pages have been removed. `typing-test.html` remains available by direct URL and is intentionally absent from navigation, search, and the homepage terminal listing.
 
 ## Editorial scope
 
@@ -43,6 +43,8 @@ Use broad, simple titles and explain unfamiliar terms before using them. Concept
 
 Use recent study material when relevant, and add beginner foundations for the intended role without presenting them as completed experience. The study-basis label distinguishes concept study, tool study, practiced calculations, scenario study, and lab application. Product guides are reading aids, not claims of production experience. Preserve useful worked examples and verify product-specific details with primary references. Simulated exercises are explicitly fictional and do not connect to customer systems or save answers.
 
-Established article URLs remain stable: `kb-mdr.html` is now the general EDR/MDR/XDR note, `kb-blackpoint.html` covers Blackpoint, `kb-windows-domain.html` covers Active Directory, and `kb-tcp-streams.html` covers Wireshark. New Windows Server and TCP pages contain their separate foundations.
+Keep established article slugs stable so Reader links continue working: `mdr` is the general EDR/MDR/XDR note and `windows-domain` covers Active Directory. Archived tool notes can be revised and republished later by updating their source data.
+
+The job-preparation collection also covers malware, security controls, risk, security awareness, VPNs, troubleshooting across Windows and macOS, change management, and technical documentation. IT operations is a separate subject filter. Related-note links connect those foundations to existing studies; the constellation maintains a minimum row height and scrolls as the archive grows. Counts come from the content, not a fixed total in the interface.
 
 Only publication-ready article content belongs in this repository. Keep raw conversation exports, private source annotations, credentials, and signed download links outside it.

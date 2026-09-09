@@ -47,14 +47,13 @@ for(const a of data.articles){
  assert.ok(words>250,`${a.slug}: incomplete article (${words} words)`);
  assert.ok(a.sources.length&&a.sources.every(k=>data.refs[k]),`${a.slug}: sources`);
  assert.ok(a.related.every(s=>slugs.has(s)),`${a.slug}: related`);
- const html=read('kb-'+a.slug+'.html');
- assert.ok(html.includes(a.body),`${a.slug}: generated page is stale`);
- assert.ok(!html.includes('THE CONNECTION')&&!html.includes('undefined'),`${a.slug}: stale or missing text`);
- for(const [,s] of a.body.matchAll(/href="kb-([a-z0-9-]+)\.html"/g))assert.ok(slugs.has(s),`${a.slug}: broken link ${s}`);
+ assert.ok(!a.body.includes('THE CONNECTION')&&!a.body.includes('undefined'),`${a.slug}: stale or missing text`);
+ assert.ok(!/href=["'][^"']*(?:knowledge\.html|kb-[a-z0-9-]+\.html)/i.test(a.body),`${a.slug}: retired standalone link`);
+ for(const [,s] of a.body.matchAll(/href="#note-([a-z0-9-]+)"/g))assert.ok(slugs.has(s),`${a.slug}: broken link ${s}`);
  for(const [,id] of a.body.matchAll(/data-exercise="([a-z0-9-]+)"/g)){allExercises.add(id);assert.ok(read('study-exercises.js').includes(id+'(box)'),`No exercise implementation for ${id}`);}
  checks+=14;
 }
-eq(allExercises.size,8);
+for(const id of ['subnet','vlan','arp','dhcp','syslog','response','m365','tcp'])eq(allExercises.has(id),true);
 for(const target of ['printer','website'])for(const cached of [false,true])for(const replies of [false,true]){
  const r=m.arp(target,cached,replies);
  eq(r.hop,target==='printer'?'10.20.10.50':'10.20.10.1');
@@ -65,18 +64,33 @@ for(const target of ['printer','website'])for(const cached of [false,true])for(c
  eq(r.steps.some(s=>s.id==='unanswered'),!cached&&!replies);
 }
 assert.throws(()=>m.arp('unknown'));
-for(const file of ['knowledge.js','knowledge-directory.js','reading.js','lab.js','study-showcase.js','study-exercises.js','knowledge-index.js','khanos.js','khanos-shell.js','khanos-palettes.js','khanos-content.js']){new vm.Script(read(file),{filename:file});checks++;}
+for(const file of ['reading.js','lab.js','study-showcase.js','study-exercises.js','knowledge-index.js','khanos.js','khanos-shell.js','khanos-palettes.js','khanos-content.js']){new vm.Script(read(file),{filename:file});checks++;}
 const searchContext={window:{}};vm.createContext(searchContext);vm.runInContext(read('knowledge-index.js'),searchContext);
 eq(searchContext.window.knowledgePages.length,data.articles.filter(a=>!a.archived).length);
-eq((read('knowledge.html').match(/class="knowledge-entry"/g)||[]).length,data.articles.filter(a=>!a.archived).length);
 eq((read('index.html').match(/class="fallback-note"/g)||[]).length,data.articles.filter(a=>!a.archived).length);
 const osContext={window:{}};vm.runInNewContext(read('khanos-content.js'),osContext);
 eq(osContext.window.KHAN_NOTES.length,data.articles.filter(a=>!a.archived).length);
-for(const a of osContext.window.KHAN_NOTES){const source=data.articles.find(s=>s.slug===a.slug);eq(a.body,source.body);assert.ok(!source.archived);assert.ok(a.related.every(s=>osContext.window.KHAN_NOTES.some(n=>n.slug===s)));}
+const activeSlugs=new Set(osContext.window.KHAN_NOTES.map(a=>a.slug));
+for(const a of osContext.window.KHAN_NOTES){
+ const source=data.articles.find(s=>s.slug===a.slug);eq(a.body,source.body);assert.ok(!source.archived);
+ assert.ok(a.related.every(s=>activeSlugs.has(s)));
+ for(const [,slug] of a.body.matchAll(/href="#note-([a-z0-9-]+)"/g)){eq(activeSlugs.has(slug),true);}
+ assert.deepEqual(JSON.parse(JSON.stringify(a.references)),source.sources.map(key=>({title:data.refs[key][0],url:data.refs[key][1]})));
+ checks++;
+}
+for(const page of searchContext.window.knowledgePages){eq(page.url,'index.html#note-'+page.slug);eq(activeSlugs.has(page.slug),true);}
+eq(fs.readdirSync(root).filter(file=>file==='knowledge.html'||/^kb-[a-z0-9-]+\.html$/.test(file)).length,0);
+for(const file of fs.readdirSync(root).filter(file=>/\.(html|js)$/.test(file))){
+ assert.ok(!/knowledge\.html|kb-[a-z0-9-]+\.html/.test(read(file)),`${file}: link to a retired knowledge page`);checks++;
+}
+assert.ok(!/<a\b[^>]*class="fallback-note"/.test(read('index.html')),'Fallback summaries must not link to removed pages');
+assert.ok(read('khanos.js').includes('<button class="case-back" type="button" disabled>Read the complete investigation</button>'));
 assert.ok(read('khanos.js').includes('StudyExercises.mount('));
 assert.ok(!read('khanos.js').includes('original-exercise'));
 assert.ok(!read('khanos.js').includes('f/k'));
 assert.ok(!/sig=|AccountKey=|BEGIN PRIVATE KEY|conversations-000|blob\.core\.windows\.net/i.test(read('knowledge-content.json')));
-console.log(`${checks} checks passed: ${data.articles.length} articles, ${allExercises.size} exercises, calculation boundaries, policy cases, search index, and homepage cards.`);
-
-for(const a of data.articles.filter(a=>a.archived)){assert.ok(!searchContext.window.knowledgePages.some(p=>p.slug===a.slug));assert.ok(!read('knowledge.html').includes('href="kb-'+a.slug+'.html"'));assert.ok(!read('index.html').includes('href="kb-'+a.slug+'.html"'));assert.ok(read('kb-'+a.slug+'.html').includes('noindex, nofollow'));}console.log('PASS: archived studies excluded from directory, homepage and search, with noindex metadata');
+for(const a of data.articles.filter(a=>a.archived)){
+ eq(activeSlugs.has(a.slug),false);eq(searchContext.window.knowledgePages.some(p=>p.slug===a.slug),false);
+ assert.ok(!read('index.html').includes('<strong>'+a.title+'</strong>'));
+}
+console.log(`${checks} checks passed: ${data.articles.length} source articles, ${activeSlugs.size} active KhanOS notes, ${allExercises.size} exercises, calculation boundaries, desktop links, archived-note exclusion, and standalone-page removal.`);

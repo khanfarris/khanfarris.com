@@ -5,7 +5,7 @@
     {name:'pwning my TV',url:'samsung-tv-pentest.html',type:'Investigation',keywords:'samsung tizen tcp 8001'},
     {name:'whoami',url:'index.html#about',type:'About',keywords:'farris khan certifications security azure'},
     {name:'home lab',url:'index.html',type:'Home',keywords:'map home'},
-    {name:'knowledge base',url:'knowledge.html',type:'Study directory',keywords:'notes study review'}
+    {name:'knowledge base',url:'index.html#knowledge',type:'Knowledge constellation',keywords:'notes study review'}
   ].concat(window.knowledgePages || []);
   const $ = selector => document.querySelector(selector);
   if ($('#year')) $('#year').textContent = new Date().getFullYear();
@@ -13,7 +13,7 @@
   const nodes = {
     bulb:['DEVICE 01 / LIFX','A light bulb with an open door.','A local control protocol. No credentials required. Follow the packets from discovery to control.','lifx-pentest.html','Read the LIFX investigation'],
     tv:['DEVICE 02 / SAMSUNG','More services. More questions.','A Tizen TV, a remote-control API, and a reminder: no public exploit does not mean no risk.','samsung-tv-pentest.html','Read the Samsung investigation'],
-    host:['WORKBENCH / KALI LINUX','Start with the right questions.','Discover the host. Identify the service. Understand the protocol. Follow the reasoning in the study archive.','knowledge.html','Explore the study notes']
+    host:['WORKBENCH / KALI LINUX','Start with the right questions.','Discover the host. Identify the service. Understand the protocol. Follow the reasoning in the study archive.','index.html#knowledge','Explore the study notes']
   };
   document.querySelectorAll('[data-node]').forEach(button => button.addEventListener('click', () => {
     document.querySelectorAll('[data-node]').forEach(node => node.setAttribute('aria-pressed',String(node === button)));

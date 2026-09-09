@@ -3,7 +3,7 @@
   const main=document.querySelector('main');
   if(!main)return;
   const header=document.createElement('header');header.className='site-header wrap';
-  header.innerHTML='<a class="wordmark" href="index.html"><span class="brand-mark">[k/f]</span> khanfarris<span class="accent">_</span></a><nav aria-label="Main navigation"><a href="index.html#investigations">Writeups</a><a href="knowledge.html">Knowledge base</a><a href="index.html#about">Whoami</a></nav><button class="command-trigger" data-command>⌕ Jump to <kbd>Ctrl K</kbd></button>';
+  header.innerHTML='<a class="wordmark" href="index.html"><span class="brand-mark">[k/f]</span> khanfarris<span class="accent">_</span></a><nav aria-label="Main navigation"><a href="index.html#investigations">Writeups</a><a href="index.html#knowledge">Knowledge base</a><a href="index.html#about">Whoami</a></nav><button class="command-trigger" data-command>⌕ Jump to <kbd>Ctrl K</kbd></button>';
   document.body.prepend(header);
   main.id='main';const skip=document.createElement('a');skip.href='#main';skip.className='skip-link';skip.textContent='Skip to content';document.body.prepend(skip);
   const title=main.querySelector('.post-title');
