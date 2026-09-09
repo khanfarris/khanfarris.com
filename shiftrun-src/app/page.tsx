@@ -412,8 +412,8 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
       <nav className="topnav" aria-label="Game navigation">
         {[
           ['play', 'Operations', Activity],
+          ['codex', 'Manual', BookOpen],
           ['mastery', 'Mastery & journal', Trophy],
-          ['codex', 'Field manual', BookOpen],
           ['portfolio', 'Portfolio', BookOpen],
         ].map(([id, label, Icon]: any) => (
           <button
@@ -594,7 +594,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                   ? 'Coach explanations and a fixed opening wave teach the loop. Later waves vary.'
                   : mode === 'Veteran'
                     ? 'Faster pressure, no automatic coaching. Stabilize the queue before finishing every detail.'
-                    : 'One case with no pressure growth. Use the field manual and repeat a skill.'}
+                    : 'One case with no pressure growth. Use the manual and repeat a skill.'}
               </p>
             </div>
           </section>
@@ -1083,7 +1083,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
       )}
       {view === 'codex' && (
         <section className="library">
-          <small>FIELD MANUAL / READ BETWEEN ENCOUNTERS</small>
+          <small>MANUAL / READ BETWEEN ENCOUNTERS</small>
           <h1>Learn the work.</h1>
           <div className="manual-intro panel">
             <BookOpen size={30} />
