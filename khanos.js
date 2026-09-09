@@ -201,11 +201,36 @@
   ];
   const shellHistory=[];let historyIndex=0,shellDraft='',catEnabled=false,catLoaded=false;
   const terminalInput=$('#terminal-input'),terminalOutput=$('#terminal-output');
+  // The welcome screen stays above the current terminal session, including after clear.
+  const terminalTranscript=document.createElement('div');
+  terminalTranscript.className='shell-transcript';
+  terminalOutput.append(terminalTranscript);
+  let shellPinnedToEnd=false;
+  function syncShellViewport() {
+    if(!terminalOutput.clientHeight)return;
+    const css=getComputedStyle(terminalOutput);
+    terminalOutput.style.setProperty('--shell-viewport-height',terminalOutput.clientHeight+'px');
+    terminalOutput.style.setProperty('--shell-page-inset',(parseFloat(css.paddingTop)+parseFloat(css.paddingBottom))+'px');
+    if(shellPinnedToEnd)terminalOutput.scrollTop=terminalOutput.scrollHeight;
+  }
+  terminalOutput.addEventListener('scroll',()=>{
+    shellPinnedToEnd=terminalOutput.scrollHeight-terminalOutput.clientHeight-terminalOutput.scrollTop<=2;
+  },{passive:true});
+  const shellViewportObserver=new ResizeObserver(syncShellViewport);
+  shellViewportObserver.observe(terminalOutput);
+  function clearShell() {
+    terminalTranscript.replaceChildren();
+    terminalTranscript.classList.add('is-cleared');
+    shellPinnedToEnd=true;
+    syncShellViewport();
+    terminalInput.focus({preventScroll:true});
+  }
   function appendShell(content,className='shell-response') {
     const block=document.createElement('div');block.className=className;
     if(typeof content==='string')block.textContent=content;else block.append(content);
-    terminalOutput.append(block);
-    while(terminalOutput.children.length>100)terminalOutput.firstElementChild.remove();
+    terminalTranscript.append(block);
+    while(terminalTranscript.children.length>100)terminalTranscript.firstElementChild.remove();
+    shellPinnedToEnd=true;
     terminalOutput.scrollTop=terminalOutput.scrollHeight;
   }
   function toggleCat() {
@@ -235,7 +260,7 @@
     historyIndex=shellHistory.length;shellDraft='';terminalInput.value='';
     appendShell('visitor:~$ '+command,'shell-command');
     const result=window.KhanShell.resolve(command,shellPages);
-    if(result.kind==='clear'){terminalOutput.replaceChildren();terminalInput.focus();return;}
+    if(result.kind==='clear'){clearShell();return;}
     if(result.kind==='text')appendShell(result.text);
     else if(result.kind==='cat')appendShell(toggleCat());
     else if(result.kind==='ls'){
