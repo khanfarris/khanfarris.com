@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Azure honeypot investigation — Farris Khan</title>
+  <meta name="description" content="A guided Azure honeypot lab: building a Windows VM, collecting failed logins with Azure Monitor Agent, and investigating the logs with KQL and a location map.">
+  <link rel="stylesheet" href="khanos-common.css?v=khanos-1">
+  <link rel="stylesheet" href="palette-tokens.css?v=khanos-1">
+  <link rel="stylesheet" href="investigation.css?v=soc-lab-1">
+  <script src="khanos-palettes.js?v=khanos-1"></script>
+  <script src="investigation.js?v=soc-lab-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#investigation">Skip to investigation</a>
+  <header class="investigation-bar">
+    <a href="index.html#investigations" data-workspace-link><span class="mono">[k/f]</span> <span>Investigations</span></a>
+    <span class="mono">KHANOS / LAB NOTES</span>
+  </header>
+  <main id="investigation" class="investigation">
+    <header class="investigation-intro">
+      <p class="eyebrow">AZURE / GUIDED PERSONAL LAB</p>
+      <h1>Following failed logins<br>from a VM to a map</h1>
+      <p class="intro">I built a Windows honeypot in Azure to practice collecting and reading security logs. A honeypot is a computer deliberately exposed to attract activity that can be observed. The saved map shows 849 failed logons across four source IP entries.</p>
+      <p class="byline">Farris Khan <span aria-hidden="true">·</span> September 2026 <span aria-hidden="true">·</span> About 6 minutes</p>
+      <nav class="article-jumps" aria-label="In this investigation">
+        <a href="#build">The build <span aria-hidden="true">↓</span></a>
+        <a href="#findings">What I found <span aria-hidden="true">↓</span></a>
+        <a href="#remember">Things to remember <span aria-hidden="true">↓</span></a>
+      </nav>
+    </header>
+
+    <section class="build" id="build" aria-label="Step by step lab build">
+      <section class="lab-step" aria-labelledby="step-1">
+        <span class="step-number" aria-hidden="true">01</span>
+        <div class="step-body">
+          <h2 id="step-1">Start with a resource group and network</h2>
+          <p>I created the <strong>SOC-Lab resource group</strong>, a container that keeps related Azure resources together. Inside it, I created <strong>VNet-SOC-Lab</strong>, a virtual network that gives cloud computers a network to connect to.</p>
+          <p>The network contained a <strong>default subnet</strong>, a smaller section of its address range. The VM would join this subnet and receive a private IP address for communication within the network.</p>
+          <div class="resource-outline" aria-label="The SOC-Lab resource group contains VNet-SOC-Lab, whose default subnet contains the Windows VM">
+            <span class="mono">SOC-Lab <small>resource group</small></span>
+            <div><span>VNet-SOC-Lab <small>virtual network</small></span>
+              <div><span>default <small>subnet</small></span>
+                <div><strong>DC-CORP-CENT-2</strong> <small>Windows 11 VM</small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="lab-step" aria-labelledby="step-2">
+        <span class="step-number" aria-hidden="true">02</span>
+        <div class="step-body">
+          <h2 id="step-2">Create the VM and expose the honeypot</h2>
+          <p>I deployed <strong>DC-CORP-CENT-2</strong>, a Windows 11 Pro virtual machine in Central US, and connected it to the subnet. A <strong>VM</strong> is a computer running on cloud hardware. Its public IP made it reachable from the internet; <strong>Remote Desktop Protocol (RDP)</strong> let me sign in and use its desktop.</p>
+          <p>I changed the <strong>network security group (NSG)</strong> to allow all inbound traffic. An NSG controls which network connections Azure allows. Inside Windows, I also disabled <strong>Windows Defender Firewall</strong> for the Domain, Private, and Public profiles.</p>
+          <p class="takeaway"><strong>Learning point:</strong> Azure network rules and the Windows firewall are separate layers. These permissive settings were intentional for this honeypot exercise; a normal work computer should have restricted access.</p>
+        </div>
+      </section>
+
+      <section class="lab-step" aria-labelledby="step-3">
+        <span class="step-number" aria-hidden="true">03</span>
+        <div class="step-body">
+          <h2 id="step-3">Find failed logins in Windows</h2>
+          <p>Following the tutorial, I made a few unsuccessful login attempts, then checked <strong>Event Viewer → Windows Logs → Security</strong> on the VM. Event Viewer is Windows’ built-in tool for reading event records.</p>
+          <p>I looked for <strong>event ID 4625, meaning an account failed to log on</strong>. This established what the event looked like on the computer before collecting it in Azure. A failed login can be a typo, so the source address, account, timing, and repetition matter too. <a class="reference" href="https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4625">Microsoft’s 4625 reference ↗</a></p>
+        </div>
+      </section>
+
+      <section class="lab-step" aria-labelledby="step-4">
+        <span class="step-number" aria-hidden="true">04</span>
+        <div class="step-body">
+          <h2 id="step-4">Give the logs a central home</h2>
+          <p>I created <strong>LAW-SOC-Lab</strong>, a <strong>Log Analytics workspace</strong>. This is the central place where Azure stores collected logs so they can be searched together.</p>
+          <p>I enabled <strong>Microsoft Sentinel</strong> on that workspace. Sentinel is a <strong>SIEM</strong> (security information and event management) tool: it helps analysts search security data, investigate activity, and configure detections. This lab focused on collecting, querying, and visualizing logs.</p>
+        </div>
+      </section>
+
+      <section class="lab-step" aria-labelledby="step-5">
+        <span class="step-number" aria-hidden="true">05</span>
+        <div class="step-body">
+          <h2 id="step-5">Connect the VM through Azure Monitor Agent</h2>
+          <p>In Sentinel’s <strong>Content Hub</strong>, I installed the Windows Security Events solution, then used its <strong>Windows Security Events via AMA</strong> connector. A connector provides the setup for bringing a particular kind of data into the workspace.</p>
+          <p>I created <strong>DCR-Windows</strong>, a <strong>data collection rule (DCR)</strong>, selected the VM, and followed the tutorial’s selection of all Security events. The rule tells the agent what to collect and which workspace to send it to.</p>
+          <p>This setup installs <strong>Azure Monitor Agent (AMA)</strong> on the VM. Azure Monitor is Microsoft’s monitoring service; AMA is the software on the computer that collects and sends its logs. I checked for records in the workspace’s <code>SecurityEvent</code> table to verify collection. <a class="reference" href="https://learn.microsoft.com/en-us/azure/sentinel/connect-services-windows-based">Microsoft’s connector guide ↗</a></p>
+          <ol class="log-flow" aria-label="Security log collection path">
+            <li><strong>Windows VM</strong><span>Security event log</span></li>
+            <li><strong>AMA + DCR</strong><span>Collect and send</span></li>
+            <li><strong>Log Analytics</strong><span>SecurityEvent table</span></li>
+            <li><strong>Sentinel</strong><span>Investigate those logs</span></li>
+          </ol>
+          <p class="takeaway"><strong>Remember:</strong> Sentinel uses the logs in its connected workspace. This setup does not need another agent to copy them from Log Analytics into Sentinel.</p>
+        </div>
+      </section>
+
+      <section class="lab-step" aria-labelledby="step-6">
+        <span class="step-number" aria-hidden="true">06</span>
+        <div class="step-body">
+          <h2 id="step-6">Use a short query to read the activity</h2>
+          <p>In the workspace’s <strong>Logs</strong> view, I used <strong>Kusto Query Language (KQL)</strong>, the query language for filtering and summarizing these records. This query keeps failed logins and displays the fields I want to review:</p>
+          <pre><code>SecurityEvent
+| where EventID == 4625
+| project TimeGenerated, Account, Computer, EventID, IpAddress
+| order by TimeGenerated desc</code></pre>
+          <p><code>where</code> filters rows; <code>project</code> chooses columns; <code>order by</code> sorts them. <strong>EventID is case-sensitive</strong>—<code>EventId</code> is a different name.</p>
+          <figure>
+            <a href="assets/investigations/soc-honeypot/failed-logon.jpg" target="_blank" rel="noopener" aria-label="Open the full Log Analytics failed logon screenshot in a new tab"><img src="assets/investigations/soc-honeypot/failed-logon.jpg" width="1600" height="822" loading="lazy" alt="Azure Log Analytics showing a 4625 event for Administrator on DC-CORP-CENT-2, with a source IP and logon type 3."></a>
+            <figcaption><span>Evidence 01</span> A Windows security event after collection, viewed in <strong>Azure Log Analytics</strong>. The expanded record shows 4625 and logon type 3 (network). Select the image to read it at full size.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="lab-step" aria-labelledby="step-7">
+        <span class="step-number" aria-hidden="true">07</span>
+        <div class="step-body">
+          <h2 id="step-7">Add location context and build the map</h2>
+          <p>The tutorial used a <strong>Sentinel watchlist</strong>, an imported reference table, to match source IPs to locations. My saved query used <code>externaldata</code> to read the supplied location CSV from Azure Blob Storage instead. <code>ipv4_lookup</code> matched each IP to a network range in that file. <a class="reference" href="https://learn.microsoft.com/en-us/kusto/query/externaldata-operator?view=microsoft-fabric">How externaldata works ↗</a></p>
+          <p>I adapted the supplied map template in an <strong>Azure Monitor workbook</strong>, a report that turns query results into visuals. The workbook used the same workspace logs and grouped failed logons by source IP. The location dataset and map template were supplied resources.</p>
+          <p class="takeaway"><strong>Learning point:</strong> location data adds context to an IP address. It does not establish who operated it or where that person was physically located.</p>
+        </div>
+      </section>
+    </section>
+
+    <section class="article-section" id="findings">
+      <p class="eyebrow">THE SAVED RESULT</p>
+      <h2>Repeated failures and an account lockout</h2>
+      <figure>
+        <a href="assets/investigations/soc-honeypot/location-map.jpg" target="_blank" rel="noopener" aria-label="Open the full Azure Monitor workbook map in a new tab"><img src="assets/investigations/soc-honeypot/location-map.jpg" width="1600" height="826" loading="lazy" alt="Workbook map showing Quan Bon, Vietnam: 358; Dongguan, China: 258; and two Hickory, United States entries: 146 and 87 failed logons."></a>
+        <figcaption><span>Evidence 02</span> The map portion of my <strong>Azure Monitor workbook</strong>. Its four displayed counts total <strong>849 failed logons</strong>. This is a saved snapshot of mapped results, not a live counter or a verified total for the VM’s entire lifetime.</figcaption>
+      </figure>
+      <p>The records show repeated failures targeting Windows account names, including <strong>Administrator</strong> and <strong>WDAGUtilityAccount</strong>. Attempts spaced roughly three seconds apart from the same IP are consistent with automated guessing. A saved result also shows <strong>4740, an account lockout</strong>, alongside repeated failures.</p>
+      <details class="evidence-detail">
+        <summary>View the failed logons and lockout evidence</summary>
+        <figure>
+          <a href="assets/investigations/soc-honeypot/account-lockout.jpg" target="_blank" rel="noopener" aria-label="Open the full account lockout evidence in a new tab"><img src="assets/investigations/soc-honeypot/account-lockout.jpg" width="1429" height="804" loading="lazy" alt="Log Analytics results showing repeated 4625 events for WDAGUtilityAccount and a 4740 account lockout at 1:14:58.537 AM on September 4, 2026."></a>
+          <figcaption><span>Evidence 03</span> A results excerpt from <strong>Azure Log Analytics</strong>, displayed newest first. Read upward from the bottom to follow the failures to the lockout. Other Windows events are also visible in this unfiltered excerpt.</figcaption>
+        </figure>
+      </details>
+      <p><strong>What this supports:</strong> the VM received failed login attempts, and the collection and mapping worked. These screenshots alone do not establish whether every login attempt failed. In an investigation, I would also review successful logins and compare the account, source address, time, and logon type.</p>
+    </section>
+
+    <section class="article-section" id="remember">
+      <p class="eyebrow">QUICK RECALL</p>
+      <h2>The things I want to remember</h2>
+      <table>
+        <caption>Windows events and logon types from this lab</caption>
+        <thead><tr><th scope="col">Look for</th><th scope="col">Meaning</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">4625</th><td>A failed login. Review the pattern and surrounding context.</td></tr>
+          <tr><th scope="row">4624</th><td>A successful login. It can be normal user or system activity.</td></tr>
+          <tr><th scope="row">4740</th><td>An account was locked out.</td></tr>
+          <tr><th scope="row">Logon type 3</th><td>Network logon. This value alone does not identify the application.</td></tr>
+          <tr><th scope="row">Logon type 10</th><td>Remote interactive logon, such as Remote Desktop.</td></tr>
+        </tbody>
+      </table>
+      <p class="reference">Event references: <a href="https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4625">4625 and logon types</a>, <a href="https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4624">4624</a>, <a href="https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4740">4740</a>.</p>
+      <p><strong>If logs are missing:</strong> check that the VM’s agent installed, the DCR selects the correct VM and workspace, and the query’s time range covers the activity. Allow for collection delay, then verify that records actually arrive.</p>
+      <p><strong>When finishing a cloud lab:</strong> save the evidence, remove the exposed resources, and check for remaining billable resources. Stopping a VM alone can leave disks and other resources behind.</p>
+      <h3>How I would explain the lab in an interview</h3>
+      <blockquote>“I followed a guided Azure lab to build a Windows honeypot and collect its security logs. I used Azure Monitor Agent and a data collection rule to send events to a Log Analytics workspace connected to Sentinel. I practiced filtering failed logins with KQL and adapted a workbook to map source IPs. My main takeaway was learning how a Windows event becomes something I can investigate—and why a failed login or a point on a map needs context.”</blockquote>
+      <p class="scope">This was a personal learning exercise in setup, log review, and visualization. It did not include building automated detection rules or carrying out a production incident response.</p>
+    </section>
+
+    <footer class="investigation-footer">
+      <p>Based on the <a href="https://www.youtube.com/watch?v=g5JL2RIbThM">Azure honeypot tutorial I followed</a> and my saved lab screenshots. The steps describe this build; portal layouts may change.</p>
+      <a href="index.html#investigations" data-workspace-link>← Back to investigations</a>
+    </footer>
+  </main>
+</body>
+</html>

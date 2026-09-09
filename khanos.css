@@ -130,6 +130,9 @@ body{background:var(--bg);color:var(--fg)}
 .identity-studies>div>span{display:block;width:max-content;max-width:100%;font:11px/1.5 var(--mono);margin-top:6px;padding:0;border:0;color:var(--accent)}
 .case-links{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 20px}
 .case-links button:disabled{opacity:.55;cursor:default}
+.case-complete{color:rgb(var(--p-ink));text-decoration:underline;text-decoration-color:rgb(var(--p-accent));text-underline-offset:5px;font-size:13px}
+.case-schematic strong{overflow-wrap:anywhere}
+@media(max-width:480px){.case-schematic{gap:8px}.case-schematic strong{font-size:11px;padding:8px}.case-schematic>span{font-size:10px}}
 .note-references{padding:7px 0 20px;margin-top:24px;border-top:1px solid var(--line)}
 .note-references ul{padding-left:18px;margin:0}.note-references li{font-size:13px;line-height:1.9;margin:8px 0}.note-references a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
 .note-sheet{--cyan:#94a9d2;--amber:var(--accent);--rose:#f397a8;--body:var(--sans);--panel:rgb(var(--p-panel));container-type:inline-size}

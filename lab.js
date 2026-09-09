@@ -1,6 +1,7 @@
 (() => {
   'use strict';
   const pages = [
+    {name:'Azure honeypot investigation',url:'soc-honeypot.html',type:'Investigation',keywords:'soc azure sentinel windows ama failed logins 4625 honeypot'},
     {name:'pwning my light bulbs',url:'lifx-pentest.html',type:'Investigation',keywords:'lifx iot udp 56700'},
     {name:'whoami',url:'index.html#about',type:'About',keywords:'farris khan certifications security azure'},
     {name:'home lab',url:'index.html',type:'Home',keywords:'map home'},
