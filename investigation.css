@@ -57,6 +57,11 @@ th,td{padding:15px 18px;border:1px solid var(--line);vertical-align:top}
 thead{background:rgb(var(--p-panel))}
 tbody th{font:500 14px/1.8 var(--mono);width:29%;color:var(--fg)}
 td{color:var(--muted)}
+.table-scroll{overflow-x:auto;margin:24px 0 12px}
+.table-scroll:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
+.scan-results{min-width:480px;margin:0;font-variant-numeric:tabular-nums}
+.scan-results td{text-align:center}
+.scan-results tbody th{width:auto}
 blockquote{margin:0 0 24px;padding:0 0 0 24px;border-left:2px solid var(--accent);font-size:19px;line-height:1.8;color:var(--fg)}
 .scope{font-size:15px}
 .investigation-footer{padding:32px 0 56px;margin-left:68px;font-size:14px}

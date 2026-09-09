@@ -41,7 +41,8 @@ body{background:var(--bg);color:var(--fg)}
 .map-mode button[aria-pressed=true]{background:rgb(var(--p-accent)/.13);color:var(--fg)}
 .note-body a,.note-body code,.note-connections button,.note-recall summary{color:var(--accent)}
 .note-sheet .note-principle{color:var(--fg);border-color:var(--accent)}
-.case-launchers>button:only-child{grid-column:1/-1}
+.case-launchers>button:last-child:nth-child(odd){grid-column:1/-1}
+@media(min-width:761px){.window-cases{width:400px;height:370px}}
 .window-shell{left:29%;top:8%;width:67%;height:73%;min-width:580px;min-height:400px;z-index:8}
 .shell-surface{flex:1;min-height:0;display:flex;flex-direction:column;background:linear-gradient(150deg,rgb(var(--p-panel)/.08),rgb(var(--p-base)/.25))}
 .shell-session{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:17px 27px;border-bottom:1px solid rgb(var(--p-edge)/.12);font:12px var(--mono);color:rgb(var(--p-faint))}

@@ -1,6 +1,7 @@
 (() => {
   'use strict';
   const pages = [
+    {name:'Vulnerability scanning lab',url:'vulnerability-scan.html',type:'Lab',keywords:'tenable nessus azure windows vulnerability scan remediation patching stig'},
     {name:'Azure honeypot lab',url:'soc-honeypot.html',type:'Lab',keywords:'soc azure sentinel windows ama failed logins 4625 honeypot'},
     {name:'pwning my light bulbs',url:'lifx-pentest.html',type:'Lab',keywords:'lifx iot udp 56700'},
     {name:'whoami',url:'index.html#about',type:'About',keywords:'farris khan certifications security azure'},

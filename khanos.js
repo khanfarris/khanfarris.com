@@ -197,6 +197,7 @@
   const shellPages=[
     {name:'pwning my light bulbs',slug:'lifx',kind:'case',target:'lifx',aliases:['lifx-pentest']},
     {name:'Azure honeypot lab',slug:'soc',kind:'case',target:'soc',aliases:['soc-honeypot','honeypot','sentinel','azure']},
+    {name:'Vulnerability scanning lab',slug:'vuln',kind:'case',target:'vuln',aliases:['vulnerability-scan','tenable']},
     {name:'Labs',slug:'labs',kind:'app',target:'cases',aliases:['lab','cases','investigations']},
     {name:'whoami',slug:'whoami',kind:'app',target:'profile',aliases:['about']},
     {name:'home lab',slug:'home',kind:'app',target:'shell',aliases:['index','shell']},
@@ -426,6 +427,12 @@
     else results[Math.max(0,Math.min(results.length-1,index+(e.key==='ArrowDown'?1:-1)))]?.focus();
   });
   const investigations={
+    vuln:{category:'TENABLE + AZURE / GUIDED PERSONAL LAB',title:'Finding and fixing vulnerabilities.',device:'WINDOWS VM',source:'TENABLE SCANNER',transport:'Credentialed scan',url:'vulnerability-scan.html',steps:[
+      ['Build','Give the scanner a target.','The lab uses a Windows 11 Pro VM in an Azure virtual network with an internal Tenable scanner. Example resource names follow my honeypot lab’s naming style. Administrator credentials let the scanner inspect software, patches, and settings.'],
+      ['Scan','Compare the starting point.','A baseline scan establishes the initial findings. The exercise then adds old Firefox and enables Guest before scanning again. Tenable reports software vulnerabilities and separate STIG audit results for security settings.'],
+      ['Fix','Work through the findings.','The exercise removes outdated Firefox, disables and renames Guest, and increases the Security event log limit. A follow-up scan checks those changes, then Windows updates and another scan address more findings.'],
+      ['Verify','Check what remains.','The supplied Windows 10 reference results fall from 55 findings after introducing problems to 19 after remediation and updates. Zero critical findings remain, but six high findings still need review. These counts are reference results, not measured totals for the Windows 11 build.']
+    ]},
     soc:{category:'AZURE / GUIDED PERSONAL LAB',title:'Following failed logins.',device:'SENTINEL',source:'WINDOWS VM',transport:'AMA → workspace',url:'soc-honeypot.html',steps:[
       ['Build','Give the honeypot a home.','I created a resource group, a virtual network with a subnet, and a Windows VM. I deliberately opened its network rules and Windows firewall to observe unsolicited login attempts in this lab.'],
       ['Collect','Connect the logs.','The Windows Security Events via AMA connector configured Azure Monitor Agent and a data collection rule. They sent the VM’s Security events to a Log Analytics workspace connected to Sentinel.'],
@@ -442,7 +449,7 @@
   let activeCase=null,caseStep=0;
   function renderCases() {
     activeCase=null;caseStep=0;
-    $('.case-content').innerHTML='<div class="case-launchers"><button data-case="soc"><b aria-hidden="true">⌁</b><span>Azure honeypot</span><small>Windows / Sentinel ↗</small></button><button data-case="lifx"><b aria-hidden="true">◉</b><span>LIFX bulb</span><small>UDP / 56700 ↗</small></button></div>';
+    $('.case-content').innerHTML='<div class="case-launchers"><button data-case="soc"><b aria-hidden="true">⌁</b><span>Azure honeypot</span><small>Windows / Sentinel ↗</small></button><button data-case="lifx"><b aria-hidden="true">◉</b><span>LIFX bulb</span><small>UDP / 56700 ↗</small></button><button data-case="vuln"><b aria-hidden="true">◎</b><span>Finding and fixing vulnerabilities</span><small>Tenable / Windows ↗</small></button></div>';
   }
   function renderCase(id,step=0) {
     const data=investigations[id];if(!data)return;
