@@ -39,6 +39,7 @@ import {
 import Portfolio from './portfolio';
 import {Help} from '../help';
 import {ShiftDial} from '../shift-dial';
+import {IncidentConstellation} from '../constellation';
 import { useProgress } from './use-progress';
 import {
   backupJSON,
@@ -602,63 +603,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
         <>
           {!readOnly && run.phase==='reward' && <p className="profile-banner">Shift complete. <a href="#shift-reward">Continue to next shift →</a> Choose an upgrade or continue without one below.</p>}
           <div className="arena">
-            <aside className="queue">
-              <div className="section-heading">
-                <h3>Incident queue <Help topic="pressure" label="Pressure and incident queue" /></h3>
-                <small>{run.cases.filter((x) => !x.closed).length} {locked?'LOCKED':'OPEN'}</small>
-              </div>
-              {run.cases.map((x, i) => {
-                const t = template(x),
-                  stable = x.done.some(
-                    (id) => t.actions.find((a) => a.id === id)?.contain,
-                  );
-                return (
-                  <button
-                    className={
-                      'ticket ' + (i === run.selected ? 'selected' : '')
-                    }
-                    key={x.id}
-                    onClick={() => select(i)}
-                  >
-                    <div className="row">
-                      <span className={'severity ' + t.severity.toLowerCase()}>
-                        {locked?'LOCKED':x.closed ? 'CLOSED' : t.severity.toUpperCase()}
-                      </span>
-                      <span>
-                        {x.closed ? (
-                          <Check size={16} />
-                        ) : (
-                          String(i + 1).padStart(2, '0')
-                        )}
-                      </span>
-                    </div>
-                    <b>{t.title}</b>
-                    <span>{clients[x.client].name}</span>
-                    <div className="row">
-                      <small>{t.skill}</small>
-                      <small>
-                        {locked?'PREVIEW':x.closed
-                          ? x.score + '/100'
-                          : stable
-                            ? 'STABILIZED'
-                            : x.pressure + '% PRESSURE'}
-                      </small>
-                    </div>
-                    <Progress
-                      value={locked?0:x.closed ? 100 : x.pressure}
-                      aria-label={`${t.title} pressure`}
-                    />
-                  </button>
-                );
-              })}
-              <div className="queue-tip">
-                <Clock size={18} />
-                <p>
-                  Time advances only on actions. Unstabilized cases gain
-                  pressure. At 85%, each costs 2 trust per turn.
-                </p>
-              </div>
-            </aside>
+            <IncidentConstellation run={run} locked={locked} published={isProfile} onSelect={select}/>
             <section className="workspace panel">
               <div className="case-heading">
                 <div className="row">
