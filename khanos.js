@@ -20,7 +20,7 @@
   const state = {selected:bySlug.has('subnetting') ? 'subnetting' : notes[0].slug, category:'All', query:'', mode:'map', trace:false, active:'shell', z:10, motion:!reduced.matches, reader:null};
   const windowHTML = (id, title, icon, content, hidden=false) => `<section id="app-${id}" class="hybrid-window window-${id}" data-window="${id}" role="region" aria-labelledby="title-${id}" tabindex="-1" ${hidden?'hidden':''}>
     <header class="window-bar"><span class="window-caption" id="title-${id}"><i aria-hidden="true">${icon}</i>${title}</span><div class="window-controls"><button type="button" data-minimize aria-label="Minimize ${title}" title="Minimize">−</button><button type="button" data-maximize aria-label="Maximize ${title}" title="Maximize">□</button><button type="button" data-close aria-label="Close ${title}" title="Close">×</button></div></header>${content}<button type="button" class="resize-grip" aria-label="Resize ${title} with arrow keys" title="Drag to resize; arrow keys when focused">◢</button></section>`;
-  root.innerHTML = `<header class="hybrid-top"><div><a class="hybrid-brand" href="index.html">Khan<span>OS</span></a><span class="edition">PERSONAL WORKSPACE</span></div><div><details class="palette-menu"><summary aria-label="Choose color palette"><i class="current-swatch" aria-hidden="true"></i><span class="current-palette">${palette.name}</span><span aria-hidden="true">⌄</span></summary><div class="palette-options"><span class="eyebrow">COLOR / ATMOSPHERE</span>${window.KhanThemes.list.map(p=>`<button data-palette="${p.id}" aria-pressed="${p.id===palette.id}"><span class="palette-dots" aria-hidden="true">${p.swatches.map(c=>`<i style="background:${c}"></i>`).join('')}</span><span>${p.name}<small>${p.subtitle}</small></span><b aria-hidden="true">${p.id===palette.id?'✓':'↗'}</b></button>`).join('')}</div></details><button data-reset>Reset layout</button><button data-motion aria-pressed="${state.motion}">${state.motion?'Pause motion':'Enable motion'}</button><button class="top-search" data-app="search" aria-label="Search notes"><span>⌕ Search</span><kbd>CTRL K</kbd></button></div></header>
+  root.innerHTML = `<header class="hybrid-top"><div><a class="hybrid-brand" href="index.html">Khan<span>OS</span></a><span class="edition">PERSONAL WORKSPACE</span></div><div><details class="palette-menu"><summary aria-label="Choose color palette"><i class="current-swatch" aria-hidden="true"></i><span class="current-palette">${palette.name}</span><span aria-hidden="true">⌄</span></summary><div class="palette-options"><span class="eyebrow">COLOR / ATMOSPHERE</span>${window.KhanThemes.list.map(p=>`<button data-palette="${p.id}" aria-pressed="${p.id===palette.id}"><span class="palette-dots" aria-hidden="true">${p.swatches.map(c=>`<i style="background:${c}"></i>`).join('')}</span><span>${p.name}<small>${p.subtitle}</small></span><b aria-hidden="true">${p.id===palette.id?'✓':'↗'}</b></button>`).join('')}</div></details><button data-reset>Reset layout</button><button data-motion aria-pressed="${state.motion}">${state.motion?'Pause motion':'Enable motion'}</button></div></header>
     <main id="main" class="hybrid-workspace" tabindex="-1" aria-label="Farris Khan’s interactive desktop"><canvas id="signal-backdrop" aria-hidden="true"></canvas><div class="ambient-vignette"></div><span class="ambient-wordmark" aria-hidden="true">k/f</span>
     ${windowHTML('profile','Whoami','k/f',`<div class="window-content identity-card"><div class="identity-monogram" aria-hidden="true">k/f</div><h1>Farris Khan.</h1><p class="role">security / ops tinkerer</p><p class="bio">Taking things apart.<br>Figuring out what talks to what.<br>Writing down what I find.</p><div class="identity-studies"><small>MICROSOFT CERTIFICATIONS</small><div><strong>Security Operations Analyst Associate</strong><span>SC-200 · In Progress</span></div><div><strong>Azure Administrator Associate</strong><span>AZ-104 · In Progress</span></div></div></div>`)}
     ${windowHTML('featured','Featured item','↗',`<div class="window-content featured-content"><span class="featured-category">SECURITY OPERATIONS / GAME</span><h2>Shiftrun<span aria-hidden="true">.</span></h2><p>Work a simulated security shift. Investigate incidents, weigh the evidence, and practice response decisions.</p><a class="featured-launch" href="shiftrun/">Launch Shiftrun <span aria-hidden="true">↗</span></a></div>`)}
@@ -33,7 +33,7 @@
     ${windowHTML('note','Study note','≡','<article class="window-content note-sheet"></article>',true)}
     ${windowHTML('search','Search the archive','⌕','<div class="window-content search-body"><input class="command-search" aria-label="Search all study notes" type="search" placeholder="What are you exploring?" autocomplete="off"><span class="eyebrow">STUDY NOTES</span><div class="command-results"></div></div>',true)}
     <div class="desktop-line"><b>KHANFARRIS</b><span>PERSONAL LAB / ${notes.length} NOTES</span></div><span class="desktop-label">© ${new Date().getFullYear()} KHANFARRIS</span>
-    <nav class="hybrid-dock" aria-label="Desktop apps">${[['profile','k/f','Whoami'],['knowledge','⌘','Knowledge'],['note','≡','Reader'],['cases','▣','Cases'],['featured','↗','Shiftrun'],['shell','>_','Shell'],['search','⌕','Search']].map(([id,icon,label])=>`<button data-app="${id}" aria-controls="app-${id}" ${id==='note'?'hidden':''}><b aria-hidden="true">${icon}</b><span>${label}</span></button>`).join('')}</nav><span class="sr-only" id="desktop-status" role="status"></span></main>`;
+    <nav class="hybrid-dock" aria-label="Desktop apps">${[['profile','k/f','Whoami'],['knowledge','⌘','Knowledge'],['note','≡','Reader'],['cases','▣','Cases'],['featured','↗','Shiftrun'],['shell','>_','Shell'],['search','⌕','Search']].map(([id,icon,label])=>{const button=`<button data-app="${id}" aria-controls="app-${id}" ${id==='note'?'hidden':''} ${id==='featured'?'aria-describedby="shiftrun-dock-hint"':''}><b aria-hidden="true">${icon}</b><span>${label}</span></button>`;return id==='featured'?`<div class="dock-shiftrun">${button}<div class="dock-launch-menu"><a href="shiftrun/">Launch Shiftrun <span aria-hidden="true">↗</span></a></div><span id="shiftrun-dock-hint" class="sr-only">Double-click to launch Shiftrun. Press Arrow Up for the launch link.</span></div>`:button;}).join('')}</nav><span class="sr-only" id="desktop-status" role="status"></span></main>`;
   const $ = selector => root.querySelector(selector);
   const $$ = selector => [...root.querySelectorAll(selector)];
   const workspace = $('.hybrid-workspace');
@@ -451,13 +451,34 @@
     if (target.hasAttribute('data-step')) {renderCase(activeCase,+target.dataset.step);return;}
     if (target.hasAttribute('data-case-back')) {renderCases();return;}
   });
+  const shiftrunDock=$('.dock-shiftrun');
+  const shiftrunButton=shiftrunDock.querySelector('[data-app="featured"]');
+  const shiftrunLaunch=shiftrunDock.querySelector('.dock-launch-menu a');
+  shiftrunButton.addEventListener('dblclick',event=>{event.preventDefault();location.assign(shiftrunLaunch.href);});
+  shiftrunDock.addEventListener('pointerenter',()=>shiftrunDock.classList.remove('launch-dismissed'));
+  shiftrunDock.addEventListener('pointerdown',event=>{
+    if(event.pointerType==='touch'){shiftrunDock.classList.remove('launch-dismissed');shiftrunDock.classList.add('launch-open');}
+  });
+  shiftrunDock.addEventListener('focusout',event=>{
+    if(!shiftrunDock.contains(event.relatedTarget))shiftrunDock.classList.remove('launch-dismissed');
+  });
+  shiftrunDock.addEventListener('keydown',event=>{
+    if(event.key==='ArrowUp'&&event.target===shiftrunButton){
+      event.preventDefault();shiftrunDock.classList.remove('launch-dismissed');shiftrunLaunch.focus();
+    }else if(event.key==='Escape'){
+      event.preventDefault();event.stopPropagation();shiftrunDock.classList.remove('launch-open');shiftrunDock.classList.add('launch-dismissed');shiftrunButton.focus();
+    }
+  });
   $('[data-reset]').onclick=resetLayout;
   document.addEventListener('keydown',event=>{
     if ((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='k') {event.preventDefault();showWindow('search');}
     if (event.key==='Escape'&&$('.palette-menu').open) {event.preventDefault();$('.palette-menu').open=false;$('.palette-menu summary').focus();return;}
     if (event.key==='Escape'&&state.active&&!event.defaultPrevented) {event.preventDefault();hideWindow(state.active);}
   });
-  document.addEventListener('pointerdown',event=>{if(!event.target.closest('.palette-menu'))$('.palette-menu').open=false;});
+  document.addEventListener('pointerdown',event=>{
+    if(!event.target.closest('.palette-menu'))$('.palette-menu').open=false;
+    if(!event.target.closest('.dock-shiftrun'))shiftrunDock.classList.remove('launch-open');
+  });
 
   // Signal's atmosphere is decorative. It never represents real network activity.
   const canvas=$('#signal-backdrop'),ctx=canvas.getContext('2d');
