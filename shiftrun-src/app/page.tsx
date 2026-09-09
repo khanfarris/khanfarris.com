@@ -14,6 +14,7 @@ import {
   Fingerprint,
   Terminal,
   ArrowUpRight,
+  ArrowRight,
   Layers,
   Clock,
   Download,
@@ -1087,61 +1088,88 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
           <div className="manual-intro panel">
             <BookOpen size={30} />
             <div>
-              <h2>Built for the role in your posting</h2>
+              <h2>Built with a specific scope</h2>
               <p>
-                Your supplied Cybersecurity Analyst posting names KnowBe4,
+                Shiftrun aims to simulate content found in KnowBe4,
                 SentinelOne, Blackpoint MDR and Timus, plus Microsoft 365,
                 Entra, Defender and Intune. This independent game uses fictional
-                clients and simplified workflows based on those responsibilities
-                and public documentation.
+                clients and simplified workflows based on public documentation.
               </p>
               <p>
                 It is not affiliated with any employer or the named vendors,
                 does not reproduce their exact consoles, and does not establish
                 their internal procedures. Confirm actual permissions,
                 licensing, escalation rules and tool behavior in authorized
-                hands-on labs. The live job listing could not be verified; the
-                attachment is the role specification.
+                hands-on labs.
               </p>
             </div>
           </div>
-          <div className="manual-grid">
-            <article className="panel">
-              <h3>How to play</h3>
-              <ol>
-                <li>Pick a class and enter a shift.</li>
-                <li>Read evidence, then stabilize the urgent cases.</li>
-                <li>Complete scoped response and validation.</li>
-                <li>Classify the case and choose a client update.</li>
-                <li>
-                  Review the debrief and practice explaining your decision.
-                </li>
-              </ol>
-              <p>
-                New evidence and response actions advance pressure. Re-reading,
-                navigation, writing and reading the manual are free. Practice
-                mode removes pressure growth. Two evidence reviews before
-                actions is a teaching rule; real incidents can require immediate
-                authorized containment.
-              </p>
-            </article>
-            <article className="panel">
-              <h3>Your training plan</h3>
-              <ol>
-                <li>Complete Guided with the Investigator specialty.</li>
-                <li>Practice your lowest-scoring skill without pressure.</li>
-                <li>Replay Veteran with a different specialty.</li>
-                <li>Do the daily seeded challenge to compare your choices.</li>
-                <li>Export your journal and review your incident notes.</li>
-              </ol>
-              <p>
-                Daily challenges use the UTC date, selected class, and the same
-                starting seed. Cases come from 14 authored scenarios; queue
-                order and client assignment vary. Evidence within each scenario
-                is fixed.
-              </p>
-            </article>
-          </div>
+          <article className="how-to-play panel" aria-labelledby="how-to-play-heading">
+            <header className="play-guide-heading">
+              <div>
+                <small>THE LOOP / FROM ALERT TO DEBRIEF</small>
+                <h2 id="how-to-play-heading">How to play</h2>
+              </div>
+              <p><Clock size={18} aria-hidden="true" /> Take your time. The game moves when you act, not while you read.</p>
+            </header>
+            <div className="play-guide-grid">
+              <section className="play-workflow" aria-labelledby="play-workflow-heading">
+                <h3 id="play-workflow-heading">Work through an incident</h3>
+                <ol className="play-steps">
+                  <li>
+                    <h4>Choose your pace, then open a case.</h4>
+                    <p>Guided includes coaching. Veteran raises pressure faster. Practice lets you work on one incident without advancing turns or pressure. Choose a specialty for its perk, then select an incident circle on the left.</p>
+                  </li>
+                  <li>
+                    <h4>Evidence: find out what happened.</h4>
+                    <p>Open the evidence sources and compare what they show. Review at least two before responding; read all of them for full evidence points. You can reopen reviewed evidence for free.</p>
+                  </li>
+                  <li>
+                    <h4>Respond: choose actions the evidence supports.</h4>
+                    <p>Some choices are unsafe. Some useful actions must happen in order. Stabilize urgent cases to stop their pressure growing, then finish the response and verify the result.</p>
+                  </li>
+                  <li>
+                    <h4>Handoff: record your assessment.</h4>
+                    <p>Choose what the evidence establishes and a client update that matches this incident. Add analyst notes to explain your reasoning, then commit. Notes are saved but are not graded.</p>
+                  </li>
+                  <li>
+                    <h4>Debrief: learn from your decisions.</h4>
+                    <p>See your score, why points were awarded or missed, and the response walkthrough. Then select another open incident. You can switch between incidents while working.</p>
+                  </li>
+                </ol>
+              </section>
+              <section className="play-mechanics" aria-labelledby="play-mechanics-heading">
+                <h3 id="play-mechanics-heading">Read the shift</h3>
+                <div className="play-mechanic">
+                  <h4>Turn <Help topic="turn" label="turns" /></h4>
+                  <p>Your action counter. Reviewing new evidence or attempting a response normally uses one turn. Reading, writing notes and switching views are free. Specialty perks can make certain actions free too.</p>
+                </div>
+                <div className="play-mechanic">
+                  <h4>Pressure <Help topic="pressure" label="incident pressure" /></h4>
+                  <p>How urgent each incident has become, shown by its number and circular ring. Turns raise pressure on open, unstabilized cases. At <strong>85% or more</strong>, each of those cases costs <strong>2 trust per turn</strong>.</p>
+                  <p className="play-mechanic-tip">A successful stabilizing action lowers that case’s pressure by 25 points and stops further growth.</p>
+                </div>
+                <div className="play-mechanic">
+                  <h4>Client trust <Help topic="trust" label="client trust" /></h4>
+                  <p>The impact of your decisions on the client. It starts at 100 for a new run and carries into the next shift. Mistakes, poor client updates and neglected high-pressure incidents reduce it. Trust is separate from your incident score.</p>
+                </div>
+                <div className="play-mechanic">
+                  <h4>Intel &amp; XP <Help topic="intel" label="intel" /></h4>
+                  <p>Completed incidents earn both. Intel buys upgrades between shifts: 100 points earns 5 intel. XP tracks your overall progress and raises your level; it is not spent.</p>
+                </div>
+                <p className="play-specialty-note"><strong>Your specialty changes perks, not the incidents or correct answers.</strong> Investigator saves an evidence turn, Responder saves stabilization turns, and Communicator softens trust losses from response mistakes. <Help topic="specialty" label="specialty perks" /></p>
+              </section>
+            </div>
+            <div className="play-guide-finish">
+              <ArrowRight size={23} aria-hidden="true" />
+              <div>
+                <h3>All four incidents closed? Move to the next shift.</h3>
+                <p>Guided and Veteran each have three shifts. Follow <strong>Continue to next shift</strong> to the upgrade panel below the incidents. Spend intel on an upgrade or choose <strong>Continue without upgrade</strong>. Aim to finish the run with at least 70 trust and an average score of 80. You can keep learning if you miss the target.</p>
+                <p>Hover or tap the large shift number to browse. Completed shifts are read only; future shifts stay locked until you reach them. Browsing never spends a turn.</p>
+              </div>
+            </div>
+            <p className="play-guide-footnote">Your work saves automatically in this browser. Download progress JSON makes a portable backup. The two-source rule and pressure system are game rules; follow the authorized response plan in real incidents.</p>
+          </article>
           <h2>Role-to-practice map</h2>
           <div className="manual-grid">
             {skills.map((skill) => (
@@ -1210,7 +1238,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
           </div>
           <h2>Research & sources</h2>
           <p>
-            Public sources consulted September 6, 2026. Procedures may evolve.
+            Procedures may evolve.
             Vendor sources support concepts; case outcomes and scoring are
             authored training exercises.
           </p>

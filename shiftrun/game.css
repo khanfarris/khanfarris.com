@@ -2986,6 +2986,37 @@ body{background:var(--d-bg);font:14px/1.6 var(--sans);color:var(--d-ink)}button,
 :root[data-motion=false] .queue-visual *{animation:none!important;transition:none!important}
 @media(prefers-reduced-motion:reduce){.queue-visual *{animation:none!important;transition:none!important}}
 
+/* A full-width field guide: the incident workflow alongside the game counters. */
+.how-to-play{margin:24px 0 40px;padding:30px}
+.play-guide-heading{display:flex;justify-content:space-between;align-items:center;gap:24px;padding-bottom:26px;border-bottom:1px solid var(--d-edge)}
+.play-guide-heading small{color:var(--d-accent);font-size:9px}
+.play-guide-heading h2{font-size:30px;margin:7px 0 0}
+.play-guide-heading>p{display:flex;align-items:center;gap:12px;max-width:330px;margin:0;font-size:13px;line-height:1.65}
+.play-guide-heading>p>svg{flex-shrink:0;color:var(--d-accent)}
+.play-guide-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;padding:28px 0}
+.play-guide-grid h3{font-size:18px;margin:0 0 22px}
+.how-to-play h4{font:500 15px/1.5 var(--sans);color:var(--d-ink);margin:0 0 7px}
+.how-to-play p{font-size:14px;line-height:1.8;margin:0}
+.how-to-play strong{font-weight:500;color:var(--d-ink)}
+.play-steps{list-style:none;counter-reset:play-step;padding:0;margin:0}
+.play-steps>li{counter-increment:play-step;position:relative;padding:0 0 25px 48px;min-height:55px}
+.play-steps>li:before{content:counter(play-step,decimal-leading-zero);position:absolute;left:0;top:0;width:30px;height:30px;display:grid;place-items:center;border:1px solid rgb(var(--p-accent)/.4);background:rgb(var(--p-accent)/.055);border-radius:50%;color:var(--d-accent);font:10px var(--mono)}
+.play-steps>li:not(:last-child):after{content:'';position:absolute;left:14px;top:39px;bottom:9px;border-left:1px dotted rgb(var(--p-accent)/.35)}
+.play-steps>li:last-child{padding-bottom:0}
+.play-mechanics{padding-left:30px;border-left:1px solid var(--d-edge)}
+.play-mechanic{padding:0 0 17px;margin:0 0 17px;border-bottom:1px solid var(--d-edge)}
+.play-mechanic h4{display:flex;align-items:center;gap:8px}
+.play-mechanic .mechanic-info{width:20px!important;min-width:20px!important;height:20px!important;font-size:15px!important}
+.play-mechanic .play-mechanic-tip{margin-top:12px;padding:9px 12px;border-left:2px solid var(--d-accent);background:var(--d-hover);font-size:13px}
+.how-to-play .play-specialty-note{font-size:13px}
+.play-guide-finish{display:flex;gap:17px;padding:22px;border:1px solid rgb(var(--p-accent)/.25);border-radius:10px;background:linear-gradient(115deg,rgb(var(--p-accent)/.07),transparent)}
+.play-guide-finish>svg{flex-shrink:0;color:var(--d-accent);margin-top:3px}
+.play-guide-finish h3{font-size:19px;margin:0 0 10px}
+.play-guide-finish p+p{margin-top:10px}
+.how-to-play .play-guide-footnote{font-size:12px;color:var(--d-faint);margin-top:20px;line-height:1.8}
+@media(max-width:900px){.play-guide-grid{grid-template-columns:1fr;gap:28px}.play-mechanics{border-left:0;border-top:1px solid var(--d-edge);padding:24px 0 0}.play-guide-heading{align-items:flex-start}.play-guide-heading>p{max-width:260px}}
+@media(max-width:560px){.how-to-play{padding:20px}.play-guide-heading{display:block;padding-bottom:20px}.play-guide-heading>p{margin-top:16px;max-width:none}.play-guide-heading h2{font-size:27px}.play-steps>li{padding-left:42px}.play-guide-finish{padding:17px;gap:10px}.play-guide-finish>svg{width:18px}.play-guide-finish h3{font-size:17px}.manual-intro{gap:14px}.manual-intro>svg{width:23px}}
+
 /* The approved Constellation shell, without the design-lab navigation. */
 :root{--primary-foreground:var(--d-bg);--secondary:var(--d-panel);--secondary-foreground:var(--d-ink);--card:var(--d-panel);--card-foreground:var(--d-ink);--popover:var(--d-panel);--popover-foreground:var(--d-ink);--muted:var(--d-panel);--muted-foreground:var(--d-muted);--accent:var(--d-hover);--accent-foreground:var(--d-ink);--input:var(--d-edge);--ring:var(--d-accent)}
 .appearance-tools{margin-left:auto}.shiftrun-topbar{z-index:120}.shiftrun-topbar button{min-height:36px}
