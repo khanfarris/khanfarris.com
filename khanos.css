@@ -84,7 +84,6 @@ body{background:var(--bg);color:var(--fg)}
 .background-menu summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;padding:7px 10px;border:1px solid rgb(var(--p-edge)/.35);border-radius:6px;color:var(--fg);white-space:nowrap}
 .background-menu summary::-webkit-details-marker{display:none}
 .background-menu summary>svg{flex:none;color:var(--accent)}
-.background-label{color:rgb(var(--p-faint));margin-right:-4px}
 .workspace-menu summary:focus-visible,.background-choices button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 .background-options{position:absolute;top:calc(100% + 13px);right:0;width:350px;max-width:calc(100vw - 24px);max-height:calc(100svh - 85px);overflow-y:auto;overscroll-behavior:contain;padding:16px;background:rgb(var(--p-panel)/.98);border:1px solid rgb(var(--p-accent)/.3);border-radius:12px;box-shadow:0 25px 80px #0009;backdrop-filter:blur(30px);scrollbar-width:thin}
 .background-options>.eyebrow{display:block;font-size:10px;color:rgb(var(--p-faint));margin:0 0 12px}
@@ -177,7 +176,7 @@ body{background:var(--bg);color:var(--fg)}
 body:has(.khanos-fallback){overflow:auto}.khanos-fallback{max-width:1100px;padding:45px 30px;margin:auto}.khanos-fallback h1{font:400 54px var(--display);letter-spacing:-2px}.khanos-fallback p{color:var(--muted);line-height:1.8}.khanos-fallback nav{display:flex;flex-wrap:wrap;gap:15px 28px;margin:30px 0 45px}.khanos-fallback nav a{color:var(--accent)}.fallback-studies{display:grid;grid-template-columns:1fr 1fr;gap:20px}.fallback-note{display:block;border:1px solid var(--line);padding:22px;border-radius:9px}.fallback-note strong{font-size:20px}.fallback-note span{display:block;font-size:15px;color:var(--muted);line-height:1.7;margin-top:10px}@media(max-width:650px){.fallback-studies{grid-template-columns:1fr}}
 
 /* Keep both appearance selectors accessible on narrow screens. */
-@media(max-width:1000px){.background-label{display:none}.hybrid-top .edition{display:none}}
+@media(max-width:1000px){.hybrid-top .edition{display:none}}
 @media(max-width:760px){
   .background-menu summary{font-size:11px;padding:6px 8px;gap:6px}
   .background-options,.palette-options{position:fixed;top:62px;right:12px;left:auto;width:350px;max-width:calc(100vw - 24px);max-height:calc(100svh - 76px);overflow-y:auto;overscroll-behavior:contain}
