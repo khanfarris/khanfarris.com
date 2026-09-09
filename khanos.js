@@ -265,7 +265,13 @@
     appendShell('visitor:~$ '+command,'shell-command');
     const result=window.KhanShell.resolve(command,shellPages);
     if(result.kind==='clear'){clearShell();return;}
-    if(result.kind==='text')appendShell(result.text);
+    if(result.kind==='text'){
+      appendShell(result.text);
+      const profile=windows.get('profile');
+      if(command.toLowerCase()==='whoami'&&(profile.hidden||(mobile.matches&&!profile.classList.contains('mobile-current')))){
+        showWindow('profile');return;
+      }
+    }
     else if(result.kind==='cat')appendShell(toggleCat());
     else if(result.kind==='ls'){
       const list=document.createElement('div');list.className='shell-directory';
