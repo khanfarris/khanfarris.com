@@ -10,7 +10,7 @@ body{background:var(--bg);color:var(--fg)}
 .hybrid-window.active-window{border-color:rgb(var(--p-accent)/.42);box-shadow:0 25px 90px #0008,0 0 55px rgb(var(--p-secondary)/.07),inset 0 1px 0 rgb(var(--p-ink)/.08)}
 .window-bar{background:linear-gradient(95deg,rgb(var(--p-secondary)/.09),rgb(var(--p-accent)/.025));border-color:rgb(var(--p-edge)/.18)}
 .window-caption{color:rgb(var(--p-muted))}.window-caption i{color:var(--accent)}
-.window-caption .user-icon{display:block;width:18px;height:18px}
+.window-caption svg{display:block;width:18px;height:18px}
 .window-controls button:hover{background:rgb(var(--p-accent)/.12);color:var(--fg);border-color:rgb(var(--p-accent)/.15)}
 .window-controls button[data-close]:hover{background:rgb(var(--p-secondary)/.25);color:var(--fg)}
 .identity-monogram,.hybrid-dock button>b{background:linear-gradient(140deg,rgb(var(--p-secondary)/.20),rgb(var(--p-accent)/.03));border-color:rgb(var(--p-accent)/.30);color:var(--accent);box-shadow:inset 0 1px 0 rgb(var(--p-ink)/.09),0 4px 15px #0002}
