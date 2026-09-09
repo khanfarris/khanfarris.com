@@ -156,7 +156,7 @@
       <p class="reference">Event references: <a href="https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4625">4625 and logon types</a>, <a href="https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4624">4624</a>, <a href="https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4740">4740</a>.</p>
       <p><strong>If logs are missing:</strong> check that the VM’s agent installed, the DCR selects the correct VM and workspace, and the query’s time range covers the activity. Allow for collection delay, then verify that records actually arrive.</p>
       <p><strong>When finishing a cloud lab:</strong> save the evidence, remove the exposed resources, and check for remaining billable resources. Stopping a VM alone can leave disks and other resources behind.</p>
-      <h3 class="recap-heading">recap</h3>
+      <h3 class="recap-heading">Recap</h3>
       <blockquote>“I followed a guided Azure lab to build a Windows honeypot and collect its security logs. I used Azure Monitor Agent and a data collection rule to send events to a Log Analytics workspace connected to Sentinel. I practiced filtering failed logins with KQL and adapted a workbook to map source IPs. My main takeaway was learning how a Windows event becomes something I can investigate—and why a failed login or a point on a map needs context.”</blockquote>
       <p class="scope">This was a personal learning exercise in setup, log review, and visualization. It did not include building automated detection rules or carrying out a production incident response.</p>
     </section>
