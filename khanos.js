@@ -432,11 +432,11 @@
       ['Read','Start with event 4625.','Event ID 4625 means a failed login. I used KQL to review accounts, source IPs, and repeated attempts. A saved result also shows event 4740: an account was locked out.'],
       ['Map','Add context to the source IPs.','I adapted a supplied workbook and location dataset. The saved map shows 849 failed logons across four source IP entries. Locations describe IP infrastructure; the map does not establish who was behind the attempts.']
     ]},
-    lifx:{category:'IOT / LOCAL CONTROL',title:'A light bulb. An open invitation.',device:'LIFX',transport:'UDP / 56700',steps:[
-      ['Discover','Identify the device.','Host discovery identifies a Lifi Labs device on the local network. The lab starts with a known device, its address, and its place on the LAN.'],
-      ['Enumerate','A closed TCP port is not the end.','A TCP scan does not describe UDP services. LIFX local control uses UDP, so the next step changes the transport rather than assuming the device has nothing listening.'],
-      ['Interpret','Silence has more than one meaning.','An open|filtered UDP result is inconclusive. A protocol-specific request provides better evidence than treating a silent response as a confirmed open service.'],
-      ['Demonstrate','Speak the device’s language.','Correctly formed LIFX messages discover and control the bulb on the local network without credentials. The writeup connects service discovery to the device’s actual protocol.']
+    lifx:{category:'IOT / PERSONAL HOME LAB',title:'Controlling my light bulbs.',device:'LIFX',transport:'UDP / 56700',url:'lifx-pentest.html',steps:[
+      ['Connect','Start on the same network.','I used a bridged Kali VM on my home network. Nmap host discovery showed two Lifi Labs entries, which pointed me toward the two LIFX bulbs I own.'],
+      ['Scan','Understand what the scan covers.','My TCP scan found no open ports. LIFX local control uses UDP 56700, so I checked that port next. Its open|filtered result was inconclusive and needed another way to verify the service.'],
+      ['Control','Send a LIFX request.','I used the lifxlan Python library to discover both lamps and change the left lamp’s power and color without a device login. The visible changes demonstrated control from my local network.'],
+      ['Learn','Separate the finding from the next step.','This lab demonstrated local power and color control. It did not establish internet access or a Wi-Fi password bypass. Network isolation is a recommended next step, not a change documented in the lab.']
     ]}
   };
   let activeCase=null,caseStep=0;
