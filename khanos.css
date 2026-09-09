@@ -8,6 +8,19 @@ body{background:var(--bg);color:var(--fg)}
 .hybrid-top button,.hybrid-top a:last-child{color:rgb(var(--p-muted))}
 .hybrid-window{background:linear-gradient(140deg,rgb(var(--p-panel)/.88),rgb(var(--p-base)/.76));border-color:rgb(var(--p-edge)/.36);box-shadow:0 24px 80px #0006,inset 0 1px 0 rgb(var(--p-ink)/.05)}
 .hybrid-window.active-window{border-color:rgb(var(--p-accent)/.42);box-shadow:0 25px 90px #0008,0 0 55px rgb(var(--p-secondary)/.07),inset 0 1px 0 rgb(var(--p-ink)/.08)}
+/* A single light follows the focused window's perimeter without intercepting input. */
+.window-tracer{position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);overflow:visible;pointer-events:none;z-index:3;opacity:0}
+.window-tracer rect{x:.5px;y:.5px;width:calc(100% - 1px);height:calc(100% - 1px);rx:var(--trace-radius,12.5px);fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:.6 999.4;stroke-dashoffset:0;filter:drop-shadow(0 0 3px var(--accent))}
+.hybrid-window.active-window>.window-tracer{opacity:1}
+.hybrid-window.active-window>.window-tracer rect{animation:window-focus-trace 16s linear infinite}
+.hybrid-window.maximized{--trace-radius:8.5px}
+@keyframes window-focus-trace{to{stroke-dashoffset:-1000}}
+/* The existing Pause motion / background-tab control pauses the SVG animation too. */
+.hybrid-paused .window-tracer rect{animation-play-state:paused!important}
+.reduced-motion .window-tracer,.in-preview .window-tracer{display:none}
+.reduced-motion .window-tracer rect,.in-preview .window-tracer rect{animation:none!important}
+@media(prefers-reduced-motion:reduce){.window-tracer{display:none}.window-tracer rect{animation:none!important}}
+@media(max-width:760px){.hybrid-window,.hybrid-window.maximized{--trace-radius:11.5px}}
 .window-bar{background:linear-gradient(95deg,rgb(var(--p-secondary)/.09),rgb(var(--p-accent)/.025));border-color:rgb(var(--p-edge)/.18)}
 .window-caption{color:rgb(var(--p-muted))}.window-caption i{color:var(--accent)}
 .window-caption svg{display:block;width:18px;height:18px}
