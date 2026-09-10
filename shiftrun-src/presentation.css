@@ -143,6 +143,19 @@ body{background:var(--d-bg);font:14px/1.6 var(--sans);color:var(--d-ink)}button,
 .save-controls .casebook-button[aria-pressed=false]:focus-visible { outline:2px solid #ff8da5; outline-offset:4px; }
 .profile-beacon { width:7px; height:7px; flex:0 0 7px; border-radius:50%; background:#ff819b; box-shadow:0 0 10px #f4537290; }
 @keyframes profile-glow { 0%,100% { opacity:.28; } 50% { opacity:1; } }
+.unavailable-trigger { position:relative; cursor:not-allowed; }
+.choice.unavailable-trigger,.start-actions .unavailable-trigger { color:var(--d-faint); border-style:dashed; }
+.unavailable-trigger:focus-visible { outline:2px solid var(--d-accent); outline-offset:4px; }
+.availability-tooltip {
+  position:absolute; left:50%; bottom:calc(100% + 10px); z-index:50; transform:translate(-50%,4px);
+  padding:9px 13px; border:1px solid rgb(var(--p-accent)/.4); border-radius:7px;
+  background:var(--d-panel); color:var(--d-ink); box-shadow:0 8px 24px #0006;
+  font:500 13px/1.4 var(--sans); white-space:nowrap; pointer-events:none; visibility:hidden; opacity:0;
+  transition:opacity .18s ease,transform .18s ease,visibility .18s;
+}
+.unavailable-trigger:hover > .availability-tooltip,.unavailable-trigger:focus-within > .availability-tooltip {
+  visibility:visible; opacity:1; transform:translate(-50%,0);
+}
 .profile-banner { font-size:12px; padding:12px 15px; color:var(--d-muted); }
 
 /* Readable telemetry, aligned labels and compact icons with comfortable hit areas. */

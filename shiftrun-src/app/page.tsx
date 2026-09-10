@@ -1,6 +1,6 @@
 import {clientUpdates,updateOrder} from './client-updates';
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useId } from 'react';
 import { flushSync } from 'react-dom';
 import {
   Shield,
@@ -79,27 +79,35 @@ function Choices({
   value,
   onChange,
   items,
+  unavailable = {},
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   items: string[];
+  unavailable?: Record<string, string>;
 }) {
+  const id = useId();
   return (
     <fieldset>
       <legend>{label}</legend>
       <RadioGroup
         className="choices"
         value={value}
-        onValueChange={(v) => onChange(String(v))}
+        onValueChange={(v) => { if (!unavailable[String(v)]) onChange(String(v)); }}
       >
-        {items.map((item) => (
+        {items.map((item, index) => (
           <label
-            className={value === item ? 'choice chosen' : 'choice'}
+            className={(value === item ? 'choice chosen' : 'choice') + (unavailable[item] ? ' unavailable-trigger' : '')}
             key={item}
+            tabIndex={unavailable[item] ? 0 : undefined}
+            aria-disabled={unavailable[item] ? true : undefined}
+            aria-describedby={unavailable[item] ? `${id}-${index}` : undefined}
+            onClick={e => { if (unavailable[item]) { e.preventDefault(); e.currentTarget.focus(); } }}
           >
-            <RadioGroupItem value={item} />
-            <span>{item}</span>
+            <RadioGroupItem value={item} disabled={!!unavailable[item]} aria-labelledby={`${id}-${index}-label`} />
+            <span id={`${id}-${index}-label`}>{item}</span>
+            {unavailable[item] && <><Lock size={13} aria-hidden="true" /><span className="availability-tooltip" role="tooltip" id={`${id}-${index}`}>{unavailable[item]}</span></>}
           </label>
         ))}
       </RadioGroup>
@@ -309,6 +317,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     setSave((prev) => ({ ...prev, run: next,shiftHistory:prev.run&&prev.run.wave!==next.wave?keepShift(prev.shiftHistory,prev.run):prev.shiftHistory }));
   }
   function start(daily = false) {
+    if (daily || mode === 'Veteran') return;
     setBrowsingWave(null);
     const seed = daily
       ? Number(new Date().toISOString().slice(0, 10).replaceAll('-', ''))
@@ -510,8 +519,9 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                 >
                   Start {mode.toLowerCase()} shift <ChevronRight size={18} />
                 </button>
-                <button disabled={!ready} onClick={() => start(true)}>
+                <button className="unavailable-trigger" aria-disabled="true" aria-label="Daily challenge" aria-describedby="daily-coming-soon">
                   Daily challenge <ArrowUpRight size={16} />
+                  <span className="availability-tooltip" role="tooltip" id="daily-coming-soon">Coming soon!</span>
                 </button>
               </div>
               <p className="meta">
@@ -586,6 +596,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                 value={mode}
                 onChange={setMode}
                 items={['Guided', 'Veteran', 'Practice']}
+                unavailable={{ Veteran: 'Coming soon!' }}
               />
               {mode === 'Practice' && (
                 <Choices
@@ -1125,7 +1136,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                 <ol className="play-steps">
                   <li>
                     <h4>Choose your pace, then open a case.</h4>
-                    <p>Guided includes coaching. Veteran raises pressure faster. Practice lets you work on one incident without advancing turns or pressure. Choose a specialty for its perk, then select an incident circle on the left.</p>
+                    <p>Guided includes coaching. Practice lets you work on one incident without advancing turns or pressure. Veteran is coming soon. Choose a specialty for its perk, then select an incident circle on the left.</p>
                   </li>
                   <li>
                     <h4>Evidence: find out what happened.</h4>
