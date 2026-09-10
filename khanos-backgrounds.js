@@ -81,14 +81,16 @@
   const meshes = {orbit, helix, ripple, globe, vortex};
   const clamp = value => Math.max(0,Math.min(1,value));
 
-  function project(id, width, height, angle, preview) {
+  function project(id, width, height, angle, preview, view) {
     const mesh=meshes[id];
-    const scale=preview ? Math.min(width*.16,height*.29) : Math.min(width*.29,height*.47);
+    const zoom=preview?1:(view?.zoom??1), viewYaw=preview?0:(view?.yaw??0), viewPitch=preview?0:(view?.pitch??0);
+    const scale=(preview ? Math.min(width*.16,height*.29) : Math.min(width*.29,height*.47))*zoom;
     const cx=width*(preview ? .5 : .59), cy=height*(preview ? .5 : .47);
     const yaw=id==='helix'?0:id==='ripple'?angle*.16:id==='vortex'?-angle*.52:angle;
     const tilt=id==='orbit'?-.30:id==='ripple'?-.62:id==='vortex'?-.85:id==='globe'?-.16:0;
     const co=Math.cos(yaw), si=Math.sin(yaw), ct=Math.cos(tilt), st=Math.sin(tilt);
     const hx=Math.cos(angle), hs=Math.sin(angle), roll=-.24, cr=Math.cos(roll), sr=Math.sin(roll);
+    const vc=Math.cos(viewYaw), vs=Math.sin(viewYaw), pc=Math.cos(viewPitch), ps=Math.sin(viewPitch);
     return mesh.points.map(p=>{
       let px=p.x, py=p.y, pz=p.z;
       if (id==='helix') {
@@ -99,15 +101,17 @@
         const distance=Math.hypot(px*.8,pz);
         py=Math.sin(distance*2.6-angle*4)*.27+Math.sin(px*1.5+angle*2)*.12;
       }
-      const x=px*co-pz*si, z=px*si+pz*co;
-      const y=py*ct-z*st, depthZ=py*st+z*ct, depth=4.3/(4.3+depthZ);
+      const baseX=px*co-pz*si, baseZ=px*si+pz*co;
+      const baseY=py*ct-baseZ*st, tiltedZ=py*st+baseZ*ct;
+      const x=baseX*vc-tiltedZ*vs, rotatedZ=baseX*vs+tiltedZ*vc;
+      const y=baseY*pc-rotatedZ*ps, depthZ=baseY*ps+rotatedZ*pc, depth=4.3/(4.3+depthZ);
       return {x:cx+x*scale*depth, y:cy+y*scale*depth, z:depthZ, band:p.band};
     });
   }
 
   // The desktop owns the only animation loop. Menu thumbnails use the same renderer,
   // rendered once, so opening the picker never starts five extra animations.
-  function draw(ctx, {id='orbit',width,height,angle=.58,rgb,preview=false}) {
+  function draw(ctx, {id='orbit',width,height,angle=.58,rgb,preview=false,view}) {
     if (!ctx || width<=0 || height<=0) return;
     if (!find(id)) id='orbit';
     const [r,g,b]=rgb;
@@ -118,7 +122,7 @@
     glow.addColorStop(.5,`rgba(${r},${g},${b},0.025)`);
     glow.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=glow;ctx.fillRect(0,0,width,height);
-    const projected=project(id,width,height,angle,preview);
+    const projected=project(id,width,height,angle,preview,view);
     ctx.lineWidth=preview ? .6 : .7;
     ctx.strokeStyle=`rgba(${r},${g},${b},${preview ? .30 : .12})`;
     for (const path of meshes[id].paths) {
@@ -142,5 +146,83 @@
     });
   }
 
-  window.KhanBackgrounds={list,initial,remember,draw};
+  function attachControls(canvas,{onChange=()=>{},onGesture=()=>{}}={}) {
+    const view={zoom:1,yaw:0,pitch:0}, minZoom=.35, maxZoom=2.5;
+    const pointers=new Map(), listeners=[], doc=canvas.ownerDocument, host=doc.defaultView;
+    let gesture=null, dragging=false;
+    const listen=(target,type,handler,options)=>{
+      target.addEventListener(type,handler,options);
+      listeners.push(()=>target.removeEventListener(type,handler,options));
+    };
+    const measure=()=>{
+      const points=[...pointers.values()];
+      if(points.length>1)return {count:points.length,distance:Math.hypot(points[1].x-points[0].x,points[1].y-points[0].y)};
+      return points.length?{count:1,...points[0]}:null;
+    };
+    function syncGesture() {
+      gesture=measure();
+      const next=pointers.size>0;
+      if(next!==dragging){dragging=next;canvas.classList.toggle('is-grabbing',next);onGesture(next);}
+    }
+    function zoomBy(factor) {
+      if(!Number.isFinite(factor)||factor<=0)return;
+      const next=Math.max(minZoom,Math.min(maxZoom,view.zoom*factor));
+      if(next===view.zoom)return;
+      view.zoom=next;onChange();
+    }
+    function rotate(dx,dy) {
+      view.yaw=(view.yaw+dx)%TAU;
+      view.pitch=Math.max(-Math.PI/2,Math.min(Math.PI/2,view.pitch+dy));
+      onChange();
+    }
+    function reset() {view.zoom=1;view.yaw=0;view.pitch=0;onChange();}
+    function end(event) {
+      if(!pointers.delete(event.pointerId))return;
+      if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);
+      syncGesture();
+    }
+    function cancel() {for(const pointerId of [...pointers.keys()])end({pointerId});}
+    listen(canvas,'pointerdown',event=>{
+      if(event.button!==0||event.ctrlKey||event.metaKey||event.altKey)return;
+      event.preventDefault();canvas.focus({preventScroll:true});
+      pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+      canvas.setPointerCapture(event.pointerId);syncGesture();
+    });
+    listen(canvas,'pointermove',event=>{
+      if(!pointers.has(event.pointerId))return;
+      if(event.pointerType==='mouse'&&(event.buttons&1)===0){end(event);return;}
+      pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+      const next=measure();
+      if(gesture?.count===1&&next.count===1){
+        const sensitivity=TAU/Math.max(500,canvas.clientHeight);
+        rotate((next.x-gesture.x)*sensitivity,(next.y-gesture.y)*sensitivity);
+      }else if(gesture?.count>1&&next.count>1&&gesture.distance>0&&next.distance>0){
+        zoomBy(next.distance/gesture.distance);
+      }
+      gesture=next;
+    });
+    for(const type of ['pointerup','pointercancel','lostpointercapture'])listen(canvas,type,end);
+    listen(canvas,'wheel',event=>{
+      // Ctrl/Command + wheel remains browser zoom. Window scroll events never reach this canvas.
+      if(event.ctrlKey||event.metaKey||!event.deltaY)return;
+      event.preventDefault();
+      const unit=event.deltaMode===1?16:event.deltaMode===2?canvas.clientHeight:1;
+      const delta=Math.max(-350,Math.min(350,event.deltaY*unit));
+      zoomBy(Math.exp(-delta*.0015));
+    },{passive:false});
+    listen(canvas,'dblclick',event=>{if(event.button===0){event.preventDefault();reset();}});
+    listen(canvas,'keydown',event=>{
+      if(event.ctrlKey||event.metaKey||event.altKey)return;
+      const step=Math.PI/36;
+      const keys={ArrowLeft:()=>rotate(-step,0),ArrowRight:()=>rotate(step,0),ArrowUp:()=>rotate(0,-step),ArrowDown:()=>rotate(0,step),'+':()=>zoomBy(1.15),'=':()=>zoomBy(1.15),'-':()=>zoomBy(1/1.15),'0':reset,Home:reset,Escape:cancel};
+      if(!Object.hasOwn(keys,event.key))return;
+      event.preventDefault();event.stopPropagation();keys[event.key]();
+    });
+    listen(host,'blur',cancel);
+    listen(host,'pagehide',cancel);
+    listen(doc,'visibilitychange',()=>{if(doc.hidden)cancel();});
+    return {view,minZoom,maxZoom,zoomBy,reset,get dragging(){return dragging;},destroy(){cancel();listeners.forEach(remove=>remove());}};
+  }
+
+  window.KhanBackgrounds={list,initial,remember,draw,attachControls};
 })();

@@ -26,8 +26,8 @@
   const shiftrunIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>';
   const windowHTML = (id, title, icon, content, hidden=false) => `<section id="app-${id}" class="hybrid-window window-${id}" data-window="${id}" role="region" aria-labelledby="title-${id}" tabindex="-1" ${hidden?'hidden':''}>
     <header class="window-bar"><span class="window-caption" id="title-${id}"><i aria-hidden="true">${icon}</i>${title}</span><div class="window-controls"><button type="button" data-minimize aria-label="Minimize ${title}" title="Minimize">−</button><button type="button" data-maximize aria-label="Maximize ${title}" title="Maximize">□</button><button type="button" data-close aria-label="Close ${title}" title="Close">×</button></div></header>${content}<svg class="window-tracer" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect pathLength="1000"/></svg><button type="button" class="resize-grip" aria-label="Resize ${title} with arrow keys" title="Drag to resize; arrow keys when focused">◢</button></section>`;
-  root.innerHTML = `<header class="hybrid-top"><div><a class="hybrid-brand" href="index.html">Khan<span>OS</span></a><span class="edition">PERSONAL WORKSPACE</span></div><div><details class="palette-menu workspace-menu"><summary aria-label="Choose color palette"><i class="current-swatch" aria-hidden="true"></i><span class="current-palette">${palette.name}</span><span aria-hidden="true">⌄</span></summary><div class="palette-options"><span class="eyebrow">COLOR / ATMOSPHERE</span>${window.KhanThemes.list.map(p=>`<button data-palette="${p.id}" aria-pressed="${p.id===palette.id}"><span class="palette-dots" aria-hidden="true">${p.swatches.map(c=>`<i style="background:${c}"></i>`).join('')}</span><span>${p.name}<small>${p.subtitle}</small></span><b aria-hidden="true">${p.id===palette.id?'✓':'↗'}</b></button>`).join('')}</div></details><details class="background-menu workspace-menu"><summary aria-label="Choose constellation background"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="10" ry="5" transform="rotate(-30 12 12)"/><circle cx="19" cy="5" r="1.5" fill="currentColor" stroke="none"/></svg><span class="current-background">${background.name}</span><span aria-hidden="true">⌄</span></summary><div class="background-options"><span class="eyebrow">BACKGROUND / CONSTELLATION</span><div class="background-choices" role="group" aria-label="Constellation backgrounds">${backgrounds.list.map(item=>`<button type="button" data-background="${item.id}" aria-pressed="${item.id===background.id}"><canvas width="120" height="76" data-background-preview="${item.id}" aria-hidden="true"></canvas><span>${item.name}<small>${item.subtitle}</small></span><b aria-hidden="true">${item.id===background.id?'✓':'↗'}</b></button>`).join('')}</div><small class="background-saved">Saved on this device</small></div></details><button data-reset>Reset layout</button><button data-motion aria-pressed="${state.motion}">${state.motion?'Pause motion':'Enable motion'}</button></div></header>
-    <main id="main" class="hybrid-workspace" tabindex="-1" aria-label="Farris Khan’s interactive desktop"><canvas id="signal-backdrop" aria-hidden="true"></canvas><div class="ambient-vignette"></div><span class="ambient-wordmark" aria-hidden="true">k/f</span>
+  root.innerHTML = `<header class="hybrid-top"><div><a class="hybrid-brand" href="index.html">Khan<span>OS</span></a><span class="edition">PERSONAL WORKSPACE</span></div><div><details class="palette-menu workspace-menu"><summary aria-label="Choose color palette"><i class="current-swatch" aria-hidden="true"></i><span class="current-palette">${palette.name}</span><span aria-hidden="true">⌄</span></summary><div class="palette-options"><span class="eyebrow">COLOR / ATMOSPHERE</span>${window.KhanThemes.list.map(p=>`<button data-palette="${p.id}" aria-pressed="${p.id===palette.id}"><span class="palette-dots" aria-hidden="true">${p.swatches.map(c=>`<i style="background:${c}"></i>`).join('')}</span><span>${p.name}<small>${p.subtitle}</small></span><b aria-hidden="true">${p.id===palette.id?'✓':'↗'}</b></button>`).join('')}</div></details><details class="background-menu workspace-menu"><summary aria-label="Choose constellation background"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="10" ry="5" transform="rotate(-30 12 12)"/><circle cx="19" cy="5" r="1.5" fill="currentColor" stroke="none"/></svg><span class="current-background">${background.name}</span><span aria-hidden="true">⌄</span></summary><div class="background-options"><span class="eyebrow">BACKGROUND / CONSTELLATION</span><div class="background-choices" role="group" aria-label="Constellation backgrounds">${backgrounds.list.map(item=>`<button type="button" data-background="${item.id}" aria-pressed="${item.id===background.id}"><canvas width="120" height="76" data-background-preview="${item.id}" aria-hidden="true"></canvas><span>${item.name}<small>${item.subtitle}</small></span><b aria-hidden="true">${item.id===background.id?'✓':'↗'}</b></button>`).join('')}</div><div class="background-view-controls" role="group" aria-label="Constellation view controls"><button type="button" data-background-zoom="out" aria-label="Zoom out constellation">−</button><output data-background-scale aria-label="Constellation zoom">100%</output><button type="button" data-background-zoom="in" aria-label="Zoom in constellation">+</button><button type="button" data-background-reset>Reset view</button></div><p class="background-help">Drag empty space to rotate · Scroll to zoom</p><small class="background-saved">Design saved on this device</small></div></details><button data-reset>Reset layout</button><button data-motion aria-pressed="${state.motion}">${state.motion?'Pause motion':'Enable motion'}</button></div></header>
+    <main id="main" class="hybrid-workspace" tabindex="-1" aria-label="Farris Khan’s interactive desktop"><canvas id="signal-backdrop" tabindex="0" role="group" aria-label="Interactive constellation" aria-describedby="constellation-help"></canvas><span id="constellation-help" class="sr-only">Drag empty desktop space to rotate. Scroll or pinch to zoom. Arrow keys rotate; plus and minus zoom; 0 or double-click resets the view.</span><div class="ambient-vignette"></div><span class="ambient-wordmark" aria-hidden="true">k/f</span>
     ${windowHTML('profile','Whoami',userIcon,`<div class="window-content identity-card"><div class="identity-monogram" aria-hidden="true">k/f</div><h1>Farris Khan<span>.</span></h1><p class="role">security / ops tinkerer</p><div class="identity-studies identity-education"><small>EDUCATION</small><div><strong>Bachelor of Science in Cybersecurity</strong><span>University of South Florida</span></div></div><div class="identity-studies"><small>CERTIFICATIONS</small><div><strong>Security Operations Analyst Associate</strong><span>SC-200 · In Progress</span></div><div><strong>Azure Administrator Associate</strong><span>AZ-104 · In Progress</span></div></div></div>`)}
     ${windowHTML('featured','Featured item',shiftrunIcon,`<div class="window-content featured-content"><span class="featured-category">SECURITY OPERATIONS / GAME</span><h2>Shiftrun<span aria-hidden="true">.</span></h2><p>Work a simulated security shift. Investigate incidents, weigh the evidence, and practice response decisions.</p><a class="featured-launch" href="shiftrun/">Launch Shiftrun <span aria-hidden="true">↗</span></a></div>`)}
     ${windowHTML('shell','Local shell','>_',`<div class="shell-surface"><div class="shell-session"><span><i aria-hidden="true"></i>visitor@khanfarris</span><span>~/ personal lab</span></div><div class="shell-scroll" id="terminal-output" role="log" aria-label="Terminal output" aria-relevant="additions text"><div class="shell-welcome"><span class="shell-overline"><span class="shell-brand-name">KHAN</span>OS / LOCAL SHELL</span><h2>Welcome, visitor<span>.</span></h2><p>A tiny shell for exploration.<br>Try <strong>help</strong>, <strong>ls</strong>, <strong>whoami</strong>, or <strong>cat</strong>.</p><div class="shell-starters" aria-label="Try a command"><button data-command="help"><span>01</span>help <b>↵</b></button><button data-command="ls"><span>02</span>ls <b>↵</b></button><button data-command="open knowledge"><span>03</span>Open knowledge base <b>↵</b></button></div></div></div><form id="terminal-form" autocomplete="off"><label for="terminal-input"><span>visitor:~$</span><span class="sr-only">Enter a site command</span></label><input id="terminal-input" name="command" placeholder="help" spellcheck="false" autocapitalize="off" maxlength="120"><button type="submit" aria-label="Run command">↵</button></form><div class="shell-footer"><span>Site navigation only. Commands run in your browser.</span><span>↑ ↓ HISTORY</span></div></div>`)}
@@ -465,6 +465,8 @@
     const target=event.target.closest('button,a');if(!target)return;
     if (target.hasAttribute('data-palette')) {setPalette(target.dataset.palette);return;}
     if (target.hasAttribute('data-background')) {setBackground(target.dataset.background);return;}
+    if (target.hasAttribute('data-background-zoom')) {backgroundControls.zoomBy(target.dataset.backgroundZoom==='in'?1.15:1/1.15);return;}
+    if (target.hasAttribute('data-background-reset')) {backgroundControls.reset();announce('Constellation view reset.');return;}
     if (target.hasAttribute('data-command')) {runShell(target.dataset.command);return;}
     if (target.hasAttribute('data-shell-page')) {openShellPage(shellPages[+target.dataset.shellPage]);return;}
     if (target.hasAttribute('data-app')) {showWindow(target.dataset.app);return;}
@@ -521,7 +523,7 @@
     });
     menu.addEventListener('keydown',event=>{
       if(!menu.open||!['ArrowDown','ArrowUp','Home','End'].includes(event.key))return;
-      const buttons=[...menu.querySelectorAll('button')], current=buttons.indexOf(document.activeElement);
+      const buttons=[...menu.querySelectorAll('button')].filter(button=>!button.disabled), current=buttons.indexOf(document.activeElement);
       const next=event.key==='Home'?0:event.key==='End'?buttons.length-1:event.key==='ArrowDown'?(current+1)%buttons.length:(current<=0?buttons.length-1:current-1);
       event.preventDefault();buttons[next].focus();
     });
@@ -548,27 +550,45 @@
 
   // All backgrounds are decorative; they never represent real network activity.
   const canvas=$('#signal-backdrop'),ctx=canvas.getContext('2d');
-  let signalWidth=0,signalHeight=0,angle=.58,frame=0,lastTime=0,renderTime=0;
+  let signalWidth=0,signalHeight=0,angle=.58,frame=0,lastTime=0,renderTime=0,signalDirty=false;
   const canAnimate=()=>state.motion&&!reduced.matches&&!thumbnail&&!document.hidden;
   const selectedRGB=()=>{
     const followSubject=palette.signalFollowsSubject!==false&&['knowledge','note'].includes(state.active);
     const hex=(followSubject?colorOf(bySlug.get(state.selected)):palette.signal).slice(1);
     return [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16));
   };
+  const backgroundControls=backgrounds.attachControls(canvas,{
+    onChange:()=>{syncBackgroundView();requestSignalPaint();},
+    onGesture:dragging=>{document.body.classList.toggle('background-dragging',dragging);lastTime=0;requestSignalPaint();}
+  });
+  function syncBackgroundView() {
+    const value=Math.round(backgroundControls.view.zoom*100)+'%', output=$('[data-background-scale]');
+    if(output.textContent!==value)output.textContent=value;
+    $('[data-background-zoom="out"]').disabled=backgroundControls.view.zoom<=backgroundControls.minZoom;
+    $('[data-background-zoom="in"]').disabled=backgroundControls.view.zoom>=backgroundControls.maxZoom;
+  }
+  function requestSignalPaint() {
+    signalDirty=true;
+    if(!frame&&!document.hidden)frame=requestAnimationFrame(animateSignal);
+  }
   function paintSignalOnce() {
-    backgrounds.draw(ctx,{id:background.id,width:signalWidth,height:signalHeight,angle,rgb:selectedRGB()});
+    backgrounds.draw(ctx,{id:background.id,width:signalWidth,height:signalHeight,angle,rgb:selectedRGB(),view:backgroundControls.view});
   }
   function animateSignal(time) {
-    frame=0;if(!canAnimate())return;
-    if(time-renderTime>32){angle+=Math.min(80,time-(lastTime||time))*.000085;lastTime=time;renderTime=time;paintSignalOnce();}
-    frame=requestAnimationFrame(animateSignal);
+    frame=0;
+    const drifting=canAnimate()&&!backgroundControls.dragging;
+    if(signalDirty||(drifting&&time-renderTime>32)){
+      if(drifting)angle+=Math.min(80,time-(lastTime||time))*.000085;
+      lastTime=time;renderTime=time;signalDirty=false;paintSignalOnce();
+    }
+    if(drifting)frame=requestAnimationFrame(animateSignal);
   }
   function syncMotion() {
     document.body.classList.toggle('hybrid-paused',!canAnimate());document.body.classList.toggle('reduced-motion',reduced.matches);
     const button=$('[data-motion]'), enabled=state.motion&&!reduced.matches;
     button.textContent=enabled?'Pause motion':'Enable motion';button.setAttribute('aria-pressed',String(enabled));
-    if (frame) {cancelAnimationFrame(frame);frame=0;}lastTime=0;paintSignalOnce();
-    if (canAnimate())frame=requestAnimationFrame(animateSignal);
+    if (frame) {cancelAnimationFrame(frame);frame=0;}lastTime=0;signalDirty=false;paintSignalOnce();
+    if (canAnimate()&&!backgroundControls.dragging)frame=requestAnimationFrame(animateSignal);
   }
   function resizeSignal() {
     signalWidth=workspace.clientWidth;signalHeight=workspace.clientHeight;
@@ -581,7 +601,7 @@
   };
   reduced.addEventListener('change',()=>{if(reduced.matches)state.motion=false;syncMotion();});
   document.addEventListener('visibilitychange',syncMotion);
-  window.addEventListener('pagehide',()=>{if(frame)cancelAnimationFrame(frame);});
+  window.addEventListener('pagehide',()=>{if(frame)cancelAnimationFrame(frame);frame=0;});
   window.addEventListener('pageshow',syncMotion);
   let resizeTask=0;
   const resizeObserver=new ResizeObserver(()=>{

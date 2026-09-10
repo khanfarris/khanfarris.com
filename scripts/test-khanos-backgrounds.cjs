@@ -59,6 +59,18 @@ for(const design of backgrounds.list){
   shapes.add(JSON.stringify(ctx.arcs));
 }
 assert.equal(shapes.size,5,'Five distinct designs');
+for(const design of backgrounds.list){
+  const options={id:design.id,width:1843,height:1270,rgb:[52,76,128]};
+  const base=recorder();backgrounds.draw(base,options);
+  for(const zoom of [.35,2.5])for(const yaw of [-Math.PI,Math.PI/2])for(const pitch of [-Math.PI/2,Math.PI/2]){
+    const adjusted=recorder();backgrounds.draw(adjusted,{...options,view:{zoom,yaw,pitch}});
+    assert.ok(adjusted.arcs.length>=1200);assert.notDeepEqual(adjusted.arcs,base.arcs);
+  }
+  const thumbnail=recorder(),adjustedThumbnail=recorder();
+  backgrounds.draw(thumbnail,{...options,preview:true});
+  backgrounds.draw(adjustedThumbnail,{...options,preview:true,view:{zoom:2.5,yaw:1,pitch:1}});
+  assert.deepEqual(thumbnail.arcs,adjustedThumbnail.arcs,'Picker thumbnails keep their reference view');
+}
 
 // Compare Orbit against the previous site's actual projection, not a new fixture.
 const original=[];
