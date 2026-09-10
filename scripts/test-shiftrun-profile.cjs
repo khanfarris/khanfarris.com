@@ -6,16 +6,38 @@ const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComp
  const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(`http://127.0.0.1:${server.address().port}/shiftrun/`);
  await page.getByRole('button',{name:'Start guided shift'}).click();await page.getByRole('tab',{name:/03 Handoff/}).click();await page.locator('#case-note').fill('Visitor draft must survive switching');await page.waitForTimeout(150);
  const before=await page.evaluate(()=>localStorage.getItem('khanfarris-shiftfall-v1'));
- await page.getByRole('button',{name:'View khanfarris profile',exact:true}).click();await page.getByRole('button',{name:/CLOSED The suspicious safety drill/}).click();await page.getByText('Client-update answer corrected after completion at author request; original score 85/100, revised score 100/100.',{exact:false}).waitFor();
- assert.equal(await page.locator('.debrief').count()>=0,true);
- assert(await page.getByText('Message ID matches approved campaign SIM-419 within KnowBe4.',{exact:false}).count()>0);
- await page.getByRole('button',{name:/Online, but nothing resolves/}).click();await page.getByRole('tab',{name:/02 Respond/}).click();assert.equal(await page.locator('.action-grid button:enabled').count(),0);
+ const data=JSON.parse(fs.readFileSync(path.join(root,'shiftrun/khanfarris-profile.json'),'utf8')).save;
+ await page.getByRole('button',{name:'View khanfarris profile',exact:true}).click();
+ await page.getByRole('button',{name:'Return to your progress',exact:true}).waitFor();
+ // Every published incident remains inspectable in the full workspace.
+ const publishedRuns=[...(data.shiftHistory||[]),data.run].filter(Boolean);
+ const waves=[...new Set(publishedRuns.map(r=>r.wave))];
+ for(const wave of waves){
+  const run=publishedRuns.find(r=>r.wave===wave);
+  await page.getByRole('button',{name:/Browse shifts, current shift/}).hover();
+  await page.getByRole('button',{name:`Shift ${wave} Completed`,exact:true}).click();
+  assert.equal(await page.locator('.incident-node').count(),run.cases.length);
+  for(let i=0;i<run.cases.length;i++){
+   await page.locator('.incident-node').nth(i).click();
+   await page.getByRole('tab',{name:'Debrief',exact:true}).click();
+   const record=data.records.find(r=>r.id===run.cases[i].id);
+   assert.equal(await page.locator('.analyst-notes pre').textContent(),record.note);
+   await page.getByRole('tab',{name:/01 Evidence/}).click();
+   assert.equal(await page.locator('.evidence').count(),3);
+   assert.equal(await page.locator('.evidence button:enabled').count(),0);
+   await page.getByRole('tab',{name:/02 Respond/}).click();
+   assert.equal(await page.locator('.action-grid button:enabled').count(),0);
+   await page.getByRole('tab',{name:/03 Handoff/}).click();
+   assert.equal(await page.locator('#case-note:not([readonly]):not([disabled])').count(),0);
+  }
+ }
  await page.getByRole('button',{name:'Portfolio',exact:true}).click();assert.equal(await page.locator('.restore-panel').count(),0);
  assert.equal(await page.evaluate(()=>localStorage.getItem('khanfarris-shiftfall-v1')),before);
  await page.getByRole('button',{name:'Return to your progress',exact:true}).click();await page.getByRole('tab',{name:/03 Handoff/}).click();assert.equal(await page.locator('#case-note').inputValue(),'Visitor draft must survive switching');
  assert.equal(await page.evaluate(()=>localStorage.getItem('khanfarris-shiftfall-v1')),before);assert.deepEqual(errors,[]);
- const data=JSON.parse(fs.readFileSync(path.join(root,'shiftrun/khanfarris-profile.json'),'utf8')).save;assert.equal(data.xp,400);assert.equal(data.records.length,4);assert.equal(data.records.find(r=>r.template==='training').detail.communication,15);assert.equal(data.run.cases.find(c=>c.template==='dns').closed,true);
+ assert.equal(data.xp,data.records.reduce((sum,r)=>sum+r.score,0));assert.equal(data.records.find(r=>r.template==='training').detail.communication,15);
+ assert.equal(data.records.find(r=>r.template==='dns').detail.closed,true);
  await page.goto(`http://127.0.0.1:${server.address().port}/shiftfall/#khanfarris`);await page.waitForURL('**/shiftrun/#khanfarris');await page.getByRole('button',{name:'Return to your progress',exact:true}).waitFor();assert.equal(await page.evaluate(()=>localStorage.getItem('khanfarris-shiftfall-v1')),before);
- console.log('PASS: profile load, correction and notes, read-only controls, visitor draft and storage isolation, 400 XP, completed DNS retained');
+ console.log(`PASS: all ${data.records.length} published incidents, exact analyst notes, read-only evidence/response/handoff, visitor draft and storage isolation, ${data.xp} XP, legacy redirect`);
  }finally{await browser.close();server.close();}})().catch(e=>{console.error(e);server.close();process.exitCode=1;});
 

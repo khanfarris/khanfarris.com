@@ -6,6 +6,8 @@ const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComp
  const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(`http://127.0.0.1:${server.address().port}/shiftrun/`);
 
  const fixture=JSON.parse(fs.readFileSync(path.join(root,'shiftrun/khanfarris-profile.json'),'utf8')).save;
+ fixture.run=structuredClone(fixture.shiftHistory?.find(h=>h.wave===1)||fixture.run);fixture.shiftHistory=[];
+ fixture.records=fixture.records.filter(r=>fixture.run.cases.some(c=>c.id===r.id));fixture.xp=fixture.records.reduce((sum,r)=>sum+r.score,0);
  await page.evaluate(data=>localStorage.setItem('khanfarris-shiftfall-v1',JSON.stringify(data)),fixture);await page.reload();
  const before=await page.evaluate(()=>localStorage.getItem('khanfarris-shiftfall-v1'));
  await page.getByRole('button',{name:/Browse shifts, current shift/}).hover();await page.getByRole('button',{name:'Shift 2 Locked preview',exact:true}).click();

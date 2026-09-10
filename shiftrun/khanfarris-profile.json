@@ -1,10 +1,281 @@
 {
   "format": "shiftrun-backup",
   "version": 2,
-  "exportedAt": "2026-09-07T04:20:34.691Z",
+  "exportedAt": "2026-09-10T05:57:43.772Z",
   "save": {
-    "xp": 400,
+    "xp": 1200,
     "records": [
+      {
+        "id": "966459-3-3",
+        "template": "mac",
+        "score": 100,
+        "note": "The user confirmed installing an unapproved browser update from a pop-up on MAC-025. SentinelOne showed the installer launching an unsigned executable, creating a new LaunchAgent and repeatedly connecting to 198.51.100.81. \n\nNetwork isolation was off. We will isolate the Mac under the approved response plan, preserve execution logs, the installer hash and LaunchAgent details, then remediate the malicious process and persistence. Other endpoints will be checked for matching activity.",
+        "detail": {
+          "template": "mac",
+          "client": 1,
+          "id": "966459-3-3",
+          "reads": [
+            0,
+            1,
+            2
+          ],
+          "done": [
+            "isolate",
+            "clean",
+            "recover"
+          ],
+          "mistakes": 0,
+          "pressure": 37,
+          "closed": true,
+          "score": 100,
+          "result": "Confirmed compromise",
+          "notes": "The user confirmed installing an unapproved browser update from a pop-up on MAC-025. SentinelOne showed the installer launching an unsigned executable, creating a new LaunchAgent and repeatedly connecting to 198.51.100.81. \n\nNetwork isolation was off. We will isolate the Mac under the approved response plan, preserve execution logs, the installer hash and LaunchAgent details, then remediate the malicious process and persistence. Other endpoints will be checked for matching activity.",
+          "communication": 15,
+          "clientUpdate": "The update prompt led to malicious activity on the Mac. We are coordinating endpoint containment, preserving the relevant evidence and removing persistence, with recovery and related account checks before confirming safe return to use.",
+          "clientUpdateWhy": "Treats the fake update as an endpoint incident and separates cleanup from verified recovery.",
+          "clientUpdateVersion": 2
+        },
+        "completedAt": "2026-09-10T05:57:41.469Z",
+        "mode": "Guided",
+        "provenance": "Recorded in the training game"
+      },
+      {
+        "id": "966459-3-0",
+        "template": "firewall",
+        "score": 100,
+        "note": "The vendor requested access from any source to the server subnet on any port, however the verified requirement was limited to 203.0.113.18 reaching application server 10.20.4.12 over TCP/443 for two hours.\n\nWe confirmed the application server is in VLAN 40, with the return route and application listener verified. Management VLAN 10 was unrelated to the request.\n\nA narrow rule was created with a 2 hour expiry and rollback steps. Approval was obtained from the infrastructure lead, and the configuration was backed up before applying the change. We tested that the required vendor access worked and unrelated traffic remained blocked, then documented the change. Rule expiry must be confirmed, with rollback available if health checks fail.",
+        "detail": {
+          "template": "firewall",
+          "client": 2,
+          "id": "966459-3-0",
+          "reads": [
+            0,
+            1,
+            2
+          ],
+          "done": [
+            "plan",
+            "approve",
+            "apply"
+          ],
+          "mistakes": 0,
+          "pressure": 25,
+          "closed": true,
+          "score": 100,
+          "result": "Configuration risk",
+          "notes": "The vendor requested access from any source to the server subnet on any port, however the verified requirement was limited to 203.0.113.18 reaching application server 10.20.4.12 over TCP/443 for two hours.\n\nWe confirmed the application server is in VLAN 40, with the return route and application listener verified. Management VLAN 10 was unrelated to the request.\n\nA narrow rule was created with a 2 hour expiry and rollback steps. Approval was obtained from the infrastructure lead, and the configuration was backed up before applying the change. We tested that the required vendor access worked and unrelated traffic remained blocked, then documented the change. Rule expiry must be confirmed, with rollback available if health checks fail.",
+          "communication": 15,
+          "clientUpdate": "The broad emergency rule was replaced through the approved scoped change. Required service access and the effectiveness of the restrictions were tested; the change and rollback details are recorded.",
+          "clientUpdateWhy": "Addresses excessive access through a tested, scoped change rather than an unplanned outage.",
+          "clientUpdateVersion": 2
+        },
+        "completedAt": "2026-09-10T05:30:20.677Z",
+        "mode": "Guided",
+        "provenance": "Recorded in the training game"
+      },
+      {
+        "id": "966459-3-travel-2",
+        "template": "travel",
+        "score": 100,
+        "note": "Logs show sessions from Denver at 09:11 UTC and Chicago at 09:14 UTC, however both sessions used the same compliant device, LAP-041, and authenticated with MFA. Network inventory confirmed that 203.0.113.40 belongs to the corporate VPN, and the manager confirmed approved VPN use through a known phone number.\n\nNo related inbox rule changes, new app consent or abnormal downloads were found in the logs. The evidence supports benign activity caused by VPN routing. We will document the findings and continue to monitor for other suspicious activity.",
+        "detail": {
+          "template": "travel",
+          "client": 1,
+          "id": "966459-3-travel-2",
+          "reads": [
+            0,
+            1,
+            2
+          ],
+          "done": [
+            "validate",
+            "record"
+          ],
+          "mistakes": 0,
+          "pressure": 20,
+          "closed": true,
+          "score": 100,
+          "result": "Benign activity",
+          "notes": "Logs show sessions from Denver at 09:11 UTC and Chicago at 09:14 UTC, however both sessions used the same compliant device, LAP-041, and authenticated with MFA. Network inventory confirmed that 203.0.113.40 belongs to the corporate VPN, and the manager confirmed approved VPN use through a known phone number.\n\nNo related inbox rule changes, new app consent or abnormal downloads were found in the logs. The evidence supports benign activity caused by VPN routing. We will document the findings and continue to monitor for other suspicious activity.",
+          "communication": 15,
+          "clientUpdate": "The device, session, corporate VPN address and independent user verification explain the location alert. We can document this as expected VPN activity and preserve access, while keeping other identity detections enabled.",
+          "clientUpdateWhy": "Closes the specific verified benign alert without disabling broader monitoring.",
+          "clientUpdateVersion": 2
+        },
+        "completedAt": "2026-09-10T05:18:58.479Z",
+        "mode": "Guided",
+        "provenance": "Recorded in the training game"
+      },
+      {
+        "id": "966459-3-ransom-1",
+        "template": "ransom",
+        "score": 100,
+        "note": "SentinelOne detected suspicious activity on workstation WS-019. The process tree shows Outlook opening Word, followed by Word launching PowerShell. An unsigned child process modified 230 documents, and the user reported renamed files. A connection to 198.51.100.66 over port 443 was also recorded. The combined activity supports a confirmed compromise, however the evidence does not establish whether data was actually stolen.\n\nWS-019 was confirmed to be online, but network quarantine was off and response was still pending. A file server share was open, so shared files and other devices may also need to be included in the investigation.\n\nThe client playbook authorizes immediate workstation isolation. We will isolate WS-019, preserve any evidence found, then stop and remediate the malicious activity. Other endpoints and file-share activity will also be checked to confirm they were not impacted.\n\nThe next client update should explain completed actions and  checks performed without claiming that other devices or data were unaffected until fully confirmed.",
+        "detail": {
+          "template": "ransom",
+          "client": 0,
+          "id": "966459-3-ransom-1",
+          "reads": [
+            0,
+            1,
+            2
+          ],
+          "done": [
+            "isolate",
+            "clean",
+            "recover"
+          ],
+          "mistakes": 0,
+          "pressure": 3,
+          "closed": true,
+          "score": 100,
+          "result": "Confirmed compromise",
+          "notes": "SentinelOne detected suspicious activity on workstation WS-019. The process tree shows Outlook opening Word, followed by Word launching PowerShell. An unsigned child process modified 230 documents, and the user reported renamed files. A connection to 198.51.100.66 over port 443 was also recorded. The combined activity supports a confirmed compromise, however the evidence does not establish whether data was actually stolen.\n\nWS-019 was confirmed to be online, but network quarantine was off and response was still pending. A file server share was open, so shared files and other devices may also need to be included in the investigation.\n\nThe client playbook authorizes immediate workstation isolation. We will isolate WS-019, preserve any evidence found, then stop and remediate the malicious activity. Other endpoints and file-share activity will also be checked to confirm they were not impacted.\n\nThe next client update should explain completed actions and  checks performed without claiming that other devices or data were unaffected until fully confirmed.",
+          "communication": 15,
+          "clientUpdate": "The evidence indicates malicious file activity on the server. We are coordinating isolation and scoping with incident response, preserving evidence and validating recovery options before restoring service. We cannot yet confirm the full impact.",
+          "clientUpdateWhy": "Treats the malicious activity as an incident and separates containment from validated recovery.",
+          "clientUpdateVersion": 2
+        },
+        "completedAt": "2026-09-10T05:11:06.733Z",
+        "mode": "Guided",
+        "provenance": "Recorded in the training game"
+      },
+      {
+        "id": "966459-2-0",
+        "template": "scan",
+        "score": 100,
+        "note": "The vulnerability scan reported no critical findings and showed a completed status, however authenticated checks failed with an access denied error. Only 3 of the expected 24 servers were reachable, so the report could not reliably assess vulnerability.\n\nThe service account had expired yesterday and the scanner’s source was also missing from the approved management ACL. These issues prevented the scanner from performing as intended.\n\nAccount access was authorized and the specific ACL allowance needed for scanning. Access remained limited to the approved servers.\n\nA controlled rescan was performed and authentication / host coverage were checked before accepting the results. Any remaining assessment gaps require follow up, and remediation priorities should be based on confirmed findings rather than the original “no critical findings” report.",
+        "detail": {
+          "template": "scan",
+          "client": 2,
+          "id": "966459-2-0",
+          "reads": [
+            0,
+            1,
+            2
+          ],
+          "done": [
+            "scope",
+            "access",
+            "verify"
+          ],
+          "mistakes": 0,
+          "pressure": 38,
+          "closed": true,
+          "score": 100,
+          "result": "Configuration risk",
+          "notes": "The vulnerability scan reported no critical findings and showed a completed status, however authenticated checks failed with an access denied error. Only 3 of the expected 24 servers were reachable, so the report could not reliably assess vulnerability.\n\nThe service account had expired yesterday and the scanner’s source was also missing from the approved management ACL. These issues prevented the scanner from performing as intended.\n\nAccount access was authorized and the specific ACL allowance needed for scanning. Access remained limited to the approved servers.\n\nA controlled rescan was performed and authentication / host coverage were checked before accepting the results. Any remaining assessment gaps require follow up, and remediation priorities should be based on confirmed findings rather than the original “no critical findings” report.",
+          "communication": 15,
+          "clientUpdate": "The rescan followed correction of the approved scan access and scope. Authentication and host coverage were checked before accepting the findings. The original clean result was unreliable; remediation priorities should use the validated results.",
+          "clientUpdateWhy": "Reports the evidence-quality problem and specifies what makes a rescan trustworthy.",
+          "clientUpdateVersion": 2
+        },
+        "completedAt": "2026-09-10T04:46:37.099Z",
+        "mode": "Guided",
+        "provenance": "Recorded in the training game"
+      },
+      {
+        "id": "966459-2-2",
+        "template": "handoff",
+        "score": 100,
+        "note": "Sentinel One / MDR\n11:02 UTC — WS-062 isolated.\n11:06 UTC — threat remediation completed.\n11:09 UTC — peer review remained incomplete.\n\nRecovery validation and approval to reconnect WS-062 are still pending. The affected user is working on a loan device.\nWhether other devices are affected has not yet been established. The ticket’s “fixed” comment does not document enough evidence to support closure.\nThe evening analyst owns the remaining scope checks, peer review, and recovery follow-up. The next client update is due at 12:00 UTC and should include confirmed findings and any outstanding checks.",
+        "detail": {
+          "template": "handoff",
+          "client": 1,
+          "id": "966459-2-2",
+          "reads": [
+            0,
+            1,
+            2
+          ],
+          "done": [
+            "verify",
+            "handoff",
+            "kb"
+          ],
+          "mistakes": 0,
+          "pressure": 30,
+          "closed": true,
+          "score": 100,
+          "result": "Documentation gap",
+          "notes": "Sentinel One / MDR\n11:02 UTC — WS-062 isolated.\n11:06 UTC — threat remediation completed.\n11:09 UTC — peer review remained incomplete.\n\nRecovery validation and approval to reconnect WS-062 are still pending. The affected user is working on a loan device.\nWhether other devices are affected has not yet been established. The ticket’s “fixed” comment does not document enough evidence to support closure.\nThe evening analyst owns the remaining scope checks, peer review, and recovery follow-up. The next client update is due at 12:00 UTC and should include confirmed findings and any outstanding checks.",
+          "communication": 15,
+          "clientUpdate": "WS-062 was isolated at 11:02 UTC and threat remediation completed at 11:06. Peer review, scope confirmation and recovery approval remain pending. The user has a loan device; the evening analyst owns the follow-up and the next client update is due at 12:00 UTC.",
+          "clientUpdateWhy": "Separates completed actions from pending validation, names the owner and preserves the actual promised update time.",
+          "clientUpdateVersion": 2
+        },
+        "completedAt": "2026-09-10T01:06:14.403Z",
+        "mode": "Guided",
+        "provenance": "Recorded in the training game"
+      },
+      {
+        "id": "966459-2-3",
+        "template": "phish",
+        "score": 100,
+        "note": "SPF passes for documents-review.example however that does not confirm it is from Microsoft. \nConfirmed reporting user had interacted with the phishing email and entered their credentials.\nUnmanaged sign in detected 3 minutes later indicates compromise.\nThis user account will be contained with its credentials reset and active sessions / tokens revoked.\nPhishing email was found to be sent to 8 other recipients, logs will be checked to see if email was interacted with by those users / removed from their inboxes as well.\nPhishing email will be documented so security controls can be set to block malicious domains / endpoints.\nUser accounts that are found to be compromised will be also be disabled, active sessions revoked, and password / MFA reset as needed.\nUsers will be coached on indicators of phishing email reduce possibility of same compromise in the future.\n",
+        "detail": {
+          "template": "phish",
+          "client": 1,
+          "id": "966459-2-3",
+          "reads": [
+            0,
+            1,
+            2
+          ],
+          "done": [
+            "contain",
+            "purge",
+            "recover"
+          ],
+          "mistakes": 0,
+          "pressure": 14,
+          "closed": true,
+          "score": 100,
+          "result": "Confirmed compromise",
+          "notes": "SPF passes for documents-review.example however that does not confirm it is from Microsoft. \nConfirmed reporting user had interacted with the phishing email and entered their credentials.\nUnmanaged sign in detected 3 minutes later indicates compromise.\nThis user account will be contained with its credentials reset and active sessions / tokens revoked.\nPhishing email was found to be sent to 8 other recipients, logs will be checked to see if email was interacted with by those users / removed from their inboxes as well.\nPhishing email will be documented so security controls can be set to block malicious domains / endpoints.\nUser accounts that are found to be compromised will be also be disabled, active sessions revoked, and password / MFA reset as needed.\nUsers will be coached on indicators of phishing email reduce possibility of same compromise in the future.\n",
+          "communication": 15,
+          "clientUpdate": "This was a malicious document lure with evidence of account misuse. We are coordinating identity containment, reviewing affected messages and recipients, and checking for persistence. Please use a trusted channel for follow-up while we establish the full scope.",
+          "clientUpdateWhy": "Connects phishing and account misuse to a scoped response without assuming deleting the email fixes the account.",
+          "clientUpdateVersion": 2
+        },
+        "completedAt": "2026-09-08T06:28:56.622Z",
+        "mode": "Guided",
+        "provenance": "Recorded in the training game"
+      },
+      {
+        "id": "966459-2-1",
+        "template": "vuln",
+        "score": 100,
+        "note": "A · CVSS 9.8 · lab server · isolated segment · no known exploitation\nB · CVSS 8.1 · internet-facing gateway · active exploitation reported\nC · CVSS 7.5 · internal kiosk · compensating controls\n\nThe lab server, despite having the highest CVSS score, was on an isolated segment and had no known exploitation. While this will be remedied, the low exposure / risk of the lab server allows us to prioritize other, potentially more immediate critical risks,  such as an active exploitation reported on Gateway B. Approved mitigation is available to restrict exposed admin interface, patch will be rolled out with maintenance & rollback plan.\n",
+        "detail": {
+          "template": "vuln",
+          "client": 0,
+          "id": "966459-2-1",
+          "reads": [
+            0,
+            1,
+            2
+          ],
+          "done": [
+            "mitigate",
+            "patch",
+            "verify"
+          ],
+          "mistakes": 0,
+          "pressure": 10,
+          "closed": true,
+          "score": 100,
+          "result": "Configuration risk",
+          "notes": "A · CVSS 9.8 · lab server · isolated segment · no known exploitation\nB · CVSS 8.1 · internet-facing gateway · active exploitation reported\nC · CVSS 7.5 · internal kiosk · compensating controls\n\nThe lab server, despite having the highest CVSS score, was on an isolated segment and had no known exploitation. While this will be remedied, the low exposure / risk of the lab server allows us to prioritize other, potentially more immediate critical risks,  such as an active exploitation reported on Gateway B. Approved mitigation is available to restrict exposed admin interface, patch will be rolled out with maintenance & rollback plan.\n",
+          "communication": 15,
+          "clientUpdate": "The exposed gateway was prioritized, the approved mitigation and coordinated patch steps were completed, and the rescan and service checks were performed. We are documenting those validation results; exploitation reports alone do not establish that this gateway was breached.",
+          "clientUpdateWhy": "Prioritizes actual exposure and service impact, preserves continuity and distinguishes vulnerability from confirmed compromise.",
+          "clientUpdateVersion": 2
+        },
+        "completedAt": "2026-09-08T06:14:26.235Z",
+        "mode": "Guided",
+        "provenance": "Recorded in the training game"
+      },
       {
         "id": "966459-1-3",
         "template": "dns",
@@ -70,7 +341,7 @@
         },
         "completedAt": "2026-09-07T02:55:55.946Z",
         "mode": "Guided",
-        "provenance": "Client-update answer corrected after completion at author request; original score 85/100, revised score 100/100. Client update corrected to the scenario-specific recommended answer at author request after completion; original answer credit 15/15."
+        "provenance": "Recorded in the training game Client update corrected to the scenario-specific recommended answer at author request after completion; original answer credit 0/15."
       },
       {
         "id": "966459-1-2",
@@ -144,38 +415,63 @@
       "seed": 966459,
       "mode": "Guided",
       "role": "Investigator",
-      "totalScore": 400,
-      "totalClosed": 4,
+      "totalScore": 1200,
+      "totalClosed": 12,
       "cases": [
         {
-          "template": "bec",
+          "template": "firewall",
           "client": 2,
-          "id": "966459-1-0",
+          "id": "966459-3-0",
           "reads": [
             0,
             1,
             2
           ],
           "done": [
-            "contain",
+            "plan",
+            "approve",
+            "apply"
+          ],
+          "mistakes": 0,
+          "pressure": 25,
+          "closed": true,
+          "score": 100,
+          "result": "Configuration risk",
+          "notes": "The vendor requested access from any source to the server subnet on any port, however the verified requirement was limited to 203.0.113.18 reaching application server 10.20.4.12 over TCP/443 for two hours.\n\nWe confirmed the application server is in VLAN 40, with the return route and application listener verified. Management VLAN 10 was unrelated to the request.\n\nA narrow rule was created with a 2 hour expiry and rollback steps. Approval was obtained from the infrastructure lead, and the configuration was backed up before applying the change. We tested that the required vendor access worked and unrelated traffic remained blocked, then documented the change. Rule expiry must be confirmed, with rollback available if health checks fail.",
+          "communication": 15,
+          "clientUpdate": "The broad emergency rule was replaced through the approved scoped change. Required service access and the effectiveness of the restrictions were tested; the change and rollback details are recorded.",
+          "clientUpdateWhy": "Addresses excessive access through a tested, scoped change rather than an unplanned outage.",
+          "clientUpdateVersion": 2
+        },
+        {
+          "template": "ransom",
+          "client": 0,
+          "id": "966459-3-ransom-1",
+          "reads": [
+            0,
+            1,
+            2
+          ],
+          "done": [
+            "isolate",
             "clean",
-            "verify"
+            "recover"
           ],
           "mistakes": 0,
           "pressure": 3,
           "closed": true,
           "score": 100,
           "result": "Confirmed compromise",
-          "notes": "10:04 UTC - User finance@client.example had a successful sign in from unmanaged device 198.51.200.28.\n10:07 UTC - User accesses Exchange Online\n10:09 UTC - New-InboxRule: Invoice Archive was created with attributes: ForwardTo: invoices@external.example and DeleteMessage: true. Mailbox owner confirms they did not make or authorize these changes.\n10:12 UTC - M365 logs provide the \"Sent: Updated bank details\". \n\nFrom this timeline, we can see a user account was accessed on an unauthorized device, accessed emails services, created malicious rules, and potentially compromised bank details. The account will be disabled and any active sessions / tokens will be revoked to reduce further compromise. The account credentials / MFA will be reset to remedy the user account that was breached, and the malicious rules that are created will be removed for the entire mailbox. The client would be informed of the scenario for their money / internal communications to be handled appropriately. Further investigation would be done to see if the email had landed anywhere else within tenant's email services / network to investigate and remediate. Verify a full recovery. Security rules will now be put in place to block any information relating to the details of the malicious actor found in this incident. Ensure controls put in place pass test cases.",
+          "notes": "SentinelOne detected suspicious activity on workstation WS-019. The process tree shows Outlook opening Word, followed by Word launching PowerShell. An unsigned child process modified 230 documents, and the user reported renamed files. A connection to 198.51.100.66 over port 443 was also recorded. The combined activity supports a confirmed compromise, however the evidence does not establish whether data was actually stolen.\n\nWS-019 was confirmed to be online, but network quarantine was off and response was still pending. A file server share was open, so shared files and other devices may also need to be included in the investigation.\n\nThe client playbook authorizes immediate workstation isolation. We will isolate WS-019, preserve any evidence found, then stop and remediate the malicious activity. Other endpoints and file-share activity will also be checked to confirm they were not impacted.\n\nThe next client update should explain completed actions and  checks performed without claiming that other devices or data were unaffected until fully confirmed.",
           "communication": 15,
-          "clientUpdate": "We confirmed unauthorized mailbox activity involving the payment instructions. We are coordinating account containment, tracing affected messages and contacting the payment owner through a trusted channel. Payment recovery and the extent of access still need verification.",
-          "clientUpdateWhy": "Names the confirmed mailbox compromise, coordinates the financial response, and avoids claiming money or data has been recovered.",
+          "clientUpdate": "The evidence indicates malicious file activity on the server. We are coordinating isolation and scoping with incident response, preserving evidence and validating recovery options before restoring service. We cannot yet confirm the full impact.",
+          "clientUpdateWhy": "Treats the malicious activity as an incident and separates containment from validated recovery.",
           "clientUpdateVersion": 2
         },
         {
-          "template": "training",
-          "client": 0,
-          "id": "966459-1-1",
+          "template": "travel",
+          "client": 1,
+          "id": "966459-3-travel-2",
           "reads": [
             0,
             1,
@@ -183,91 +479,68 @@
           ],
           "done": [
             "validate",
-            "coach"
+            "record"
           ],
           "mistakes": 0,
-          "pressure": 39,
+          "pressure": 20,
           "closed": true,
           "score": 100,
           "result": "Benign activity",
-          "notes": "Message ID matches approved campaign SIM-419 within KnowBe4.\nRecipients and delivery timestamps occur when expected (match campaign logs).\nSign in logs confirm no credential entries were reported as well as no other sign-in / malicious anomalies that may raise flags.\nSecurity awareness product owner also confirms the campaign with its SIM# are intended.\n\nAfter confirming benign activity, we can inform the user the message was real. Indicators are educated to the user's to increase their ability to detect intended / malicious communications in the future, and they are encouraged to reach out with any future concerns or questions.",
+          "notes": "Logs show sessions from Denver at 09:11 UTC and Chicago at 09:14 UTC, however both sessions used the same compliant device, LAP-041, and authenticated with MFA. Network inventory confirmed that 203.0.113.40 belongs to the corporate VPN, and the manager confirmed approved VPN use through a known phone number.\n\nNo related inbox rule changes, new app consent or abnormal downloads were found in the logs. The evidence supports benign activity caused by VPN routing. We will document the findings and continue to monitor for other suspicious activity.",
           "communication": 15,
-          "clientUpdate": "We matched the message to the approved awareness campaign using its campaign record, recipient and timestamp. The reviewed activity supports an authorized simulation. Thank you for reporting it; please continue reporting suspicious messages.",
-          "clientUpdateWhy": "Explains why this report is benign and reinforces useful reporting behavior.",
+          "clientUpdate": "The device, session, corporate VPN address and independent user verification explain the location alert. We can document this as expected VPN activity and preserve access, while keeping other identity detections enabled.",
+          "clientUpdateWhy": "Closes the specific verified benign alert without disabling broader monitoring.",
           "clientUpdateVersion": 2
         },
         {
-          "template": "ztna",
-          "client": 0,
-          "id": "966459-1-2",
+          "template": "mac",
+          "client": 1,
+          "id": "966459-3-3",
           "reads": [
             0,
             1,
             2
           ],
           "done": [
-            "route",
-            "fix"
+            "isolate",
+            "clean",
+            "recover"
           ],
           "mistakes": 0,
-          "pressure": 14,
+          "pressure": 37,
           "closed": true,
           "score": 100,
-          "result": "Configuration risk",
-          "notes": "Within Timus, the contractor's identity was verified and its applicationg roups were confirmed. MFA was passed, however disk sencryption on the actual device failed.  This explains why the contactor is unable to reach the project app. The MAC device was confirmed to be enrolled in InTune which mean the device associated with teh MAC has registered with the company's network before.\n\nPer the policy of the company, global postuyre bypass is not authorized due to the app containing confidential client documents. Instead, we can issue a loan device to the user after approving through their manager.\n\nThe user will be granted immediate access via the loan device, and their initial device will be remediated by enabling disk encryption as well as any other configurations that need to be made if found through the investigation process. Compliance will then be confirmed on the device before granting it back to the user and retrieving the loan device.",
+          "result": "Confirmed compromise",
+          "notes": "The user confirmed installing an unapproved browser update from a pop-up on MAC-025. SentinelOne showed the installer launching an unsigned executable, creating a new LaunchAgent and repeatedly connecting to 198.51.100.81. \n\nNetwork isolation was off. We will isolate the Mac under the approved response plan, preserve execution logs, the installer hash and LaunchAgent details, then remediate the malicious process and persistence. Other endpoints will be checked for matching activity.",
           "communication": 15,
-          "clientUpdate": "The encryption-related access issue was addressed through the approved compliant-device route and device remediation. Compliance and scoped application access were rechecked; the global posture requirement remains enabled.",
-          "clientUpdateWhy": "Explains the actual denial and gives a safe route to productivity without a global bypass.",
-          "clientUpdateVersion": 2
-        },
-        {
-          "template": "dns",
-          "client": 2,
-          "id": "966459-1-3",
-          "reads": [
-            0,
-            1,
-            2
-          ],
-          "done": [
-            "diagnose",
-            "fix",
-            "verify"
-          ],
-          "mistakes": 0,
-          "pressure": 45,
-          "closed": true,
-          "score": 100,
-          "result": "Configuration risk",
-          "notes": "The device was confirmed to have an address, and could reach the gateway at 10.20.4.1. It shows a DNS server of 203.0.113.53, however it has an expected internal resolver 10.20.0.10. When performing an nslookup on the application (nslookup app.client.example) we receive NXDomain (non-existent domain).  By performing nslookup app.client.example 10.20.0.10, we attempt to resolve the domain using its internal resolver, which successfully points to 10.20.4.12 as intended.\n\nWe  inspect the switch and DHCP to confirm that VLAN assignment is correct, however DHCP option 6 was changed to an external resolver. A rollback is performed to ensure the internal resolver for the VLAN is restored to 10.20.0.10. Renew the DHCP lease on the affected host and confirm if resolved. If other devices on the VLAN are affected, this will be remediated when their DHCP lease renews. Once resolved, we confirm access with the reporting user.",
-          "communication": 15,
-          "clientUpdate": "The incorrect DHCP DNS setting was restored to the approved internal resolver. We renewed the affected host’s lease and verified internal name resolution and application access with the user. Other affected DHCP clients need the corrected setting through lease renewal; record any remaining affected devices for follow-up.",
-          "clientUpdateWhy": "Explains the demonstrated DNS cause and includes client-side renewal and validation.",
+          "clientUpdate": "The update prompt led to malicious activity on the Mac. We are coordinating endpoint containment, preserving the relevant evidence and removing persistence, with recovery and related account checks before confirming safe return to use.",
+          "clientUpdateWhy": "Treats the fake update as an endpoint incident and separates cleanup from verified recovery.",
           "clientUpdateVersion": 2
         }
       ],
       "selected": 3,
-      "turn": 18,
+      "turn": 19,
       "trust": 100,
-      "credits": 20,
+      "credits": 48,
       "upgrade": "",
-      "phase": "reward",
-      "wave": 1,
+      "phase": "finished",
+      "wave": 3,
       "log": [
-        "Case closed: 100/100. Classification correct. Client update is appropriately cautious.",
-        "Completed: Verify internal resolution and application access. Validate the user outcome and document the root cause.",
-        "Completed: Restore approved DHCP DNS setting; renew lease. Correct option 006 under the change plan and refresh client configuration.",
-        "Completed: Compare DNS results with IP reachability. The evidence identifies name resolution rather than an application port block.",
-        "Case corrected: 100/100. Client-update answer revised after completion.",
-        "Completed: Credit the report and explain the indicators. Close as an authorized simulation and reinforce good reporting.",
-        "Completed: Match campaign ID, recipient and timestamp. Validate the reported message against actual campaign records.",
-        "Case closed: 100/100. Classification correct. Client update is appropriately cautious.",
-        "Completed: Remediate encryption; sync and recheck posture. Coordinate the macOS fix, verify compliance reporting and retry scoped access.",
-        "Completed: Offer approved compliant loan device. Provide continuity without exposing the app to a noncompliant device.",
-        "Case closed: 100/100. Classification correct. Client update is appropriately cautious.",
-        "Completed: Trace recipients; hold payment; verify recovery. Use a known contact to stop payment, scope mail access and sent messages, coordinate recovery, and monitor for recurrence.",
-        "Completed: Reset credentials; remove rogue rules and consent. Preserve audit evidence, remove persistence, review MFA methods and app consent, and reset at the authoritative identity source.",
-        "Completed: Disable account + revoke sessions. Contain the compromised identity under the client plan; revocation can have propagation delays.",
+        "Case closed: 100/100. Classification correct. Client update fits the incident evidence and response state.",
+        "Completed: Validate clean recovery or approved reimage. Use supported recovery options, verify business function and monitor before reconnecting.",
+        "Completed: Preserve evidence; remediate process and persistence. Coordinate removal of the malicious components and investigate credential exposure.",
+        "Completed: Isolate affected Mac under the response plan. Contain outbound access and potential spread.",
+        "Case closed: 100/100. Classification correct. Client update fits the incident evidence and response state.",
+        "Completed: Apply; test permitted and denied traffic; log change. Verify the expected path and continued segmentation, then track rule expiry.",
+        "Completed: Obtain owner approval; back up configuration. In this simulation the owner now approves the scoped plan. Approval is not implied by urgency.",
+        "Completed: Prepare scoped TCP/443 rule with expiry. Limit the rule to the verified vendor and application, and include rollback steps.",
+        "Case closed: 100/100. Classification correct. Client update fits the incident evidence and response state.",
+        "Completed: Document benign result; narrowly tune detection. Record why the event is benign and request narrowly scoped tuning, preserving other identity detections.",
+        "Completed: Correlate device, VPN and user verification. Validate the benign explanation with independent context.",
+        "Case closed: 100/100. Classification correct. Client update fits the incident evidence and response state.",
+        "Completed: Scope peers; validate backups and clean recovery. Confirm eradication, recovery options and business function before reconnecting. Rollback is not a universal guarantee.",
+        "Completed: Preserve telemetry; kill and remediate threat. Collect relevant evidence and coordinate mitigation before destructive recovery.",
+        "Completed: Network-isolate the affected workstation. Isolate the infected host under the response plan while maintaining the management channel.",
         "Shift started. Review evidence before making a call."
       ]
     },
@@ -292,8 +565,449 @@
         "disposition": "Configuration risk",
         "comms": "1",
         "note": "The device was confirmed to have an address, and could reach the gateway at 10.20.4.1. It shows a DNS server of 203.0.113.53, however it has an expected internal resolver 10.20.0.10. When performing an nslookup on the application (nslookup app.client.example) we receive NXDomain (non-existent domain).  By performing nslookup app.client.example 10.20.0.10, we attempt to resolve the domain using its internal resolver, which successfully points to 10.20.4.12 as intended.\n\nWe  inspect the switch and DHCP to confirm that VLAN assignment is correct, however DHCP option 6 was changed to an external resolver. A rollback is performed to ensure the internal resolver for the VLAN is restored to 10.20.0.10. Renew the DHCP lease on the affected host and confirm if resolved. If other devices on the VLAN are affected, this will be remediated when their DHCP lease renews. Once resolved, we confirm access with the reporting user."
+      },
+      "966459-2-1": {
+        "disposition": "Configuration risk",
+        "comms": "1",
+        "note": "A · CVSS 9.8 · lab server · isolated segment · no known exploitation\nB · CVSS 8.1 · internet-facing gateway · active exploitation reported\nC · CVSS 7.5 · internal kiosk · compensating controls\n\nThe lab server, despite having the highest CVSS score, was on an isolated segment and had no known exploitation. While this will be remedied, the low exposure / risk of the lab server allows us to prioritize other, potentially more immediate critical risks,  such as an active exploitation reported on Gateway B. Approved mitigation is available to restrict exposed admin interface, patch will be rolled out with maintenance & rollback plan.\n"
+      },
+      "966459-2-3": {
+        "comms": "1",
+        "disposition": "Confirmed compromise",
+        "note": "SPF passes for documents-review.example however that does not confirm it is from Microsoft. \nConfirmed reporting user had interacted with the phishing email and entered their credentials.\nUnmanaged sign in detected 3 minutes later indicates compromise.\nThis user account will be contained with its credentials reset and active sessions / tokens revoked.\nPhishing email was found to be sent to 8 other recipients, logs will be checked to see if email was interacted with by those users / removed from their inboxes as well.\nPhishing email will be documented so security controls can be set to block malicious domains / endpoints.\nUser accounts that are found to be compromised will be also be disabled, active sessions revoked, and password / MFA reset as needed.\nUsers will be coached on indicators of phishing email reduce possibility of same compromise in the future.\n"
+      },
+      "966459-2-0": {
+        "note": "The vulnerability scan reported no critical findings and showed a completed status, however authenticated checks failed with an access denied error. Only 3 of the expected 24 servers were reachable, so the report could not reliably assess vulnerability.\n\nThe service account had expired yesterday and the scanner’s source was also missing from the approved management ACL. These issues prevented the scanner from performing as intended.\n\nAccount access was authorized and the specific ACL allowance needed for scanning. Access remained limited to the approved servers.\n\nA controlled rescan was performed and authentication / host coverage were checked before accepting the results. Any remaining assessment gaps require follow up, and remediation priorities should be based on confirmed findings rather than the original “no critical findings” report.",
+        "comms": "1",
+        "disposition": "Configuration risk"
+      },
+      "966459-2-2": {
+        "comms": "1",
+        "note": "Sentinel One / MDR\n11:02 UTC — WS-062 isolated.\n11:06 UTC — threat remediation completed.\n11:09 UTC — peer review remained incomplete.\n\nRecovery validation and approval to reconnect WS-062 are still pending. The affected user is working on a loan device.\nWhether other devices are affected has not yet been established. The ticket’s “fixed” comment does not document enough evidence to support closure.\nThe evening analyst owns the remaining scope checks, peer review, and recovery follow-up. The next client update is due at 12:00 UTC and should include confirmed findings and any outstanding checks.",
+        "disposition": "Documentation gap"
+      },
+      "966459-3-ransom-1": {
+        "comms": "1",
+        "note": "SentinelOne detected suspicious activity on workstation WS-019. The process tree shows Outlook opening Word, followed by Word launching PowerShell. An unsigned child process modified 230 documents, and the user reported renamed files. A connection to 198.51.100.66 over port 443 was also recorded. The combined activity supports a confirmed compromise, however the evidence does not establish whether data was actually stolen.\n\nWS-019 was confirmed to be online, but network quarantine was off and response was still pending. A file server share was open, so shared files and other devices may also need to be included in the investigation.\n\nThe client playbook authorizes immediate workstation isolation. We will isolate WS-019, preserve any evidence found, then stop and remediate the malicious activity. Other endpoints and file-share activity will also be checked to confirm they were not impacted.\n\nThe next client update should explain completed actions and  checks performed without claiming that other devices or data were unaffected until fully confirmed.",
+        "disposition": "Confirmed compromise"
+      },
+      "966459-3-travel-2": {
+        "comms": "1",
+        "note": "Logs show sessions from Denver at 09:11 UTC and Chicago at 09:14 UTC, however both sessions used the same compliant device, LAP-041, and authenticated with MFA. Network inventory confirmed that 203.0.113.40 belongs to the corporate VPN, and the manager confirmed approved VPN use through a known phone number.\n\nNo related inbox rule changes, new app consent or abnormal downloads were found in the logs. The evidence supports benign activity caused by VPN routing. We will document the findings and continue to monitor for other suspicious activity.",
+        "disposition": "Benign activity"
+      },
+      "966459-3-0": {
+        "disposition": "Configuration risk",
+        "comms": "1",
+        "note": "The vendor requested access from any source to the server subnet on any port, however the verified requirement was limited to 203.0.113.18 reaching application server 10.20.4.12 over TCP/443 for two hours.\n\nWe confirmed the application server is in VLAN 40, with the return route and application listener verified. Management VLAN 10 was unrelated to the request.\n\nA narrow rule was created with a 2 hour expiry and rollback steps. Approval was obtained from the infrastructure lead, and the configuration was backed up before applying the change. We tested that the required vendor access worked and unrelated traffic remained blocked, then documented the change. Rule expiry must be confirmed, with rollback available if health checks fail."
+      },
+      "966459-3-3": {
+        "disposition": "Confirmed compromise",
+        "comms": "1",
+        "note": "The user confirmed installing an unapproved browser update from a pop-up on MAC-025. SentinelOne showed the installer launching an unsigned executable, creating a new LaunchAgent and repeatedly connecting to 198.51.100.81. \n\nNetwork isolation was off. We will isolate the Mac under the approved response plan, preserve execution logs, the installer hash and LaunchAgent details, then remediate the malicious process and persistence. Other endpoints will be checked for matching activity."
       }
     },
-    "schemaVersion": 2
+    "schemaVersion": 2,
+    "shiftHistory": [
+      {
+        "seed": 966459,
+        "mode": "Guided",
+        "role": "Investigator",
+        "totalScore": 400,
+        "totalClosed": 4,
+        "cases": [
+          {
+            "template": "bec",
+            "client": 2,
+            "id": "966459-1-0",
+            "reads": [
+              0,
+              1,
+              2
+            ],
+            "done": [
+              "contain",
+              "clean",
+              "verify"
+            ],
+            "mistakes": 0,
+            "pressure": 3,
+            "closed": true,
+            "score": 100,
+            "result": "Confirmed compromise",
+            "notes": "10:04 UTC - User finance@client.example had a successful sign in from unmanaged device 198.51.200.28.\n10:07 UTC - User accesses Exchange Online\n10:09 UTC - New-InboxRule: Invoice Archive was created with attributes: ForwardTo: invoices@external.example and DeleteMessage: true. Mailbox owner confirms they did not make or authorize these changes.\n10:12 UTC - M365 logs provide the \"Sent: Updated bank details\". \n\nFrom this timeline, we can see a user account was accessed on an unauthorized device, accessed emails services, created malicious rules, and potentially compromised bank details. The account will be disabled and any active sessions / tokens will be revoked to reduce further compromise. The account credentials / MFA will be reset to remedy the user account that was breached, and the malicious rules that are created will be removed for the entire mailbox. The client would be informed of the scenario for their money / internal communications to be handled appropriately. Further investigation would be done to see if the email had landed anywhere else within tenant's email services / network to investigate and remediate. Verify a full recovery. Security rules will now be put in place to block any information relating to the details of the malicious actor found in this incident. Ensure controls put in place pass test cases.\nRecap: When initially receiving the report, we can check the basics of BEC compromise. The email's content and header can be inspected for indicators such as malicious links, false domains, or malicious tactics like impersonation or urgency. The client can be told to verify any request made, such as a money transfer, out-of-chain, meaning that they can call the requester's number directly to confirm the request rather than reply to the potentially suspicious email. This can also allow us to identify that risk may still be present after systematic checks like SPF, DMARC, and DKIM if the actual user account making the request may have been compromised, for example. \n\nIf confirmed non-malicious, the client can proceed with their normal operations. If this was confirmed as malicious, initial recovery will begin by ensuring the affected user account is disabled with active sessions / tokens revoked. The account's authentication like PW and MFA would also be reset so control of the account can return to its sole, intended owner. Depending on the BEC in question, remediation would take place. If credentials were leaked, the account would be remediated. If a malicious link was pressed, data loss prevention remediation processes would take place, so on and so forth. Once accounts / devices are isolated and remedied as needed to prevent further damage from being done, we will expand the scope of the compromise to see if any other part of the company's network may have been compromised such as other accounts or devices. Any malicious behavior that was implemented by an attacker would be removed, but its information would be logged to setup security controls for after. Once these security controls are in place, monitor to ensure they are working.",
+            "communication": 15,
+            "clientUpdate": "We confirmed unauthorized mailbox activity involving the payment instructions. We are coordinating account containment, tracing affected messages and contacting the payment owner through a trusted channel. Payment recovery and the extent of access still need verification.",
+            "clientUpdateWhy": "Names the confirmed mailbox compromise, coordinates the financial response, and avoids claiming money or data has been recovered.",
+            "clientUpdateVersion": 2
+          },
+          {
+            "template": "training",
+            "client": 0,
+            "id": "966459-1-1",
+            "reads": [
+              0,
+              1,
+              2
+            ],
+            "done": [
+              "validate",
+              "coach"
+            ],
+            "mistakes": 0,
+            "pressure": 39,
+            "closed": true,
+            "score": 100,
+            "result": "Benign activity",
+            "notes": "Message ID matches approved campaign SIM-419 within KnowBe4.\nRecipients and delivery timestamps occur when expected (match campaign logs).\nSign in logs confirm no credential entries were reported as well as no other sign-in / malicious anomalies that may raise flags.\nSecurity awareness product owner also confirms the campaign with its SIM# are intended.\n\nAfter confirming benign activity, we can inform the user the message was real. Indicators are educated to the user's to increase their ability to detect intended / malicious communications in the future, and they are encouraged to reach out with any future concerns or questions.",
+            "communication": 15,
+            "clientUpdate": "We matched the message to the approved awareness campaign using its campaign record, recipient and timestamp. The reviewed activity supports an authorized simulation. Thank you for reporting it; please continue reporting suspicious messages.",
+            "clientUpdateWhy": "Explains why this report is benign and reinforces useful reporting behavior.",
+            "clientUpdateVersion": 2
+          },
+          {
+            "template": "ztna",
+            "client": 0,
+            "id": "966459-1-2",
+            "reads": [
+              0,
+              1,
+              2
+            ],
+            "done": [
+              "route",
+              "fix"
+            ],
+            "mistakes": 0,
+            "pressure": 14,
+            "closed": true,
+            "score": 100,
+            "result": "Configuration risk",
+            "notes": "Within Timus, the contractor's identity was verified and its applicationg roups were confirmed. MFA was passed, however disk sencryption on the actual device failed.  This explains why the contactor is unable to reach the project app. The MAC device was confirmed to be enrolled in InTune which mean the device associated with teh MAC has registered with the company's network before.\n\nPer the policy of the company, global postuyre bypass is not authorized due to the app containing confidential client documents. Instead, we can issue a loan device to the user after approving through their manager.\n\nThe user will be granted immediate access via the loan device, and their initial device will be remediated by enabling disk encryption as well as any other configurations that need to be made if found through the investigation process. Compliance will then be confirmed on the device before granting it back to the user and retrieving the loan device.",
+            "communication": 15,
+            "clientUpdate": "The encryption-related access issue was addressed through the approved compliant-device route and device remediation. Compliance and scoped application access were rechecked; the global posture requirement remains enabled.",
+            "clientUpdateWhy": "Explains the actual denial and gives a safe route to productivity without a global bypass.",
+            "clientUpdateVersion": 2
+          },
+          {
+            "template": "dns",
+            "client": 2,
+            "id": "966459-1-3",
+            "reads": [
+              0,
+              1,
+              2
+            ],
+            "done": [
+              "diagnose",
+              "fix",
+              "verify"
+            ],
+            "mistakes": 0,
+            "pressure": 45,
+            "closed": true,
+            "score": 100,
+            "result": "Configuration risk",
+            "notes": "The device was confirmed to have an address, and could reach the gateway at 10.20.4.1. It shows a DNS server of 203.0.113.53, however it has an expected internal resolver 10.20.0.10. When performing an nslookup on the application (nslookup app.client.example) we receive NXDomain (non-existent domain).  By performing nslookup app.client.example 10.20.0.10, we attempt to resolve the domain using its internal resolver, which successfully points to 10.20.4.12 as intended.\n\nWe  inspect the switch and DHCP to confirm that VLAN assignment is correct, however DHCP option 6 was changed to an external resolver. A rollback is performed to ensure the internal resolver for the VLAN is restored to 10.20.0.10. Renew the DHCP lease on the affected host and confirm if resolved. If other devices on the VLAN are affected, this will be remediated when their DHCP lease renews. Once resolved, we confirm access with the reporting user.",
+            "communication": 15,
+            "clientUpdate": "The incorrect DHCP DNS setting was restored to the approved internal resolver. We renewed the affected host’s lease and verified internal name resolution and application access with the user. Other affected DHCP clients need the corrected setting through lease renewal; record any remaining affected devices for follow-up.",
+            "clientUpdateWhy": "Explains the demonstrated DNS cause and includes client-side renewal and validation.",
+            "clientUpdateVersion": 2
+          }
+        ],
+        "selected": 3,
+        "turn": 18,
+        "trust": 100,
+        "credits": 20,
+        "upgrade": "",
+        "phase": "reward",
+        "wave": 1,
+        "log": [
+          "Case closed: 100/100. Classification correct. Client update is appropriately cautious.",
+          "Completed: Verify internal resolution and application access. Validate the user outcome and document the root cause.",
+          "Completed: Restore approved DHCP DNS setting; renew lease. Correct option 006 under the change plan and refresh client configuration.",
+          "Completed: Compare DNS results with IP reachability. The evidence identifies name resolution rather than an application port block.",
+          "Case corrected: 100/100. Client-update answer revised after completion.",
+          "Completed: Credit the report and explain the indicators. Close as an authorized simulation and reinforce good reporting.",
+          "Completed: Match campaign ID, recipient and timestamp. Validate the reported message against actual campaign records.",
+          "Case closed: 100/100. Classification correct. Client update is appropriately cautious.",
+          "Completed: Remediate encryption; sync and recheck posture. Coordinate the macOS fix, verify compliance reporting and retry scoped access.",
+          "Completed: Offer approved compliant loan device. Provide continuity without exposing the app to a noncompliant device.",
+          "Case closed: 100/100. Classification correct. Client update is appropriately cautious.",
+          "Completed: Trace recipients; hold payment; verify recovery. Use a known contact to stop payment, scope mail access and sent messages, coordinate recovery, and monitor for recurrence.",
+          "Completed: Reset credentials; remove rogue rules and consent. Preserve audit evidence, remove persistence, review MFA methods and app consent, and reset at the authoritative identity source.",
+          "Completed: Disable account + revoke sessions. Contain the compromised identity under the client plan; revocation can have propagation delays.",
+          "Shift started. Review evidence before making a call."
+        ]
+      },
+      {
+        "seed": 966459,
+        "mode": "Guided",
+        "role": "Investigator",
+        "totalScore": 800,
+        "totalClosed": 8,
+        "cases": [
+          {
+            "template": "scan",
+            "client": 2,
+            "id": "966459-2-0",
+            "reads": [
+              0,
+              1,
+              2
+            ],
+            "done": [
+              "scope",
+              "access",
+              "verify"
+            ],
+            "mistakes": 0,
+            "pressure": 38,
+            "closed": true,
+            "score": 100,
+            "result": "Configuration risk",
+            "notes": "The vulnerability scan reported no critical findings and showed a completed status, however authenticated checks failed with an access denied error. Only 3 of the expected 24 servers were reachable, so the report could not reliably assess vulnerability.\n\nThe service account had expired yesterday and the scanner’s source was also missing from the approved management ACL. These issues prevented the scanner from performing as intended.\n\nAccount access was authorized and the specific ACL allowance needed for scanning. Access remained limited to the approved servers.\n\nA controlled rescan was performed and authentication / host coverage were checked before accepting the results. Any remaining assessment gaps require follow up, and remediation priorities should be based on confirmed findings rather than the original “no critical findings” report.",
+            "communication": 15,
+            "clientUpdate": "The rescan followed correction of the approved scan access and scope. Authentication and host coverage were checked before accepting the findings. The original clean result was unreliable; remediation priorities should use the validated results.",
+            "clientUpdateWhy": "Reports the evidence-quality problem and specifies what makes a rescan trustworthy.",
+            "clientUpdateVersion": 2
+          },
+          {
+            "template": "vuln",
+            "client": 0,
+            "id": "966459-2-1",
+            "reads": [
+              0,
+              1,
+              2
+            ],
+            "done": [
+              "mitigate",
+              "patch",
+              "verify"
+            ],
+            "mistakes": 0,
+            "pressure": 10,
+            "closed": true,
+            "score": 100,
+            "result": "Configuration risk",
+            "notes": "A · CVSS 9.8 · lab server · isolated segment · no known exploitation\nB · CVSS 8.1 · internet-facing gateway · active exploitation reported\nC · CVSS 7.5 · internal kiosk · compensating controls\n\nThe lab server, despite having the highest CVSS score, was on an isolated segment and had no known exploitation. While this will be remedied, the low exposure / risk of the lab server allows us to prioritize other, potentially more immediate critical risks,  such as an active exploitation reported on Gateway B. Approved mitigation is available to restrict exposed admin interface, patch will be rolled out with maintenance & rollback plan.\n",
+            "communication": 15,
+            "clientUpdate": "The exposed gateway was prioritized, the approved mitigation and coordinated patch steps were completed, and the rescan and service checks were performed. We are documenting those validation results; exploitation reports alone do not establish that this gateway was breached.",
+            "clientUpdateWhy": "Prioritizes actual exposure and service impact, preserves continuity and distinguishes vulnerability from confirmed compromise.",
+            "clientUpdateVersion": 2
+          },
+          {
+            "template": "handoff",
+            "client": 1,
+            "id": "966459-2-2",
+            "reads": [
+              0,
+              1,
+              2
+            ],
+            "done": [
+              "verify",
+              "handoff",
+              "kb"
+            ],
+            "mistakes": 0,
+            "pressure": 30,
+            "closed": true,
+            "score": 100,
+            "result": "Documentation gap",
+            "notes": "Sentinel One / MDR\n11:02 UTC — WS-062 isolated.\n11:06 UTC — threat remediation completed.\n11:09 UTC — peer review remained incomplete.\n\nRecovery validation and approval to reconnect WS-062 are still pending. The affected user is working on a loan device.\nWhether other devices are affected has not yet been established. The ticket’s “fixed” comment does not document enough evidence to support closure.\nThe evening analyst owns the remaining scope checks, peer review, and recovery follow-up. The next client update is due at 12:00 UTC and should include confirmed findings and any outstanding checks.",
+            "communication": 15,
+            "clientUpdate": "WS-062 was isolated at 11:02 UTC and threat remediation completed at 11:06. Peer review, scope confirmation and recovery approval remain pending. The user has a loan device; the evening analyst owns the follow-up and the next client update is due at 12:00 UTC.",
+            "clientUpdateWhy": "Separates completed actions from pending validation, names the owner and preserves the actual promised update time.",
+            "clientUpdateVersion": 2
+          },
+          {
+            "template": "phish",
+            "client": 1,
+            "id": "966459-2-3",
+            "reads": [
+              0,
+              1,
+              2
+            ],
+            "done": [
+              "contain",
+              "purge",
+              "recover"
+            ],
+            "mistakes": 0,
+            "pressure": 14,
+            "closed": true,
+            "score": 100,
+            "result": "Confirmed compromise",
+            "notes": "SPF passes for documents-review.example however that does not confirm it is from Microsoft. \nConfirmed reporting user had interacted with the phishing email and entered their credentials.\nUnmanaged sign in detected 3 minutes later indicates compromise.\nThis user account will be contained with its credentials reset and active sessions / tokens revoked.\nPhishing email was found to be sent to 8 other recipients, logs will be checked to see if email was interacted with by those users / removed from their inboxes as well.\nPhishing email will be documented so security controls can be set to block malicious domains / endpoints.\nUser accounts that are found to be compromised will be also be disabled, active sessions revoked, and password / MFA reset as needed.\nUsers will be coached on indicators of phishing email reduce possibility of same compromise in the future.\n",
+            "communication": 15,
+            "clientUpdate": "This was a malicious document lure with evidence of account misuse. We are coordinating identity containment, reviewing affected messages and recipients, and checking for persistence. Please use a trusted channel for follow-up while we establish the full scope.",
+            "clientUpdateWhy": "Connects phishing and account misuse to a scoped response without assuming deleting the email fixes the account.",
+            "clientUpdateVersion": 2
+          }
+        ],
+        "selected": 0,
+        "turn": 20,
+        "trust": 100,
+        "credits": 34,
+        "upgrade": "",
+        "phase": "reward",
+        "wave": 2,
+        "log": [
+          "Case closed: 100/100. Classification correct. Client update fits the incident evidence and response state.",
+          "Completed: Rescan; confirm authentication and host coverage. Verify both coverage and authenticated checks before publishing risk results.",
+          "Completed: Restore approved credentials and scoped ACL. Use the authorized account and network path; do not disable security controls globally.",
+          "Completed: Reconcile inventory, scope and scan coverage. Treat this as a coverage gap, not evidence of low risk.",
+          "Case closed: 100/100. Classification correct. Client update fits the incident evidence and response state.",
+          "Completed: Write reusable SOP with scope and verification. Capture prerequisites, authority, evidence, steps, rollback/escalation and validation.",
+          "Completed: Assign owner, pending checks and next update. Keep recovery and scope review open with explicit accountability.",
+          "Completed: Reconstruct evidence, scope and UTC timeline. Verify the record against actual tool outcomes.",
+          "Case closed: 100/100. Classification correct. Client update fits the incident evidence and response state.",
+          "Completed: Reset credentials; check persistence; coach users. Review MFA, consent and mailbox rules, verify recovery, and reinforce reporting.",
+          "Completed: Preserve sample; remove matching mail and block URL. Scope recipients and use authorized search/remediation; avoid clicking the live link.",
+          "Completed: Contain the exposed identity and revoke sessions. Treat the credentials and new session as compromised; follow the identity incident plan.",
+          "Case closed: 100/100. Classification correct. Client update fits the incident evidence and response state.",
+          "Completed: Rescan and verify service functionality. Confirm the vulnerability is remediated and remote access still works.",
+          "Completed: Schedule tested patch with owner and rollback. Apply a validated patch with business coordination and a recovery plan.",
+          "Completed: Prioritize B; restrict exposed management access. Address the known exploited, exposed gateway using the authorized temporary mitigation.",
+          "Shift started. Review evidence before making a call."
+        ]
+      },
+      {
+        "seed": 966459,
+        "mode": "Guided",
+        "role": "Investigator",
+        "totalScore": 1200,
+        "totalClosed": 12,
+        "cases": [
+          {
+            "template": "firewall",
+            "client": 2,
+            "id": "966459-3-0",
+            "reads": [
+              0,
+              1,
+              2
+            ],
+            "done": [
+              "plan",
+              "approve",
+              "apply"
+            ],
+            "mistakes": 0,
+            "pressure": 25,
+            "closed": true,
+            "score": 100,
+            "result": "Configuration risk",
+            "notes": "The vendor requested access from any source to the server subnet on any port, however the verified requirement was limited to 203.0.113.18 reaching application server 10.20.4.12 over TCP/443 for two hours.\n\nWe confirmed the application server is in VLAN 40, with the return route and application listener verified. Management VLAN 10 was unrelated to the request.\n\nA narrow rule was created with a 2 hour expiry and rollback steps. Approval was obtained from the infrastructure lead, and the configuration was backed up before applying the change. We tested that the required vendor access worked and unrelated traffic remained blocked, then documented the change. Rule expiry must be confirmed, with rollback available if health checks fail.",
+            "communication": 15,
+            "clientUpdate": "The broad emergency rule was replaced through the approved scoped change. Required service access and the effectiveness of the restrictions were tested; the change and rollback details are recorded.",
+            "clientUpdateWhy": "Addresses excessive access through a tested, scoped change rather than an unplanned outage.",
+            "clientUpdateVersion": 2
+          },
+          {
+            "template": "ransom",
+            "client": 0,
+            "id": "966459-3-ransom-1",
+            "reads": [
+              0,
+              1,
+              2
+            ],
+            "done": [
+              "isolate",
+              "clean",
+              "recover"
+            ],
+            "mistakes": 0,
+            "pressure": 3,
+            "closed": true,
+            "score": 100,
+            "result": "Confirmed compromise",
+            "notes": "SentinelOne detected suspicious activity on workstation WS-019. The process tree shows Outlook opening Word, followed by Word launching PowerShell. An unsigned child process modified 230 documents, and the user reported renamed files. A connection to 198.51.100.66 over port 443 was also recorded. The combined activity supports a confirmed compromise, however the evidence does not establish whether data was actually stolen.\n\nWS-019 was confirmed to be online, but network quarantine was off and response was still pending. A file server share was open, so shared files and other devices may also need to be included in the investigation.\n\nThe client playbook authorizes immediate workstation isolation. We will isolate WS-019, preserve any evidence found, then stop and remediate the malicious activity. Other endpoints and file-share activity will also be checked to confirm they were not impacted.\n\nThe next client update should explain completed actions and  checks performed without claiming that other devices or data were unaffected until fully confirmed.",
+            "communication": 15,
+            "clientUpdate": "The evidence indicates malicious file activity on the server. We are coordinating isolation and scoping with incident response, preserving evidence and validating recovery options before restoring service. We cannot yet confirm the full impact.",
+            "clientUpdateWhy": "Treats the malicious activity as an incident and separates containment from validated recovery.",
+            "clientUpdateVersion": 2
+          },
+          {
+            "template": "travel",
+            "client": 1,
+            "id": "966459-3-travel-2",
+            "reads": [
+              0,
+              1,
+              2
+            ],
+            "done": [
+              "validate",
+              "record"
+            ],
+            "mistakes": 0,
+            "pressure": 20,
+            "closed": true,
+            "score": 100,
+            "result": "Benign activity",
+            "notes": "Logs show sessions from Denver at 09:11 UTC and Chicago at 09:14 UTC, however both sessions used the same compliant device, LAP-041, and authenticated with MFA. Network inventory confirmed that 203.0.113.40 belongs to the corporate VPN, and the manager confirmed approved VPN use through a known phone number.\n\nNo related inbox rule changes, new app consent or abnormal downloads were found in the logs. The evidence supports benign activity caused by VPN routing. We will document the findings and continue to monitor for other suspicious activity.",
+            "communication": 15,
+            "clientUpdate": "The device, session, corporate VPN address and independent user verification explain the location alert. We can document this as expected VPN activity and preserve access, while keeping other identity detections enabled.",
+            "clientUpdateWhy": "Closes the specific verified benign alert without disabling broader monitoring.",
+            "clientUpdateVersion": 2
+          },
+          {
+            "template": "mac",
+            "client": 1,
+            "id": "966459-3-3",
+            "reads": [
+              0,
+              1,
+              2
+            ],
+            "done": [
+              "isolate",
+              "clean",
+              "recover"
+            ],
+            "mistakes": 0,
+            "pressure": 37,
+            "closed": true,
+            "score": 100,
+            "result": "Confirmed compromise",
+            "notes": "The user confirmed installing an unapproved browser update from a pop-up on MAC-025. SentinelOne showed the installer launching an unsigned executable, creating a new LaunchAgent and repeatedly connecting to 198.51.100.81. \n\nNetwork isolation was off. We will isolate the Mac under the approved response plan, preserve execution logs, the installer hash and LaunchAgent details, then remediate the malicious process and persistence. Other endpoints will be checked for matching activity.",
+            "communication": 15,
+            "clientUpdate": "The update prompt led to malicious activity on the Mac. We are coordinating endpoint containment, preserving the relevant evidence and removing persistence, with recovery and related account checks before confirming safe return to use.",
+            "clientUpdateWhy": "Treats the fake update as an endpoint incident and separates cleanup from verified recovery.",
+            "clientUpdateVersion": 2
+          }
+        ],
+        "selected": 3,
+        "turn": 19,
+        "trust": 100,
+        "credits": 48,
+        "upgrade": "",
+        "phase": "finished",
+        "wave": 3,
+        "log": [
+          "Case closed: 100/100. Classification correct. Client update fits the incident evidence and response state.",
+          "Completed: Validate clean recovery or approved reimage. Use supported recovery options, verify business function and monitor before reconnecting.",
+          "Completed: Preserve evidence; remediate process and persistence. Coordinate removal of the malicious components and investigate credential exposure.",
+          "Completed: Isolate affected Mac under the response plan. Contain outbound access and potential spread.",
+          "Case closed: 100/100. Classification correct. Client update fits the incident evidence and response state.",
+          "Completed: Apply; test permitted and denied traffic; log change. Verify the expected path and continued segmentation, then track rule expiry.",
+          "Completed: Obtain owner approval; back up configuration. In this simulation the owner now approves the scoped plan. Approval is not implied by urgency.",
+          "Completed: Prepare scoped TCP/443 rule with expiry. Limit the rule to the verified vendor and application, and include rollback steps.",
+          "Case closed: 100/100. Classification correct. Client update fits the incident evidence and response state.",
+          "Completed: Document benign result; narrowly tune detection. Record why the event is benign and request narrowly scoped tuning, preserving other identity detections.",
+          "Completed: Correlate device, VPN and user verification. Validate the benign explanation with independent context.",
+          "Case closed: 100/100. Classification correct. Client update fits the incident evidence and response state.",
+          "Completed: Scope peers; validate backups and clean recovery. Confirm eradication, recovery options and business function before reconnecting. Rollback is not a universal guarantee.",
+          "Completed: Preserve telemetry; kill and remediate threat. Collect relevant evidence and coordinate mitigation before destructive recovery.",
+          "Completed: Network-isolate the affected workstation. Isolate the infected host under the response plan while maintaining the management channel.",
+          "Shift started. Review evidence before making a call."
+        ]
+      }
+    ]
   }
 }

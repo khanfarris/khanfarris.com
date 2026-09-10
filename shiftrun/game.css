@@ -3034,3 +3034,82 @@ body{background:var(--d-bg);font:14px/1.6 var(--sans);color:var(--d-ink)}button,
 .reward .upgrade:hover:not(:disabled){background:var(--d-hover);border-color:var(--d-accent)}.mastery-grid .panel,.portfolio-status,.restore-panel{border-color:var(--d-edge);background:var(--d-panel)}
 .rubric span,.comms-feedback,.journal details,.records details{background:rgb(var(--p-base)/.45);border-color:var(--d-edge);color:var(--d-muted)}.rubric b,.score-note,.record-score{color:var(--d-ink)}
 @media(max-width:760px){.game-window{margin-top:16px}.shiftrun-topbar{min-height:62px;gap:8px}.shiftrun-topbar .top-slash{margin:0 7px}.shiftrun-topbar .top-product{font-size:10px}.appearance-tools{gap:5px}.appearance-tools>button,.theme-picker>button{padding:8px}.case-heading{padding:20px}.case-heading h2{font-size:25px}}
+
+/* A clear route to the author's work, with a quiet return to personal progress. */
+.save-controls { gap:12px; padding:18px 0; align-items:center; }
+.save-controls > button { font-size:12px!important; min-height:40px; padding:9px 14px!important; }
+.save-controls .casebook-button { font:500 14px/1.4 var(--sans)!important; gap:11px; }
+.save-controls .casebook-button[aria-pressed=false] {
+  position:relative; isolation:isolate; border-radius:9px;
+  border-color:#f45372a6!important; color:#ffe8ed!important;
+  background:linear-gradient(110deg,#3b1622,#26151d)!important;
+  box-shadow:inset 0 1px 0 #ffffff0a,0 0 20px #f4537217;
+  transition:background .25s,border-color .25s,box-shadow .25s;
+}
+.save-controls .casebook-button[aria-pressed=false]::before {
+  content:''; position:absolute; inset:-1px; z-index:-1; border-radius:inherit; pointer-events:none;
+  box-shadow:0 0 24px #f4537240,0 0 4px #f453725c;
+  animation:profile-glow 3.6s ease-in-out infinite;
+}
+.save-controls .casebook-button[aria-pressed=false]:hover,
+.save-controls .casebook-button[aria-pressed=false]:focus-visible {
+  border-color:#ff8da5!important; background:linear-gradient(110deg,#501c2c,#321921)!important;
+  box-shadow:0 0 24px #f4537233;
+}
+.save-controls .casebook-button[aria-pressed=false]:focus-visible { outline:2px solid #ff8da5; outline-offset:4px; }
+.profile-beacon { width:7px; height:7px; flex:0 0 7px; border-radius:50%; background:#ff819b; box-shadow:0 0 10px #f4537290; }
+@keyframes profile-glow { 0%,100% { opacity:.28; } 50% { opacity:1; } }
+.profile-banner { font-size:12px; padding:12px 15px; color:var(--d-muted); }
+
+/* Readable telemetry, aligned labels and compact icons with comfortable hit areas. */
+.shiftbar {
+  display:grid; grid-template-columns:252px minmax(156px,1fr) minmax(80px,.65fr) minmax(90px,.65fr) auto;
+  column-gap:22px; row-gap:22px; padding:30px 0;
+}
+.shiftbar .shift-dial { min-width:0; margin:0; width:100%; max-width:295px; }
+.shift-dial-meta { display:flex; align-items:center; gap:5px; font:500 13px/1.5 var(--mono); color:var(--d-ink); letter-spacing:.07em; }
+.shift-dial-meta > span { font-size:11px; color:var(--d-muted); letter-spacing:.02em; }
+.shift-dial-heading { height:78px; gap:5px; }
+.shift-word { font:500 28px var(--display); color:var(--d-ink); }
+.shift-number { font-size:64px; padding-right:0; }
+.shift-total { font-size:17px; color:var(--d-muted); white-space:nowrap; }
+.shift-dial-foot,.shift-browse-hint { font-size:10px; color:var(--d-muted); }
+.shiftbar .stat,.shiftbar .stat:nth-child(2) { min-width:0; align-self:center; }
+.shiftbar .stat > small { display:flex; align-items:center; gap:5px; white-space:nowrap; font:500 13px/1.5 var(--mono); color:var(--d-muted); letter-spacing:.06em; }
+.shiftbar .stat > b { font:500 34px/1.5 var(--display); font-variant-numeric:tabular-nums; }
+.shiftbar .stat b > span { font-size:13px; color:var(--d-muted); }
+.shiftbar .stat [data-slot=progress-track] { height:4px; max-width:190px; }
+.shiftbar .perk {
+  display:grid; grid-template-columns:19px auto 24px; gap:2px 8px; margin:0; padding:13px 14px;
+  border:1px solid rgb(var(--p-accent)/.18); border-radius:10px; background:rgb(var(--p-accent)/.035);
+}
+.perk-name { font:500 15px/1.5 var(--display); color:var(--d-ink); }
+.shiftbar .perk > small { grid-column:2 / 4; font:10px/1.5 var(--mono); color:var(--d-muted); letter-spacing:.03em; }
+.mechanic-help { margin-left:2px; flex:0 0 auto; }
+.mechanic-help .mechanic-info {
+  width:24px!important; min-width:24px!important; height:24px!important; min-height:24px!important;
+  padding:0!important; color:var(--d-muted)!important;
+}
+.mechanic-info > svg { width:14px!important; height:14px!important; flex-shrink:0; }
+.mechanic-help .mechanic-info:hover,.mechanic-help .mechanic-info[aria-expanded=true] { background:var(--d-hover)!important; color:var(--d-ink)!important; }
+.shiftbar .mechanic-help { margin-left:0; }
+@media(max-width:1100px) {
+  .shiftbar { grid-template-columns:minmax(252px,1.4fr) minmax(145px,1fr) minmax(80px,.6fr) minmax(80px,.6fr); gap:20px; }
+  .shiftbar .perk { grid-column:1 / -1; justify-self:start; }
+}
+@media(max-width:760px) {
+  .topnav > .mechanic-help { display:none!important; }
+  .save-controls { gap:10px 8px; }
+  .save-controls .casebook-button { flex:1 1 100%; min-height:46px; font-size:15px!important; }
+  .save-controls > button:not(.casebook-button) { flex:1; }
+  .profile-banner { font-size:11px; }
+  .shiftbar { grid-template-columns:minmax(130px,1.3fr) minmax(60px,.7fr) minmax(60px,.7fr); gap:20px 10px; padding:24px 0; }
+  .shiftbar .shift-dial { grid-column:1 / -1; max-width:100%; }
+  .shift-dial-heading { height:78px; }
+  .shift-dial-meta { font-size:12px; }
+  .shift-number { font-size:64px; }
+  .shiftbar .stat > small { font-size:12px; gap:2px; letter-spacing:0; }
+  .shiftbar .stat > b { font-size:30px; }
+  .shiftbar .stat b > span { font-size:12px; }
+  .shiftbar .perk { justify-self:stretch; grid-template-columns:19px 1fr 24px; }
+}

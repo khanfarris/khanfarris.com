@@ -430,7 +430,11 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
         <Help topic="navigation" label="Navigation" /><span role="status">{storage}</span>
       </nav>
       <div className="save-controls">
-        <button className="casebook-button" aria-pressed={isProfile} onClick={onToggle}>{isProfile?'Return to your progress':'View khanfarris profile'}</button>
+        <button className="casebook-button" aria-pressed={isProfile} onClick={onToggle}>
+          {!isProfile && <span className="profile-beacon" aria-hidden="true" />}
+          {isProfile?'Return to your progress':'View khanfarris profile'}
+          {!isProfile && <ArrowRight size={17} aria-hidden="true" />}
+        </button>
         <button
           onClick={() =>
             download(
@@ -470,7 +474,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
             </div>
             <div className="perk">
               <Shield size={18} />
-              {run.role}
+              <span className="perk-name">{run.role}</span>
               <Help topic="specialty" label="Specialty perk" />
               <small>
                 {run.upgrade === 'watch'

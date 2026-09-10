@@ -1,5 +1,6 @@
 import {useEffect,useLayoutEffect,useId,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
+import {Info} from 'lucide-react';
 export const explanations={
  turn:'A turn is an action, not elapsed time. Reviewing a new evidence source or attempting a response normally spends one turn. Reading, writing notes, switching tabs, and reopening reviewed evidence are free. Specialties can waive a turn. Practice mode does not advance turns.',
  pressure:'Pressure is urgency for each incident. Each turn adds 4 pressure to the active incident and 3 to others in Guided mode; Veteran adds 7 and 6. Each unstabilized incident at 85+ pressure costs 2 trust per turn. A successful stabilizing action reduces pressure by 25 and stops further growth. Closed incidents stop contributing. Severity labels are fixed scenario labels, separate from pressure.',
@@ -21,7 +22,7 @@ export function Help({topic,label}:{topic:keyof typeof explanations;label:string
  useLayoutEffect(()=>{if(!open)return;const box=tooltip.current?.getBoundingClientRect();if(box&&box.bottom>innerHeight-12)setPosition(p=>({...p,top:Math.max(12,(ref.current?.getBoundingClientRect().top||innerHeight)-box.height-8)}));},[open]);
  useEffect(()=>{if(!open)return;const dismiss=(e:Event)=>{if(!ref.current?.contains(e.target as Node)&&!tooltip.current?.contains(e.target as Node))setOpen(false)};const escape=(e:KeyboardEvent)=>{if(e.key==='Escape')setOpen(false)};document.addEventListener('pointerdown',dismiss);document.addEventListener('keydown',escape);const close=()=>setOpen(false);window.addEventListener('resize',close);window.addEventListener('scroll',dismiss,true);return()=>{window.removeEventListener('resize',close);window.removeEventListener('scroll',dismiss,true);document.removeEventListener('pointerdown',dismiss);document.removeEventListener('keydown',escape)}},[open]);
  return <span className="mechanic-help" ref={ref} onPointerEnter={e=>{if(e.pointerType==='mouse')show()}} onPointerLeave={e=>{if(e.pointerType==='mouse'&&!tooltip.current?.contains(e.relatedTarget as Node))setOpen(false)}}>
- <button type="button" className="mechanic-info" aria-label={`About ${label}`} aria-expanded={open} aria-describedby={open?id:undefined} onClick={()=>open?setOpen(false):show()} onFocus={e=>{if(e.currentTarget.matches(':focus-visible'))show()}} onBlur={()=>setOpen(false)}>ⓘ</button>
+ <button type="button" className="mechanic-info" aria-label={`About ${label}`} aria-expanded={open} aria-describedby={open?id:undefined} onClick={()=>open?setOpen(false):show()} onFocus={e=>{if(e.currentTarget.matches(':focus-visible'))show()}} onBlur={()=>setOpen(false)}><Info size={15} strokeWidth={1.6} aria-hidden="true" /></button>
  {open&&createPortal(<span ref={tooltip} role="tooltip" id={id} className="mechanic-tooltip" style={position} onPointerLeave={e=>{if(e.pointerType==='mouse'&&!ref.current?.contains(e.relatedTarget as Node))setOpen(false)}}><strong>{label}</strong>{explanations[topic]}</span>,document.body)}
  </span>;
 }
