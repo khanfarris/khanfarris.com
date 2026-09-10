@@ -50,6 +50,7 @@ import {
   download,
   scoreDetails,
   keepShift,
+  runQueues,
   improvementTips,
   type Save,
 } from './progress';
@@ -150,6 +151,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
   const [profileSelection,setProfileSelection]=useState(profile?.run?.selected||0);
   const { save, setSave, ready, status: storage } = useProgress(profile);
   const activeRun=save.run || (isProfile ? save.shiftHistory?.at(-1) || null : null);
+  const queues=runQueues(save);
   const completedWaves=activeRun ? [...(save.shiftHistory||[]).filter(h=>h.seed===activeRun.seed&&h.mode===activeRun.mode&&h.cases.every(c=>c.closed)).map(h=>h.wave),...(activeRun.cases.every(c=>c.closed)?[activeRun.wave]:[])] : [];
   const selectedWave=browsingWave ?? (isProfile&&completedWaves.length?Math.max(...completedWaves):activeRun?.wave);
   const past=!!activeRun && !!selectedWave && selectedWave<activeRun.wave;
@@ -280,7 +282,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     const records=save.records.filter(r=>r.id.startsWith(`${activeRun.seed}-${selectedWave}-`)).sort((a,b)=>Number(a.id.split('-').at(-1))-Number(b.id.split('-').at(-1)));
     return {...shell,phase:'finished' as const,cases:records.map(r=>r.detail?{...r.detail,notes:r.note,score:r.score}:{...shell.cases[0],id:r.id,template:r.template,closed:true,score:r.score,notes:r.note}),log:['Read-only review from saved incident records. Historical trust, turns and intel were not retained in this older save.']};
   })():null;
-  const viewedRun=locked&&activeRun&&selectedWave?newRun(activeRun.seed,activeRun.mode,activeRun.role,'All',selectedWave):past?(historical||recovered):activeRun;
+  const viewedRun=locked&&activeRun&&selectedWave?newRun(activeRun.seed,activeRun.mode,activeRun.role,'All',selectedWave,queues):past?(historical||recovered):activeRun;
   const run = viewedRun ? {...viewedRun,selected:readOnly?Math.min(profileSelection,viewedRun.cases.length-1):viewedRun.selected} : null,
     c = run?.cases[run.selected],
     s = c ? template(c) : null;
@@ -354,7 +356,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
   function nextWave(upgrade: string) {
     if (!run || readOnly || locked || run.phase!=='reward') return;
     setBrowsingWave(null);
-    const next = newRun(run.seed, run.mode, run.role, 'All', run.wave + 1);
+    const next = newRun(run.seed, run.mode, run.role, 'All', run.wave + 1, queues);
     update({
       ...next,
       trust: upgrade === 'restore' ? Math.min(100, run.trust + 25) : run.trust,
@@ -959,6 +961,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                         run.role,
                         'All',
                         run.wave + 1,
+                        queues,
                       );
                       update({
                         ...next,

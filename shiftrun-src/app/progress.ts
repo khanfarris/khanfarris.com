@@ -1,5 +1,5 @@
 import {clientUpdates} from './client-updates';
-import { scenarios, template, type Run, type CaseState } from './game';
+import { scenarios, template, deduplicateRun, type Run, type CaseState, type ShiftQueue } from './game';
 export type RecordItem = {
   id: string;
   template: string;
@@ -34,6 +34,32 @@ export const emptySave: Save = {
 };
 export function keepShift(history: Run[] = [], run: Run): Run[] {
   return [...history.filter(h=>!(h.seed===run.seed && h.mode===run.mode && h.wave===run.wave)),structuredClone(run)];
+}
+// Older saves may retain completed records without full shift snapshots.
+// Only use recorded queues here; never invent historical incident choices.
+export function runQueues(save: Save): ShiftQueue[] {
+  const active = save.run || save.shiftHistory?.at(-1);
+  if (!active) return [];
+  const queues: ShiftQueue[] = [];
+  for (let wave = 1; wave <= 3; wave++) {
+    const known = active.wave === wave ? active : save.shiftHistory?.find(h =>
+      h.seed === active.seed && h.mode === active.mode && h.wave === wave);
+    if (known) { queues.push(known); continue; }
+    const records = save.records.filter(r => r.id.startsWith(`${active.seed}-${wave}-`)
+      && (!r.mode || r.mode === active.mode));
+    if (records.length) queues.push({ seed: active.seed, mode: active.mode, wave, cases: records });
+  }
+  return queues;
+}
+export function migrateRepeatedIncidents(save: Save): Save {
+  if (!save.run || save.run.phase !== 'play') return save;
+  const recorded = new Set(save.records.map(r => r.id));
+  const run = deduplicateRun(save.run, runQueues(save), c =>
+    c.closed || recorded.has(c.id) || c.reads.length > 0 || c.done.length > 0
+    || c.mistakes > 0 || c.score > 0 || !!c.notes || !!c.result
+    || c.communication !== undefined || !!c.clientUpdate
+    || Object.values(save.drafts?.[c.id] || {}).some(Boolean));
+  return run === save.run ? save : { ...save, run };
 }
 const finite = (n: unknown, min = 0, max = 10000000) =>
   typeof n === 'number' && Number.isFinite(n) && n >= min && n <= max;
@@ -128,7 +154,7 @@ export function normalizeSave(input: unknown): Save {
       provenance: r.provenance || 'Recorded in the training game',
     };
   });
-  return migrateOwnerClientUpdates({ ...s, records, drafts: s.drafts || {}, schemaVersion: 2 });
+  return migrateRepeatedIncidents(migrateOwnerClientUpdates({ ...s, records, drafts: s.drafts || {}, schemaVersion: 2 }));
 }
 // User-authorized correction applies only to their known saved run, never other visitors.
 export function migrateOwnerClientUpdates(input:Save):Save{
@@ -196,7 +222,7 @@ export function mergeSaves(remote: Save | null, local: Save | null): Save {
   )
     run = l.run;
   const records = [...map.values()];
-  return {
+  return migrateRepeatedIncidents({
     ...r,
     records,
     shiftHistory: [...(l.shiftHistory||[]),...(r.shiftHistory||[])].reduce((all,h)=>keepShift(all,h),[] as Run[]),
@@ -208,7 +234,7 @@ export function mergeSaves(remote: Save | null, local: Save | null): Save {
       records.reduce((n, x) => n + x.score, 0),
     ),
     schemaVersion: 2,
-  };
+  });
 }
 export function backupJSON(save: Save) {
   return JSON.stringify(

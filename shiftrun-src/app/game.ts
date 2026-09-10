@@ -1025,6 +1025,9 @@ export type Run = {
   wave: number;
   log: string[];
 };
+export type ShiftQueue = Pick<Run, 'seed' | 'mode' | 'wave'> & {
+  cases: Pick<CaseState, 'template'>[];
+};
 export function rng(seed: number) {
   let x = seed >>> 0;
   return () => {
@@ -1032,23 +1035,60 @@ export function rng(seed: number) {
     return x / 4294967296;
   };
 }
+function drawScenarios(seed: number, wave: number, focus = 'All') {
+  const random = rng(seed + wave * 19);
+  const order = scenarios.filter((s) => focus === 'All' || s.skill === focus);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return { random, order };
+}
+// Keep the unique slots in place; replace repeats without consuming another
+// slot's scenario. Used for both new queues and untouched legacy incidents.
+export function deduplicateRun(
+  run: Run,
+  history: ShiftQueue[],
+  protect: (c: CaseState) => boolean = () => false,
+): Run {
+  if (!['Guided', 'Veteran'].includes(run.mode) || run.wave < 2 || run.wave > 3)
+    return run;
+  const seen = new Set(history
+    .filter(h => h.seed === run.seed && h.mode === run.mode && h.wave < run.wave)
+    .flatMap(h => h.cases.map(c => c.template)));
+  const reserved = new Set(run.cases.map(c => c.template));
+  const candidates = drawScenarios(run.seed, run.wave).order;
+  let changed = false;
+  const cases = run.cases.map((c, index) => {
+    if (!seen.has(c.template) || protect(c)) {
+      seen.add(c.template);
+      return c;
+    }
+    const replacement = candidates.find(s => !seen.has(s.id) && !reserved.has(s.id));
+    if (!replacement) return c;
+    seen.add(replacement.id);
+    changed = true;
+    // Give the replacement its own identity so an older backup cannot attach
+    // the repeated scenario's notes or answers to this different incident.
+    return { ...c, id: `${run.seed}-${run.wave}-${replacement.id}-${index}`, template: replacement.id };
+  });
+  return changed ? { ...run, cases } : run;
+}
 export function newRun(
   seed: number,
   mode: string,
   role: string,
   focus = 'All',
   wave = 1,
+  history: ShiftQueue[] = [],
 ): Run {
-  const r = rng(seed + wave * 19);
-  const pool = scenarios.filter((s) => focus === 'All' || s.skill === focus);
-  let order = [...pool];
-  for (let i = order.length - 1; i > 0; i--) {
-    const j = Math.floor(r() * (i + 1));
-    [order[i], order[j]] = [order[j], order[i]];
-  }
+  // A previous Practice selection must not narrow a full campaign's pool.
+  if (mode !== 'Practice') focus = 'All';
+  const draw = drawScenarios(seed, wave, focus), r = draw.random;
+  let order = draw.order;
   if (mode === 'Guided' && wave === 1 && focus === 'All')
     order = [scenarios[0], scenarios[5], scenarios[8], scenarios[10]];
-  return {
+  const run: Run = {
     seed,
     mode,
     role,
@@ -1074,6 +1114,12 @@ export function newRun(
     wave,
     log: ['Shift started. Review evidence before making a call.'],
   };
+  if (focus !== 'All' || !['Guided', 'Veteran'].includes(mode) || wave < 2 || wave > 3)
+    return run;
+  const previous = Array.from({ length: wave - 1 }, (_, i) =>
+    history.find(h => h.seed === seed && h.mode === mode && h.wave === i + 1)
+      || newRun(seed, mode, role, focus, i + 1, history));
+  return deduplicateRun(run, previous);
 }
 export const clients = [
   {
