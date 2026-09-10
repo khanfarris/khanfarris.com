@@ -69,7 +69,7 @@
       const command=value.toLowerCase();
       if(command==='clear'){output.replaceChildren();return;}
       if(command==='help')print('help       available commands\nls         browse the site\nwhoami     meet Farris\nopen dns   open a study note\ncat        toggle the companion\nclear      clear this terminal\nTip: use ↑ / ↓ for command history.');
-      else if(command==='whoami')print('Farris Khan\nsecurity / ops tinkerer\nMicrosoft Certified: Security Operations Analyst Associate (SC-200) · In Progress\nMicrosoft Certified: Azure Administrator Associate (AZ-104) · In Progress');
+      else if(command==='whoami')print('Farris Khan\nsecurity / ops tinkerer\nMicrosoft Certified: Security Operations Analyst Associate (SC-200) · In Progress\nHTB Certified Penetration Testing Specialist (CPTS) · In Progress');
       else if(command==='ls'){pages.forEach(page=>{const p=document.createElement('p'),a=document.createElement('a');a.href=page.url;a.textContent=page.name+' ↗';p.append(a);output.append(p);});}
       else if(command==='cat')print(toggleCat());
       else if(command.startsWith('open ')){const name=command.slice(5).trim();const page=pages.find(p=>p.name.toLowerCase()===name||p.slug===name||p.url.replace('.html','')===name);if(page)window.location.assign(page.url);else print('Page not found. Use ls to see the available names.');}
