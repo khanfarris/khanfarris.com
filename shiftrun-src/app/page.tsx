@@ -33,6 +33,7 @@ import {
   readEvidence,
   perform,
   closeCase,
+  responseComplete,
   rng,
   type CaseState,
   type Run,
@@ -295,6 +296,8 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     c = run?.cases[run.selected],
     s = c ? template(c) : null;
   const sealed=locked || !!(isProfile&&c&&!c.closed);
+  const handoffLocked=!!c && !c.closed && !responseComplete(c);
+  const responseSteps=s?.actions.filter(a=>!a.bad)||[];
   const level = Math.floor(save.xp / 350) + 1;
   useEffect(() => {
     const d = c ? save.drafts?.[c.id] : null;
@@ -338,7 +341,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
     setNote(d?.note || '');
   }
   function submit() {
-    if (readOnly || locked || !run || !c || !s || !disposition || !comms || c.closed) return;
+    if (readOnly || locked || handoffLocked || !run || !c || !s || !disposition || !comms || c.closed) return;
     const next = closeCase(run, disposition, Number(comms) - 1, note);
     const closed = next.cases[next.selected];
     setSave((prev) => ({
@@ -644,7 +647,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                     01 Evidence <span>{c.reads.length}/3</span>
                   </TabsTrigger>
                   <TabsTrigger value="respond">02 Respond</TabsTrigger>
-                  <TabsTrigger value="handoff">03 Handoff</TabsTrigger>
+                  <TabsTrigger value="handoff">03 Handoff {(sealed||handoffLocked)&&<Lock size={13} aria-hidden="true" />}</TabsTrigger>
                   {c.closed && (
                     <TabsTrigger value="debrief">Debrief</TabsTrigger>
                   )}
@@ -760,13 +763,16 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                       )}
                     </>
                   )}
-                  <button className="primary" onClick={() => setTab('handoff')}>
-                    Prepare handoff <ChevronRight size={16} />
-                  </button>
+                  <div className="handoff-next">
+                    <button className="primary" disabled={handoffLocked} onClick={() => setTab('handoff')}>
+                      Prepare handoff {handoffLocked?<Lock size={14} aria-hidden="true" />:<ChevronRight size={16} />}
+                    </button>
+                    {handoffLocked&&!sealed&&<p>Complete the required response actions to unlock Handoff.</p>}
+                  </div>
                 </TabsContent>
                 <TabsContent value="handoff">
                   <p className="tab-intro">
-                    {sealed?'Your assessment and analyst notes will appear here when you work this incident.':'Commit your assessment. Closing early is allowed, but missed evidence and response steps reduce your score.'}
+                    {sealed?'Your assessment and analyst notes will appear here when you work this incident.':handoffLocked?'Your answer choices unlock after Respond. You can draft analyst notes below while you investigate.':'Record your assessment and client update, then commit to see the debrief.'}
                   </p>
                   {sealed?<LockedHandoff/>:c.closed || readOnly ? (
                     <div className="coach">
@@ -774,6 +780,21 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                     </div>
                   ) : (
                     <>
+                      {handoffLocked ? (
+                        <section className="handoff-gate" aria-labelledby="handoff-gate-heading">
+                          <span className="handoff-gate-icon" aria-hidden="true"><Lock size={23} /></span>
+                          <div>
+                            <small>RESPONSE IN PROGRESS</small>
+                            <h3 id="handoff-gate-heading">Finish Respond to unlock Handoff</h3>
+                            <p>Complete the required response actions before choosing a classification or client update.</p>
+                            <div className="handoff-gate-progress" role="status">
+                              <span className="handoff-gate-track" aria-hidden="true">{responseSteps.map(a=><i key={a.id} className={c.done.includes(a.id)?'complete':''} />)}</span>
+                              <span>{responseSteps.filter(a=>c.done.includes(a.id)).length} of {responseSteps.length} response steps complete</span>
+                            </div>
+                            <button onClick={()=>setTab('respond')}>Return to Respond <ArrowRight size={15} /></button>
+                          </div>
+                        </section>
+                      ) : <>
                       <Choices
                         label="What does the evidence establish?"
                         value={disposition}
@@ -813,6 +834,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                           );})}
                         </RadioGroup>
                       </fieldset>
+                      </>}
                       <label className="note-label" htmlFor="case-note">
                         Your analyst notes{' '}
                         <small>
@@ -832,7 +854,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                       />
                       <button
                         className="primary"
-                        disabled={!disposition || !comms}
+                        disabled={handoffLocked || !disposition || !comms}
                         onClick={submit}
                       >
                         Commit assessment & reveal debrief <Check size={16} />
@@ -1148,7 +1170,7 @@ export default function Home({profile,onToggle}:{profile?:Save;onToggle:()=>void
                   </li>
                   <li>
                     <h4>Handoff: record your assessment.</h4>
-                    <p>Choose what the evidence establishes and a client update that matches this incident. Add analyst notes to explain your reasoning, then commit. Notes are saved but are not graded.</p>
+                    <p>Complete the required Respond actions to unlock the classification and client-update choices. You can draft analyst notes before then. Once unlocked, choose answers that match this incident and commit. Notes are saved but are not graded.</p>
                   </li>
                   <li>
                     <h4>Debrief: learn from your decisions.</h4>

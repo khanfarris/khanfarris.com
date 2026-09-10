@@ -1142,6 +1142,9 @@ export const clients = [
 export function template(c: CaseState) {
   return scenarios.find((s) => s.id === c.template)!;
 }
+export function responseComplete(c: CaseState) {
+  return template(c).actions.filter(a => !a.bad).every(a => c.done.includes(a.id));
+}
 export function tick(run: Run, index: number, free = false): Run {
   if (free || run.mode === 'Practice') return run;
   let trust = run.trust;
@@ -1225,7 +1228,7 @@ export function closeCase(
   note: string,
 ): Run {
   const c = run.cases[run.selected];
-  if (c.closed) return run;
+  if (c.closed || !responseComplete(c)) return run;
   const s = template(c),
     required = s.actions.filter((a) => !a.bad),
     coverage =
