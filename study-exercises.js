@@ -130,8 +130,71 @@
     access(finance,mfa,compliant){return {allowed:finance&&mfa&&compliant,policyAllowed:mfa&&compliant,missing:[!finance&&'Finance group permission on the SharePoint resource',!mfa&&'Completed MFA',!compliant&&'Compliant device'].filter(Boolean)};},
     tcp(optionBytes){const padding=(4-(optionBytes%4))%4;return {padding,header:20+optionBytes+padding,offset:(20+optionBytes+padding)/4};}
   };
+  // Small explanations shared by native study diagrams. One controller per page.
+  function createStudyTips(doc,view){
+    const mounted=new WeakSet();let active=null,leaveTimer=0,disposed=false;
+    const cancelLeave=()=>{if(leaveTimer)view.clearTimeout(leaveTimer);leaveTimer=0;};
+    const close=()=>{
+      cancelLeave();if(!active)return;
+      const {button,tip}=active;active=null;
+      button.setAttribute('aria-expanded','false');
+      if(typeof tip.hidePopover==='function'&&tip.matches(':popover-open'))tip.hidePopover();
+      delete tip.dataset.fallbackOpen;tip.hidden=true;
+    };
+    const position=(button,tip)=>{
+      const anchor=button.getBoundingClientRect(),width=doc.documentElement.clientWidth||view.innerWidth,height=view.innerHeight;
+      tip.style.maxHeight=Math.max(48,Math.min(height-24,Math.max(anchor.top-16,height-anchor.bottom-16)))+'px';
+      const rect=tip.getBoundingClientRect();
+      const left=Math.max(8,Math.min(anchor.left+anchor.width/2-rect.width/2,width-rect.width-8));
+      const below=anchor.bottom+8,top=below+rect.height<=height-8?below:anchor.top-rect.height-8;
+      tip.style.left=left+'px';tip.style.top=Math.max(8,Math.min(top,height-rect.height-8))+'px';
+    };
+    const show=(button,tip)=>{
+      if(disposed||!button.isConnected||!tip.isConnected)return;
+      cancelLeave();if(active?.button===button)return;
+      close();active={button,tip,pinned:false,overButton:false,overTip:false};tip.hidden=false;
+      if(typeof tip.showPopover==='function'){tip.showPopover();position(button,tip);}
+      else tip.dataset.fallbackOpen='true';
+      button.setAttribute('aria-expanded','true');
+    };
+    const scheduleClose=()=>{
+      cancelLeave();leaveTimer=view.setTimeout(()=>{
+        leaveTimer=0;
+        if(active&&!active.pinned&&!active.overButton&&!active.overTip&&doc.activeElement!==active.button)close();
+      },160);
+    };
+    const mount=(container=doc)=>{
+      if(disposed)return;
+      container.querySelectorAll('[data-study-tip]').forEach(button=>{
+        if(mounted.has(button))return;
+        const tip=doc.getElementById(button.dataset.studyTip);if(!tip)return;
+        mounted.add(button);tip.hidden=true;
+        button.addEventListener('pointerenter',event=>{if(event.pointerType==='touch')return;show(button,tip);if(active?.button===button)active.overButton=true;});
+        button.addEventListener('pointerleave',()=>{if(active?.button===button){active.overButton=false;scheduleClose();}});
+        button.addEventListener('focus',()=>show(button,tip));
+        button.addEventListener('blur',scheduleClose);
+        button.addEventListener('click',event=>{
+          if(active?.button===button&&(active.pinned||event.detail===0)){close();return;}
+          show(button,tip);if(active?.button===button)active.pinned=true;
+        });
+        tip.addEventListener('pointerenter',()=>{if(active?.tip===tip){active.overTip=true;cancelLeave();}});
+        tip.addEventListener('pointerleave',()=>{if(active?.tip===tip){active.overTip=false;scheduleClose();}});
+        button.closest('.osi-layer')?.addEventListener('toggle',event=>{if(!event.target.open&&active?.button===button)close();});
+      });
+    };
+    const outside=event=>{if(active&&!active.button.contains(event.target)&&!active.tip.contains(event.target))close();};
+    const escape=event=>{if(event.key==='Escape'&&active){event.preventDefault();event.stopImmediatePropagation();close();}};
+    const scroll=event=>{if(active&&!active.tip.contains(event.target))close();};
+    doc.addEventListener('pointerdown',outside,true);doc.addEventListener('keydown',escape,true);
+    view.addEventListener('scroll',scroll,true);view.addEventListener('resize',close);view.addEventListener('pagehide',close);
+    return {mount,close,destroy(){disposed=true;close();doc.removeEventListener('pointerdown',outside,true);doc.removeEventListener('keydown',escape,true);view.removeEventListener('scroll',scroll,true);view.removeEventListener('resize',close);view.removeEventListener('pagehide',close);}};
+  }
   root.StudyModels=models;
+  root.StudyTips={create:createStudyTips};
   if(typeof document==='undefined')return;
+  const studyTips=createStudyTips(document,root);
+  root.StudyTips.mount=studyTips.mount;
+  root.StudyTips.close=studyTips.close;
   const esc = text=>String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmt=n=>n.toLocaleString('en-US');
   const by=(box,selector)=>box.querySelector(selector);
@@ -335,6 +398,7 @@
   };
   const mounted=new WeakSet();
   function mount(container=document){
+    studyTips.mount(container);
     container.querySelectorAll('[data-exercise]').forEach(section=>{
       const setup=setups[section.dataset.exercise],box=section.querySelector('.exercise-mount');
       if(!setup||!box||mounted.has(box))return;

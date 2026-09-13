@@ -4,11 +4,11 @@ window.knowledgePages = [
     "name": "OSI model",
     "url": "index.html#note-osi",
     "type": "Concept",
-    "keywords": "Networking Concept study Seven layers describe how devices communicate. Select a layer to see what belongs there. OSI seven 7 layers physical data link network transport session presentation application TCP/IP MAC IP hardware switch router physical ports TCP UDP protocols",
+    "keywords": "Networking Concept study Select a layer, then hover or tap any protocol or device to learn what it does and why it belongs there. OSI seven 7 layers physical data link network transport session presentation application TCP/IP MAC IP ARP hub repeater bridge switch router access point NIC firewall proxy WAF load balancer DHCP DNS DNSSEC DoH DoT BGP OSPF EIGRP IPsec IKE GRE AH ESP STP LACP LLDP CDP EAPOL 802.1X RADIUS TACACS Kerberos LDAP LDAPS SSH FTP SFTP FTPS TFTP SMTP IMAP POP3 SNMP syslog RDP SIP Network+ Security+ interview",
     "slug": "osi",
     "category": "Networking",
-    "question": "Which layer uses MAC addresses, which uses IP addresses, and which uses TCP/UDP ports?",
-    "answer": "Layer 2 uses MAC addresses for local delivery. Layer 3 uses IP addresses for routing. Layer 4 uses TCP/UDP port numbers to identify service endpoints."
+    "question": "Why is a hub Layer 1, a switch Layer 2, and a router Layer 3? Where does ARP fit?",
+    "answer": "A hub repeats signals. A basic switch forwards frames using MAC addresses. A router forwards packets using IP addresses. ARP is normally grouped with Layer 2 because it is carried directly on the link; it resolves an IPv4 next-hop address to a MAC address, connecting the Layer 3 and Layer 2 responsibilities."
   },
   {
     "name": "Private IPv4 & NAT",
