@@ -72,14 +72,14 @@ for(const design of backgrounds.list){
   assert.deepEqual(thumbnail.arcs,adjustedThumbnail.arcs,'Picker thumbnails keep their reference view');
 }
 
-// Compare Orbit against the previous site's actual projection, not a new fixture.
+// Preserve the original Orbit geometry with its origin now centered in the desktop.
 const original=[];
 for(let u=0;u<44;u++)for(let v=0;v<34;v++){
   const a=u/44*Math.PI*2,b=v/34*Math.PI*2,r=1.52+.47*Math.cos(b);
   const px=r*Math.cos(a),py=.47*Math.sin(b),pz=r*Math.sin(a);
   const x=px*Math.cos(.58)-pz*Math.sin(.58),z=px*Math.sin(.58)+pz*Math.cos(.58);
   const y=py*Math.cos(-.30)-z*Math.sin(-.30),depthZ=py*Math.sin(-.30)+z*Math.cos(-.30),depth=4.3/(4.3+depthZ);
-  original.push({x:590+x*290*depth,y:329+y*290*depth,z:depthZ});
+  original.push({x:500+x*290*depth,y:350+y*290*depth,z:depthZ});
 }
 original.sort((a,b)=>b.z-a.z);
 const orbitFrame=recorder();backgrounds.draw(orbitFrame,{id:'orbit',width:1000,height:700,rgb:[52,76,128]});

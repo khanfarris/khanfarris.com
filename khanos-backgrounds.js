@@ -85,7 +85,7 @@
     const mesh=meshes[id];
     const zoom=preview?1:(view?.zoom??1), viewYaw=preview?0:(view?.yaw??0), viewPitch=preview?0:(view?.pitch??0);
     const scale=(preview ? Math.min(width*.16,height*.29) : Math.min(width*.29,height*.47))*zoom;
-    const cx=width*(preview ? .5 : .59), cy=height*(preview ? .5 : .47);
+    const cx=width*.5, cy=height*.5;
     const yaw=id==='helix'?0:id==='ripple'?angle*.16:id==='vortex'?-angle*.52:angle;
     const tilt=id==='orbit'?-.30:id==='ripple'?-.62:id==='vortex'?-.85:id==='globe'?-.16:0;
     const co=Math.cos(yaw), si=Math.sin(yaw), ct=Math.cos(tilt), st=Math.sin(tilt);
@@ -117,7 +117,7 @@
     const [r,g,b]=rgb;
     ctx.clearRect(0,0,width,height);
     const radius=Math.min(width*.6,height*.83);
-    const glow=ctx.createRadialGradient(width*.57,height*.42,Math.min(20,radius*.1),width*.57,height*.42,radius);
+    const glow=ctx.createRadialGradient(width*.5,height*.5,Math.min(20,radius*.1),width*.5,height*.5,radius);
     glow.addColorStop(0,`rgba(${r},${g},${b},0.075)`);
     glow.addColorStop(.5,`rgba(${r},${g},${b},0.025)`);
     glow.addColorStop(1,'rgba(0,0,0,0)');
