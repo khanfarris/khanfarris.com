@@ -32,7 +32,7 @@ The background selector offers Orbit (the original), Helix, Ripple, Globe, and V
 
 - `knowledge.css` supplies the shared study and exercise styles used by KhanOS; retain it even though standalone study pages are gone.
 - `study-showcase.css` and `study-showcase.js` retain the previous scrollable archive implementation. KhanOS now provides the homepage constellation; motion can be paused and respects the reduced-motion preference.
-- `study-exercises.js` supplies local interactive exercises for subnetting, VLAN routing, ARP, DHCP, syslog, EDR/MDR roles, Microsoft 365 access, TCP headers, firewall rule order, route selection, switch learning, alert triage, phishing, vulnerability prioritization, and incident recovery decisions. Calculation boundaries, network behavior, and every evidence-case decision are checked by `node scripts/validate-knowledge.cjs`.
+- `study-exercises.js` supplies local interactive exercises for the OSI layer explorer, packet walkthrough, support-ticket diagnosis, subnetting, VLAN routing, ARP, DHCP, syslog, EDR/MDR roles, Microsoft 365 access, TCP headers, firewall rule order, route selection, switch learning, alert triage, phishing, vulnerability prioritization, and incident recovery decisions. Calculation boundaries, network behavior, and every evidence-case decision are checked by `node scripts/validate-knowledge.cjs`.
 - `knowledge-index.js` supplies search metadata to retained lab pages and points each result into KhanOS Reader. Load it before `lab.js`.
 - `reading.js` adds article navigation, progress, and code-copy controls.
 - `lab.js` provides site search and homepage interactions.

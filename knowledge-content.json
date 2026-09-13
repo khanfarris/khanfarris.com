@@ -331,9 +331,73 @@
     "writingSteps": [
       "Google — Writing procedures",
       "https://developers.google.com/style/procedures"
+    ],
+    "osiStandard": [
+      "ITU-T X.200: the OSI basic reference model",
+      "https://www.itu.int/rec/T-REC-X.200-199407-I/en"
+    ],
+    "internetLayers": [
+      "RFC 1122: Internet host requirements and the TCP/IP layers",
+      "https://www.rfc-editor.org/rfc/rfc1122.html"
+    ],
+    "osiCisco": [
+      "Cisco: networking fundamentals and the OSI model",
+      "https://www.cisco.com/c/dam/global/fi_fi/assets/docs/SMB_University_120307_Networking_Fundamentals.pdf"
+    ],
+    "windowsPorts": [
+      "Microsoft: Windows service overview and network port requirements",
+      "https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/service-overview-and-network-port-requirements"
+    ],
+    "servicePorts": [
+      "IANA: service names and transport protocol port numbers",
+      "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml"
+    ],
+    "ipProtocols": [
+      "IANA: IP protocol numbers",
+      "https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml"
+    ],
+    "tlsProtocol": [
+      "RFC 8446: Transport Layer Security 1.3",
+      "https://www.rfc-editor.org/info/rfc8446/"
     ]
   },
   "articles": [
+    {
+      "slug": "osi",
+      "title": "OSI model",
+      "category": "Networking",
+      "kind": "Concept",
+      "basis": "Concept study",
+      "principle": "The OSI model separates network communication into seven responsibilities. Use it to understand what is happening, recognize the evidence, and choose the next useful troubleshooting check.",
+      "body": "<h2>One conversation, seven responsibilities</h2>\n<p>When a laptop opens a website, several things have to work: a connection carries signals, local devices forward frames, routers move packets between networks, a service accepts traffic, and software interprets the request. The <strong>Open Systems Interconnection (OSI) model</strong> gives those responsibilities seven names. It is a reference model for explaining communication and narrowing problems.</p>\n<p>Start at <strong>Layer 1, Physical</strong>, and work upward to <strong>Layer 7, Application</strong>. You do not need to memorize every protocol before the model becomes useful. First learn what each layer is responsible for, what identifies the traffic there, and which evidence would help you check it.</p>\n<div class=\"field-note\"><strong>Three different things people call a port</strong><p>A <strong>physical port</strong> is an interface such as switch jack 4. A <strong>TCP/UDP port</strong> is a software number such as TCP 443, carried at Layer 4. A <strong>routed port</strong> is an interface configured to participate in Layer 3 routing. IP itself has protocol numbers, such as 6 for TCP, but those are <em>not</em> port numbers. There is no separate collection of TCP/UDP ports at every OSI layer.</p></div>\n<section class=\"exercise\" data-exercise=\"osi\" aria-label=\"Explore the OSI model, packet delivery, and troubleshooting\"><div class=\"exercise-heading\"><span class=\"eyebrow\">INTERACTIVE / SEVEN LAYERS</span><h2>From a cable to a conversation</h2><p>Select any layer to explore its job, hardware or software, protocols, and a practical support example. Layers 4 and 7 include a service-port reference. Then follow a packet and investigate seven fictional tickets.</p></div><div class=\"exercise-mount\"></div><noscript><p>The interactive explorer requires JavaScript. The layer reference and worked packet explanation below contain the central ideas.</p></noscript></section>\n<h2>The seven layers at a glance</h2>\n<div class=\"table-scroll\"><table><caption>Read upward from signals to the service a person needs.</caption><thead><tr><th scope=\"col\">Layer</th><th scope=\"col\">Responsibility</th><th scope=\"col\">Recognize this</th></tr></thead><tbody>\n<tr><th scope=\"row\">7 · Application</th><td>Define network requests and responses.</td><td>DNS, HTTP, DHCP, SMB, SMTP, LDAP, Kerberos, syslog.</td></tr>\n<tr><th scope=\"row\">6 · Presentation</th><td>Represent, encode, compress, or protect data.</td><td>Formats and encodings; TLS illustrates protection, with the mapping caveat below.</td></tr>\n<tr><th scope=\"row\">5 · Session</th><td>Manage ongoing dialogue and context.</td><td>Session establishment, expiration, and reconnection responsibilities.</td></tr>\n<tr><th scope=\"row\">4 · Transport</th><td>Carry data between service endpoints.</td><td>TCP segments, UDP datagrams, source and destination ports.</td></tr>\n<tr><th scope=\"row\">3 · Network</th><td>Address and route traffic between networks.</td><td>IP packets, prefixes, gateways, routes, ICMP.</td></tr>\n<tr><th scope=\"row\">2 · Data link</th><td>Deliver frames on a local link.</td><td>MAC addresses, Ethernet switching, VLANs, STP.</td></tr>\n<tr><th scope=\"row\">1 · Physical</th><td>Carry bits as signals.</td><td>Copper, fiber, radios, connectors, link state, NIC physical interfaces.</td></tr>\n</tbody></table></div>\n<h2>OSI and the network you actually use</h2>\n<p>Modern Internet networking usually follows the <strong>TCP/IP model</strong>: link, internet, transport, and application. OSI Layers 1–2 roughly describe link responsibilities; Layer 3 aligns with the internet layer; Layer 4 aligns with transport. Many responsibilities described by OSI Layers 5–7 live together in Internet applications and libraries.</p>\n<p>This is why forcing every modern protocol into one rigid OSI box can mislead you. TLS is a useful example of presentation-like protection, but is not a literal implementation of a dedicated OSI Layer 6 protocol. An SMB session illustrates dialogue and authenticated context, while SMB itself is an application protocol. A web login session may span several TCP connections. You will not always find separate “session” and “presentation” headers in a packet capture.</p>\n<p>The same applies to hardware. A switch has physical interfaces and can forward Ethernet frames; some switches also route IP packets. A firewall may inspect addresses, transport ports, connection state, and application content. Identify the <strong>function being performed</strong>, instead of assigning the entire product to only one layer.</p>\n<h2>Wrapping a message for delivery</h2>\n<p><strong>Encapsulation</strong> means placing data inside another protocol’s delivery structure. In the walkthrough, HTTP data is protected by TLS, carried in the TCP byte stream, placed into an IP packet, and carried across an Ethernet link. A <strong>header</strong> contains information needed to interpret or deliver the enclosed data. Ethernet also includes a trailer for error detection. The physical interface sends the frame as signals; it does not add a universal “Layer 1 header.”</p>\n<p>The example laptop sends toward a server on another subnet. Its <strong>destination IP</strong> is the server’s address, but its first <strong>destination MAC</strong> is the gateway’s local interface. The switch forwards the frame within the VLAN. The router then removes the incoming link framing and creates new framing for the next link. With no NAT in this lab, the endpoint IP addresses and TCP ports stay the same; the MAC addresses change and IPv4 TTL decreases. <strong>TTL</strong> limits how many routed hops an IPv4 packet can survive.</p>\n<p><strong>Decapsulation</strong> is the receiving side processing those delivery structures to reach the enclosed data. TCP may need to reassemble bytes from multiple segments before the upper software has a complete record or message. A whole page, request, TLS record, and Ethernet frame are not necessarily the same size or one-to-one units.</p>\n<h2>Using the model in a support or security role</h2>\n<p>For work like the GadellNet analyst role, the practical value is choosing a precise next check. A disconnected cable, a wrong VLAN, a missing route, a denied TCP flow, an expired session, a certificate error, and a refused application request can all sound like “the system is down” to the person reporting them. Your investigation should turn that broad report into a documented observation.</p>\n<p>You can work upward from the physical connection, downward from a clear application error, or start in the middle with a targeted test. If TCP 443 connects but certificate validation fails, inspect the certificate path and exact error. If a DNS query returns a failure, inspect DNS and its dependencies. If a user reaches an SMB share but receives “access denied,” compare identity and permissions instead of concluding that the switch failed.</p>\n<p>Keep the limits of each test visible. A failed ping may reflect filtered ICMP. A successful TCP handshake does not establish application access. An encrypted connection does not prove that its destination is trustworthy. A common service port does not prove that the expected application is using it. Correlate network observations with endpoint, identity, and application evidence before deciding what happened.</p>\n<div class=\"field-note\"><strong>A useful way to explain your thinking</strong><p>“I use OSI to separate the path from the service. I identify the symptom, check the relevant layer, and record what the result proves. If a connection succeeds but the service rejects the request, I continue with the response, identity, and permissions instead of treating connectivity as the whole problem.”</p></div>",
+      "question": "In this no-NAT lab, what changes when the router forwards the laptop’s HTTPS packet, and which “ports” belong at Layer 4?",
+      "answer": "The router replaces the incoming Ethernet frame with a frame for the outgoing link, changing source and destination MAC addresses and reducing IPv4 TTL. The laptop/server IP addresses and TCP source/destination ports stay the same. TCP 51514 and 443 are Layer 4 software ports; switch interfaces 4 and 24 are physical/logical interfaces, not transport ports.",
+      "sources": [
+        "osiStandard",
+        "internetLayers",
+        "osiCisco",
+        "windowsPorts",
+        "servicePorts",
+        "ipProtocols",
+        "arp",
+        "tcp",
+        "tlsProtocol",
+        "http3",
+        "switchingGuide",
+        "routingGuide",
+        "syslogTLS",
+        "connectionTest"
+      ],
+      "related": [
+        "switching",
+        "routing",
+        "tcp",
+        "dns",
+        "tls",
+        "troubleshooting"
+      ],
+      "keywords": "OSI seven 7 layers physical data link network transport session presentation application TCP/IP encapsulation decapsulation MAC IP hardware switch router physical port service ports protocols troubleshooting"
+    },
     {
       "slug": "private-addressing",
       "title": "Private IPv4 & NAT",
@@ -415,7 +479,8 @@
         "subnetting",
         "ztna-sase",
         "switching",
-        "firewalls"
+        "firewalls",
+        "osi"
       ],
       "keywords": ""
     },
@@ -442,7 +507,8 @@
         "dhcp",
         "dns",
         "switching",
-        "routing"
+        "routing",
+        "osi"
       ]
     },
     {
@@ -462,7 +528,8 @@
         "dhcp",
         "tls",
         "troubleshooting",
-        "vpns"
+        "vpns",
+        "osi"
       ],
       "keywords": ""
     },
@@ -916,7 +983,8 @@
       "related": [
         "tcp",
         "dns",
-        "firewalls"
+        "firewalls",
+        "osi"
       ],
       "keywords": ""
     },
@@ -939,7 +1007,8 @@
         "tcp-streams",
         "tls",
         "firewalls",
-        "routing"
+        "routing",
+        "osi"
       ],
       "keywords": ""
     },
@@ -1192,7 +1261,8 @@
         "arp",
         "firewalls",
         "vpns",
-        "switching"
+        "switching",
+        "osi"
       ],
       "keywords": "route table next hop default gateway longest prefix match static dynamic OSPF BGP"
     },
@@ -1216,7 +1286,8 @@
         "arp",
         "routing",
         "dhcp",
-        "change-management"
+        "change-management",
+        "osi"
       ],
       "keywords": "switch ports MAC table CAM learning flooding unicast broadcast trunk access STP"
     },
@@ -1266,7 +1337,8 @@
         "windows-events",
         "file-shares",
         "change-management",
-        "technical-documentation"
+        "technical-documentation",
+        "osi"
       ],
       "keywords": "Windows Windows Server macOS OS support troubleshooting processes services Task Manager Activity Monitor diagnostics"
     },

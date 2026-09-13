@@ -65,7 +65,127 @@
     const selected=choice===null?null:item.options.find(o=>o.id===choice);if(choice!==null&&!selected)throw Error('Choose an available decision.');
     return {...item,selected,correct:selected?selected.id===item.answer:null};
   }
+
+  // OSI describes responsibilities; modern Internet protocols do not map one-to-one.
+  const osiLayers=[
+    {number:1,name:'Physical',verb:'Carry a signal',unit:'Bits carried as signals',address:'Physical interface / medium',internet:'TCP/IP: link',icon:'cable',
+      explanation:'The physical layer moves bits across a medium: electrical signals on copper, light in fiber, or radio waves through the air. Before a switch can read a frame, its interface must receive a usable signal.',
+      hardware:'Patch cable → network jack → switch interface. A network interface card (NIC), fiber transceiver, antenna, and the physical part of a Wi-Fi access point all belong in this picture.',
+      visual:['Laptop NIC','Copper / fiber / radio','Switch jack 4'],
+      protocols:[['1000BASE-T','An Ethernet physical standard for 1 Gb/s over suitable twisted-pair copper cabling.'],['10GBASE-SR','A 10 Gb/s Ethernet physical standard using short-range optics and multimode fiber.'],['Wi-Fi radio / PHY','Channel, signal quality, interference, and radio capabilities. IEEE 802.11 also defines link-layer behavior; Wi-Fi spans layers.']],
+      ports:'Port 4 here is a physical connector/interface. It is not TCP port 4. Link LEDs, negotiated speed, media type, and interface counters describe this connection.',
+      example:'A workstation loses connectivity after a desk move. Its Ethernet adapter reports “media disconnected,” and the expected switch interface has no link.',
+      checks:['Trace the cable and confirm the expected wall jack and switch interface.','Inspect link state, adapter status, and negotiated speed; compare with a known-good cable or port under the support procedure.','For Wi-Fi, check association and signal/interference before assuming the cable-oriented example applies.'],
+      limit:'A link light means a physical link exists. It does not prove the VLAN, IP address, DNS, or application works.',links:['switching','troubleshooting']},
+    {number:2,name:'Data link',verb:'Deliver on the local link',unit:'Frame',address:'MAC address + VLAN context',internet:'TCP/IP: link',icon:'switch',
+      explanation:'A frame is a package for local delivery. Ethernet uses source and destination MAC addresses. A switch learns which source MAC lives behind each interface in a VLAN, then looks up the destination MAC to decide where to forward.',
+      hardware:'The switching function of a managed switch, a bridge, the bridging function of an access point, and the MAC function of a NIC. One physical device can perform several layers’ jobs.',
+      visual:['Port 4 · laptop','VLAN 10 · MAC table','Port 24 · uplink'],
+      protocols:[['Ethernet / IEEE 802.3','Ethernet framing and addressing; the standard also includes physical-layer specifications.'],['802.1Q / VLANs','VLAN identification and bridging. Access and trunk configuration determine where frames can travel.'],['STP / RSTP','Spanning Tree protocols control redundant forwarding paths to help prevent Layer 2 loops.'],['ARP · boundary case','Resolves an IPv4 next-hop address to a link-layer address. ARP is carried directly in Ethernet, without TCP or UDP. Think of it as the bridge between IP and local delivery.']],
+      ports:'Switch interface 4 can be configured as an access port in VLAN 10. Interface 24 might be an access port or a trunk. Those are physical/logical switch interfaces, not application service ports.',
+      example:'A replacement laptop is plugged into interface 4. Link is up, but the interface is accidentally assigned to the guest VLAN instead of the staff VLAN.',
+      checks:['Find the laptop’s MAC in the switch table and verify the interface and VLAN.','Check access/trunk settings, expected allowed VLANs, STP state, and interface errors.','Compare the endpoint’s ARP cache with the expected next hop; ARP and a switch MAC table answer different questions.'],
+      limit:'Being on the same switch does not mean being in the same VLAN. IPv6 uses Neighbor Discovery over ICMPv6, not ARP.',links:['switching','vlans','arp']},
+    {number:3,name:'Network',verb:'Choose a path between networks',unit:'IP packet',address:'IPv4 / IPv6 address + prefix',internet:'TCP/IP: internet',icon:'router',
+      explanation:'IP gives a packet a source and destination address. Routing chooses the next hop toward the destination network. Your laptop uses its subnet and route table to decide whether to deliver locally or send toward a gateway.',
+      hardware:'A router, the routing function of a Layer 3 switch, or the routed interfaces of a firewall. A switch can both switch frames and route packets when configured for those functions.',
+      visual:['10.20.10.0/24','Router · route table','192.0.2.0/24'],
+      protocols:[['IPv4 / IPv6','Addressing and routed delivery. Routers examine the destination and select a matching route.'],['ICMP / ICMPv6','Control and diagnostic messages, including echo requests and some delivery errors. Ping normally uses ICMP, not TCP.'],['IP protocol numbers','Examples: 1 = ICMP, 6 = TCP, 17 = UDP, 58 = ICMPv6. These identify the carried protocol; they are not port numbers.']],
+      ports:'There are no TCP/UDP port fields in an IP header. A “Layer 3 port” usually means a routed interface with an IP configuration. TCP destination port 443 is inside the transport header carried by an IP packet.',
+      example:'Staff can reach their local printer but cannot reach a server in another subnet. The workstation’s default gateway is wrong.',
+      checks:['Compare IP address, prefix/subnet mask, and default gateway with the intended network.','Inspect the route table and next hop; check both the outward and return paths.','Use ping or a route trace as evidence, while allowing for devices that filter or limit diagnostic responses.'],
+      limit:'A route provides a possible path, not permission to use it. A failed ping does not prove that the host is down.',links:['subnetting','routing','private-addressing']},
+    {number:4,name:'Transport',verb:'Deliver to a service endpoint',unit:'TCP segment / UDP datagram',address:'TCP or UDP source + destination ports',internet:'TCP/IP: transport',icon:'socket',
+      explanation:'A host runs many network services at once. Transport ports help the operating system deliver received data to the appropriate socket. TCP supplies an ordered, reliable byte stream; UDP sends datagrams without providing that same delivery guarantee.',
+      hardware:'TCP and UDP run in endpoint network stacks. Stateful firewalls and load balancers often inspect transport flows; those products can also perform work at other layers.',
+      visual:['Client TCP 51514','Connection / flow','Server TCP 443'],
+      protocols:[['TCP','Connection establishment, sequence numbers, acknowledgments, retransmission, and flow control. A SYN starts a connection attempt; a reset is a different result from silence.'],['UDP','Independent datagrams. Applications may add their own reliability; QUIC builds secure, reliable streams over UDP.'],['A typical five-tuple','Source IP, destination IP, transport protocol, source port, destination port. TCP 53 and UDP 53 are different transport endpoints.']],
+      ports:'The client commonly chooses a temporary source port, such as 51514, and contacts a service port, such as TCP 443. These numbers are software identifiers, not holes in a switch. The reference below lists application protocols and their usual transport endpoints.',
+      example:'A file server is reachable by IP, but an approved test to TCP 445 fails and a matching firewall deny log records that flow.',
+      checks:['Confirm the intended service, destination IP, transport, and port.','Compare listener state and firewall/connection logs for that specific flow.','A Windows Test-NetConnection check can test a TCP port; it does not perform a full login or a generic UDP service test.'],
+      limit:'An open TCP connection does not prove that TLS, authentication, file permissions, or the application works. A port number alone does not prove which application is using it.',links:['tcp','firewalls','file-shares']},
+    {number:5,name:'Session',verb:'Manage an ongoing conversation',unit:'Session-related data / state',address:'Session context, not a universal port',internet:'TCP/IP: usually application',icon:'session',
+      explanation:'The session layer describes managing a dialogue: starting it, keeping context, coordinating exchanges, and ending or resuming it. In modern applications, these responsibilities are often implemented inside the application or its libraries.',
+      hardware:'There is no required “Layer 5 box.” Client and server software hold conversation state. An application session can outlive one TCP connection, and a working TCP connection does not mean the login session is still valid.',
+      visual:['Signed-in client','Session context','Application server'],
+      protocols:[['SMB session · example of the responsibility','A client establishes authenticated context for file access. SMB is an application protocol; this session function does not reclassify all of SMB as Layer 5.'],['RPC conversations','Remote Procedure Call lets software request work from another system. Implementations manage conversation context; actual protocol and port behavior depends on the implementation.'],['Web session tokens','A server may use a token or cookie to recognize a continuing session. This is a modern analogy to session responsibilities, not a separate mandatory OSI header.']],
+      ports:'There is no universal session-layer port. For a Windows SMB session, the SMB traffic commonly uses TCP 445 at Layer 4. A web session may travel inside HTTPS. Look up the actual application and transport.',
+      example:'The portal still loads over a working TLS connection, but the server records “session expired” and asks the employee to sign in again.',
+      checks:['Check the exact application error and session expiration/revocation records.','Distinguish a dropped network connection from an expired login or lost application context.','Use the supported reauthentication or reconnect flow; record whether the user’s work can resume.'],
+      limit:'This is a responsibility-based lens. In a packet capture, you will not necessarily see a separate item labeled “OSI Layer 5.”',links:['identity','file-shares']},
+    {number:6,name:'Presentation',verb:'Represent and protect data',unit:'Encoded / transformed data',address:'Format, encoding, cryptographic context',internet:'TCP/IP: usually application',icon:'lock',
+      explanation:'Presentation asks whether both sides can interpret the data: its encoding, structure, compression, and protection. For example, text must use an agreed encoding, and encrypted bytes need the correct cryptographic processing before an application can read them.',
+      hardware:'Usually software libraries in the endpoints; proxies and security appliances may also transform or terminate protected traffic. These are functions, not a dedicated category of Layer 6 hardware.',
+      visual:['Readable content','Encode / protect','Transmitted bytes'],
+      protocols:[['UTF-8 / JSON / JPEG','Examples of encoding, structured data, and image representation. These are formats, not all transport protocols.'],['TLS · a useful analogy','TLS protects application data and authenticates peers as configured. It illustrates presentation-like work but is an Internet protocol, not a literal one-to-one implementation of OSI Layer 6.'],['Encryption can appear elsewhere','MACsec protects link-layer traffic; IPsec protects IP traffic. “Encrypted” does not automatically mean Layer 6.']],
+      ports:'TLS does not have one universal port. HTTPS commonly uses TCP 443; syslog over TLS commonly uses TCP 6514. With HTTP/3, TLS is integrated into QUIC over UDP. The application and transport determine the endpoint.',
+      example:'The TCP connection to a portal succeeds, but certificate validation reports a hostname mismatch. Replacing the switch cable will not fix that mismatch.',
+      checks:['Read the exact TLS/certificate error and confirm the hostname, system time, trust chain, and certificate validity.','For unreadable content, compare expected encoding or format with what was received.','Use the approved certificate/configuration fix; do not teach users to bypass certificate warnings.'],
+      limit:'TLS limits what a passive network capture can reveal. Metadata and endpoint logs may still help, but encryption is not proof that the destination or content is safe.',links:['tls','syslog']},
+    {number:7,name:'Application',verb:'Request a network service',unit:'Application message / data',address:'Names and service-specific identifiers',internet:'TCP/IP: application',icon:'app',
+      explanation:'Application protocols define what clients and services say to each other: ask DNS for an address, request a web page, transfer a file, or send a log. This layer is the network service interface, not simply whatever is visible on your screen.',
+      hardware:'Client and server software: a DNS service on Windows Server, a web service, an SMB file service, a mail service, or a log collector. One server may host several application protocols.',
+      visual:['Client request','Protocol meaning','Service response'],
+      protocols:[['DNS / DHCP','DNS resolves names and other records; DHCP leases network configuration. Both are application protocols even though they help a network operate.'],['HTTP / SMB / SMTP','Web requests, Windows file sharing, and email transfer. Successful transport does not guarantee successful authorization or a valid application response.'],['LDAP / Kerberos / RDP / SSH','Directory queries, authentication, remote desktop, and secure remote access. Recognize their purpose before memorizing their port numbers.'],['Syslog / SNMP / NTP','Log messages, device monitoring, and time synchronization. These support everyday investigation and troubleshooting.']],
+      ports:'Use the service reference below. The protocol’s meaning belongs here; its TCP/UDP port numbers belong to Layer 4. “DNS uses port 53” is shorthand, not a claim that DNS is a Layer 4 protocol.',
+      example:'The payroll site returns HTTP 403 after a successful TCP/TLS connection. The employee reached the web service; the next check concerns the response and authorization path.',
+      checks:['Read the application response or error, using the exact time, user, and requested resource.','Separate name-resolution failures, service failures, authentication failures, and permission denials.','Correlate endpoint, server, identity, and security logs; a suspicious domain or successful login alone is not a complete incident story.'],
+      limit:'Healthy lower layers do not guarantee the requested business task succeeds. Application errors can also reflect dependencies on other systems.',links:['dns','dhcp','windows-domain','syslog']}
+  ];
+  const osiServices=[
+    {id:'dns',group:'core',name:'DNS',endpoint:'UDP + TCP 53',use:'Name resolution. TCP is also needed; DNS is not UDP-only.'},
+    {id:'dhcp',group:'core',name:'DHCPv4',endpoint:'UDP 67 server / 68 client',use:'Lease an IPv4 address and options such as gateway and DNS servers.'},
+    {id:'http',group:'core',name:'HTTP',endpoint:'TCP 80',use:'Conventional unencrypted web traffic; a site may redirect to HTTPS.'},
+    {id:'https',group:'core',name:'HTTPS',endpoint:'TCP 443 / UDP 443 for HTTP/3',use:'HTTP/1.1 or HTTP/2 commonly uses TLS over TCP. HTTP/3 uses QUIC over UDP.'},
+    {id:'smb',group:'core',name:'SMB',endpoint:'TCP 445',use:'Windows file sharing. Reachability and share/file permissions are separate checks.'},
+    {id:'rdp',group:'core',name:'RDP',endpoint:'TCP + UDP 3389',use:'Remote Desktop. Confirm the configured transport and approved access path.'},
+    {id:'kerberos',group:'windows',name:'Kerberos',endpoint:'TCP + UDP 88',use:'Ticket-based authentication, including Active Directory environments.'},
+    {id:'ldap',group:'windows',name:'LDAP / CLDAP',endpoint:'TCP 389 / UDP 389 for CLDAP',use:'Directory access. Windows also uses connectionless LDAP for domain-controller discovery.'},
+    {id:'ldaps',group:'windows',name:'LDAPS',endpoint:'TCP 636',use:'LDAP with TLS from connection start; LDAP can also upgrade with StartTLS on 389.'},
+    {id:'rpc',group:'windows',name:'Windows RPC',endpoint:'TCP 135 + negotiated service ports',use:'135 is the endpoint mapper, not the whole conversation. Modern Windows commonly uses dynamic TCP 49152–65535; follow the service-specific requirements.'},
+    {id:'winrm',group:'windows',name:'WinRM',endpoint:'TCP 5985 HTTP / 5986 HTTPS',use:'Windows remote management. Use the organization’s configured authentication and access policy.'},
+    {id:'ssh',group:'operations',name:'SSH',endpoint:'TCP 22',use:'Secure remote shell and related services, including many network-device management sessions.'},
+    {id:'snmp',group:'operations',name:'SNMP',endpoint:'Usually UDP 161 / 162',use:'161 for queries; 162 for notifications. Version and security settings matter; recognize SNMPv3.'},
+    {id:'ntp',group:'operations',name:'NTP',endpoint:'UDP 123',use:'Time synchronization. Clock errors can confuse authentication and event timelines.'},
+    {id:'syslog',group:'operations',name:'Syslog',endpoint:'UDP 514 / TLS over TCP 6514',use:'Device/application logs. Confirm the actual transport and collector configuration.'},
+    {id:'smtp',group:'operations',name:'SMTP',endpoint:'TCP 25 / 587 / 465',use:'25 commonly transfers mail between servers; 587 is submission; 465 is submission with implicit TLS.'}
+  ];
+  const osiTickets=[
+    {id:'cable',title:'Desk move: no connection',evidence:'The laptop reports media disconnected. The expected switch interface has no link. Other staff remain connected.',answer:1,why:'Start at Physical: trace the connection and check cable, interface, and adapter state. There is specific evidence of a missing link; changing DNS would not establish one.'},
+    {id:'vlan',title:'New laptop: wrong network',evidence:'Link is up. The MAC table places the laptop on interface 4, which is configured in guest VLAN 20 instead of the approved staff VLAN 10.',answer:2,why:'Start at Data link: the observed VLAN assignment differs from the intended configuration. Confirm the change and recovery plan before correcting it. An address problem can originate in Layer 2 configuration.'},
+    {id:'gateway',title:'Printer works, remote subnet fails',evidence:'A staff laptop reaches its local printer. Its configured default gateway does not match the approved gateway, and no more-specific route covers the remote server.',answer:3,why:'Start at Network: compare the address, prefix, and route configuration with the intended next hop. Local delivery can work while routed delivery fails.'},
+    {id:'deny',title:'File service blocked',evidence:'The server address is confirmed. A firewall log records a deny for this laptop’s TCP connection to destination port 445 at the exact test time.',answer:4,why:'Start with the transport-specific policy: verify the TCP 445 flow and intended access rule. The matching deny is useful evidence. It does not yet establish whether the user has permission to read a file.'},
+    {id:'session',title:'Portal asks for sign-in again',evidence:'TCP and TLS work. The application log explicitly says the existing user session expired; the sign-in page loads normally.',answer:5,why:'The session-management responsibility is the useful lens: check expiration and the supported reauthentication flow. The actual implementation is in the application, so Layer 7 is also a valid implementation-level description.',also:[7]},
+    {id:'certificate',title:'Certificate warning',evidence:'TCP 443 connects, but TLS validation reports that the certificate hostname does not match the requested portal name.',answer:6,why:'Presentation-like protection is the useful lens: investigate hostname and certificate configuration. TLS is not a literal dedicated OSI Layer 6 protocol; grouping it with the Internet application stack is also reasonable. Do not bypass validation.',also:[7]},
+    {id:'dns',title:'Name lookup fails',evidence:'A test to the known server IP and TCP port succeeds. An explicit query to the configured DNS resolver returns SERVFAIL for the portal name.',answer:7,why:'Start at the DNS application service: inspect the resolver response, configuration, and upstream dependencies. DNS has a networking purpose but is an application protocol. The response narrows the investigation; it does not identify the final root cause.'}
+  ];
+  const osiSteps=[
+    {layer:7,place:0,title:'The application makes a request',text:'The browser creates an HTTP request for /portal. Any existing login-session context is handled by the application. We begin after DNS and ARP resolution and a successful TCP/TLS setup.',wrappers:['HTTP request · GET /portal'],stage:'application'},
+    {layer:6,place:0,title:'TLS protects the application bytes',text:'TLS turns readable application data into protected records. This is presentation-like work, not a separate mandatory OSI Layer 6 header. A record and a TCP segment do not have to line up one-to-one.',wrappers:['TLS record · protected HTTP bytes'],stage:'tls'},
+    {layer:4,place:0,title:'TCP identifies the connection',text:'The operating system sends part of the TCP byte stream in a segment. In this direction the source port is the client’s temporary 51514 and the destination is the service’s 443.',wrappers:['TCP · 51514 → 443','Protected application bytes'],stage:'transport'},
+    {layer:3,place:0,title:'IP identifies the endpoints',text:'An IPv4 header identifies 10.20.10.25 as the source and 192.0.2.80 as the destination. The route selects gateway 10.20.10.1, but that gateway does not replace the packet’s destination IP.',wrappers:['IPv4 · laptop → server','TCP · 51514 → 443','Protected application bytes'],stage:'network'},
+    {layer:2,place:0,title:'Ethernet addresses the next hop',text:'The server is in another subnet, so the local frame is addressed to the router’s inside MAC, not the server’s MAC. This lab uses untagged access links in VLAN 10 between laptop, switch, and router.',wrappers:['Ethernet · laptop MAC → gateway MAC','IPv4 · laptop → server','TCP · 51514 → 443','Protected application bytes'],stage:'link'},
+    {layer:1,place:1,title:'The frame travels as signals',text:'The NIC transmits the frame as signals over the Ethernet link into physical switch interface 4. Bits/signals are how the frame travels; they are not an extra “Layer 1 header.”',wrappers:['Signals carry the Ethernet frame','IPv4 · laptop → server','TCP · 51514 → 443','Protected application bytes'],stage:'wire'},
+    {layer:2,place:1,title:'The switch forwards within VLAN 10',text:'The switch already knows the gateway MAC is behind interface 24. It forwards this same-VLAN frame from interface 4 to 24. In this ordinary switching example, IP addresses, TCP ports, and endpoint MAC addresses stay the same.',wrappers:['Ethernet · laptop MAC → gateway MAC','IPv4 · laptop → server','TCP · 51514 → 443','Protected application bytes'],stage:'switch'},
+    {layer:3,place:2,title:'The router builds a new local frame',text:'The router removes the incoming Ethernet framing, chooses its connected server network, and decrements IPv4 TTL from 64 to 63. It sends a new Ethernet frame from its outside MAC to the server MAC. No NAT is used, so endpoint IP addresses and TCP ports remain unchanged.',wrappers:['New Ethernet · router outside MAC → server MAC','IPv4 · same endpoints · TTL 63','TCP · same ports 51514 → 443','Protected application bytes'],stage:'router'},
+    {layer:7,place:3,title:'The server unwraps and processes',text:'The server receives the frame, processes IP and TCP, and reassembles the byte stream as needed. TLS verifies and decrypts the records, then HTTP handles the request using the application’s session context. A response travels back in the opposite direction.',wrappers:['HTTP receives the verified, decrypted request'],stage:'receive'}
+  ];
+  const osi={
+    layers:osiLayers,services:osiServices,tickets:osiTickets,steps:osiSteps,
+    layer(number){const item=osiLayers.find(l=>l.number===number);if(!item)throw Error('Choose a layer from 1 to 7.');return item;},
+    serviceGroup(group){if(!['core','windows','operations','all'].includes(group))throw Error('Choose a service group.');return osiServices.filter(s=>group==='all'||s.group===group);},
+    packet(index){
+      if(!Number.isInteger(index)||index<0||index>=osiSteps.length)throw Error('Choose a packet step.');
+      const step=osiSteps[index],routed=index>=7;
+      return {...step,index,sourceIP:'10.20.10.25',destinationIP:'192.0.2.80',sourcePort:51514,destinationPort:443,protocol:'TCP',ttl:routed?63:64,
+        sourceMAC:routed?'02:00:00:00:02:01':'02:00:00:00:10:25',destinationMAC:routed?'02:00:00:00:02:80':'02:00:00:00:10:01',
+        showTransport:index>=2&&index<8,showIP:index>=3&&index<8,showFrame:index>=4&&index<8};
+    },
+    diagnose(id,number){const item=osiTickets.find(t=>t.id===id);if(!item)throw Error('Choose a known ticket.');osi.layer(number);return {...item,correct:number===item.answer||Boolean(item.also?.includes(number)),primary:number===item.answer};}
+  };
+
   const models = {
+    osi,
     cases,
     triage(id,choice=null){return caseResult('triage',id,choice);},
     incident(id,choice=null){return caseResult('incident',id,choice);},
@@ -156,7 +276,81 @@
       by(box,'.exercise-result').innerHTML=status(result.correct?'Supported by this record':'Reconsider this conclusion',result.selected.why,result.correct);
     });render();
   }
+  let osiInstance=0;
   const setups={
+    osi(box){
+      const prefix='osi-'+(++osiInstance),ordered=[...osi.layers].reverse();
+      let selectedLayer=1,packetStep=0,serviceGroup='core';
+      const icon=kind=>{
+        const paths={
+          cable:'<path d="M16 33h19v22H16zM61 33h19v22H61zM35 44h26M21 27v6m6-6v6m41-6v6m6-6v6M21 55v6m6-6v6m41-6v6m6-6v6"/>',
+          switch:'<rect x="10" y="26" width="76" height="38" rx="5"/><path d="M19 39h9v12h-9zm16 0h9v12h-9zm16 0h9v12h-9zm16 0h9v12h-9zM25 64v10m45-10v10"/>',
+          router:'<ellipse cx="48" cy="47" rx="34" ry="24"/><path d="M25 47h16m-6-6 6 6-6 6m36-6H55m6-6-6 6 6 6M48 24v15m-6-6 6 6 6-6m-6 37V55m-6 6 6-6 6 6"/>',
+          socket:'<rect x="9" y="25" width="24" height="40" rx="4"/><rect x="63" y="25" width="24" height="40" rx="4"/><path d="M33 38h30m-6-6 6 6-6 6M63 54H33m6-6-6 6 6 6"/>',
+          session:'<path d="M15 23h48v29H38L25 64V52H15zM63 35h18v31H68L55 77V66H43V52"/><path d="M25 34h28m-28 8h18"/>',
+          lock:'<rect x="23" y="38" width="50" height="35" rx="5"/><path d="M33 38V27a15 15 0 0 1 30 0v11M48 49v13"/>',
+          app:'<rect x="12" y="18" width="72" height="56" rx="5"/><path d="M12 32h72M20 25h2m6 0h2m6 0h2M34 44l-9 8 9 8m28-16 9 8-9 8m-9-18-10 24"/>'
+        };
+        return `<svg viewBox="0 0 96 88" aria-hidden="true" focusable="false">${paths[kind]}</svg>`;
+      };
+      box.innerHTML=`<div class="osi-introline"><span>01 / LAYER EXPLORER</span><span>Seven responsibilities. One conversation.</span></div>
+        <div class="osi-explorer"><div class="osi-stack" role="tablist" aria-label="OSI layers, application to physical" aria-orientation="vertical">${ordered.map(l=>`<button type="button" role="tab" id="${prefix}-layer-${l.number}" aria-controls="${prefix}-panel" aria-selected="${l.number===1}" tabindex="${l.number===1?0:-1}" data-layer="${l.number}"><span class="osi-number">0${l.number}</span><span><strong>${esc(l.name)}</strong><small>${esc(l.verb)}</small></span><span class="osi-tab-arrow" aria-hidden="true">↗</span></button>`).join('')}<p class="osi-stack-hint">Start at 1 and work upward.<br>Use ↑ / ↓ to explore with a keyboard.</p></div><div class="osi-panel" id="${prefix}-panel" role="tabpanel" tabindex="0" aria-labelledby="${prefix}-layer-1"></div></div>
+        <div class="osi-live" role="status" aria-live="polite"></div>
+        <section class="osi-packet" aria-label="Follow an HTTPS packet"><div class="osi-introline"><span>02 / PACKET WALKTHROUGH</span><span>Fictional office network</span></div><h3>Follow one HTTPS request</h3><p>Use Next to add the headers and follow delivery. This isolated, routed lab has <strong>no NAT</strong>. DNS, ARP, and TCP/TLS setup have already succeeded. We simplify one representative data packet; real requests can span many packets and TLS records.</p>
+        <div class="osi-topology" aria-label="Laptop connects through switch and router to a lab server">${[['Laptop','10.20.10.25/24','Source TCP 51514','app'],['Switch','VLAN 10','In 4 → out 24','switch'],['Router','10.20.10.1/24','Outside: 192.0.2.1/24','router'],['Lab server','192.0.2.80/24','Destination TCP 443','app']].map((node,i)=>`<div class="osi-device" data-device="${i}">${icon(node[3])}<strong>${esc(node[0])}</strong><code>${esc(node[1])}</code><small>${esc(node[2])}</small><span class="osi-device-state"></span></div>`).join('')}</div>
+        <div class="osi-packet-toolbar"><button type="button" class="quiet-button" data-packet="previous" aria-label="Previous packet step">← Previous</button><span class="osi-step-count"></span><button type="button" data-packet="next" aria-label="Next packet step">Next →</button><button type="button" class="quiet-button" data-packet="reset">Restart</button></div>
+        <progress class="osi-progress" max="9" value="1" aria-label="Packet walkthrough progress"></progress>
+        <div class="osi-step-copy" aria-live="polite" aria-atomic="true"></div>
+        <div class="osi-packet-inspect"><div><span class="eyebrow">WHAT IS BEING CARRIED</span><div class="osi-envelopes"></div></div><div><span class="eyebrow">HEADER INSPECTOR / OUTBOUND DATA</span><dl class="osi-fields"></dl></div></div>
+        <p class="exercise-caption">Physical switch interfaces 4 and 24 are untagged access ports in VLAN 10. The router’s outside interface connects directly to the lab server subnet. Locally administered MAC addresses and documentation-only server addresses are fictional. Retransmissions, fragmentation, and full handshake details are omitted.</p></section>
+        <section class="osi-diagnosis" aria-label="OSI troubleshooting practice"><div class="osi-introline"><span>03 / SUPPORT DESK</span><span>Find the next useful check</span></div><h3>Which responsibility would you inspect?</h3><p>Choose a fictional ticket, read the evidence, then select a layer. These are starting points for investigation, not proof that every symptom has exactly one layer or one cause.</p><div class="exercise-controls"><label for="${prefix}-ticket">Support ticket<select id="${prefix}-ticket" data-osi-ticket>${osi.tickets.map((t,i)=>`<option value="${t.id}">${i+1} · ${esc(t.title)}</option>`).join('')}</select></label></div><div class="case-evidence osi-ticket-evidence"></div><fieldset class="osi-answers"><legend>Where would you start?</legend><div>${osi.layers.map(l=>`<button type="button" class="quiet-button" data-answer="${l.number}" aria-pressed="false"><b>${l.number}</b> ${esc(l.name)}</button>`).join('')}</div></fieldset><div class="exercise-result osi-feedback" role="status" aria-live="polite"></div><p class="exercise-caption">You can try every answer. Nothing is saved, and no real network or customer system is contacted.</p></section>`;
+      const renderServices=()=>{
+        const target=by(box,'.osi-services');if(!target)return;
+        target.innerHTML=osi.serviceGroup(serviceGroup).map(s=>`<div class="osi-service"><strong>${esc(s.name)}</strong><code>${esc(s.endpoint)}</code><p>${esc(s.use)}</p></div>`).join('');
+      };
+      const renderLayer=()=>{
+        const l=osi.layer(selectedLayer),panel=by(box,'.osi-panel');
+        box.querySelectorAll('[data-layer]').forEach(b=>{const active=Number(b.dataset.layer)===selectedLayer;b.setAttribute('aria-selected',String(active));b.tabIndex=active?0:-1;});
+        panel.setAttribute('aria-labelledby',`${prefix}-layer-${l.number}`);
+        panel.innerHTML=`<div class="osi-layer-heading"><div><span class="eyebrow">LAYER ${l.number} / ${esc(l.internet)}</span><h3>${esc(l.name)}</h3><p>${esc(l.verb)}</p></div><span class="osi-layer-glyph">${icon(l.icon)}</span></div><p>${esc(l.explanation)}</p><div class="osi-facts"><div><span>DATA UNIT</span><strong>${esc(l.unit)}</strong></div><div><span>WHAT TO RECOGNIZE</span><strong>${esc(l.address)}</strong></div></div><h4>What this looks like</h4><div class="osi-visual-strip">${l.visual.map(s=>`<span>${esc(s)}</span>`).join('')}</div><p>${esc(l.hardware)}</p><h4>Protocols, standards & examples</h4><dl class="osi-protocols">${l.protocols.map(([name,text])=>`<div><dt>${esc(name)}</dt><dd>${esc(text)}</dd></div>`).join('')}</dl><div class="osi-port-note"><span class="eyebrow">PORT CHECK</span><p>${esc(l.ports)}</p></div><h4>A support or security example</h4><p>${esc(l.example)}</p><ol class="osi-checks">${l.checks.map(s=>`<li>${esc(s)}</li>`).join('')}</ol><p class="osi-limit"><strong>Keep in mind:</strong> ${esc(l.limit)}</p>${[4,7].includes(l.number)?`<div class="osi-service-reference"><h4>Service & transport reference</h4><p>These are common defaults to recognize, not a blanket firewall allowlist. Confirm the configured service, direction, and policy.</p><label for="${prefix}-services">Reference group<select id="${prefix}-services" data-services><option value="core">Everyday networking</option><option value="windows">Windows & identity</option><option value="operations">Management, logs & mail</option><option value="all">All services</option></select></label><div class="osi-services"></div><p class="exercise-caption">Application protocol names are shown beside their Layer 4 TCP/UDP endpoints. Custom configuration can use other ports.</p></div>`:''}<nav class="osi-links" aria-label="Study this layer in more detail">${l.links.map(slug=>`<a href="#note-${slug}">${esc(({ 'private-addressing':'Private IPv4 & NAT','windows-domain':'Active Directory','file-shares':'File shares'})[slug]||slug.replace(/-/g,' '))} ↗</a>`).join('')}</nav>`;
+        const select=by(box,'[data-services]');if(select){select.value=serviceGroup;select.addEventListener('change',()=>{serviceGroup=select.value;renderServices();});renderServices();}
+      };
+      const selectLayer=(number,focus=false)=>{selectedLayer=number;renderLayer();if(focus)by(box,`[data-layer="${number}"]`).focus();by(box,'.osi-live').textContent=`Layer ${number}: ${osi.layer(number).name}. Details updated.`;};
+      on(box,'.osi-stack','click',event=>{const button=event.target.closest('[data-layer]');if(button)selectLayer(Number(button.dataset.layer));});
+      on(box,'.osi-stack','keydown',event=>{
+        if(!event.target.closest('[data-layer]'))return;
+        const position=ordered.findIndex(l=>l.number===selectedLayer);
+        const next=event.key==='ArrowDown'?(position+1)%7:event.key==='ArrowUp'?(position+6)%7:event.key==='Home'?0:event.key==='End'?6:null;
+        if(next!==null){event.preventDefault();selectLayer(ordered[next].number,true);}
+      });
+      const renderPacket=()=>{
+        const p=osi.packet(packetStep);
+        by(box,'.osi-step-count').textContent=`${packetStep+1} / ${osi.steps.length}`;
+        by(box,'.osi-progress').value=packetStep+1;
+        by(box,'[data-packet="previous"]').disabled=packetStep===0;by(box,'[data-packet="next"]').disabled=packetStep===osi.steps.length-1;
+        box.querySelectorAll('[data-device]').forEach(node=>{const active=Number(node.dataset.device)===p.place;node.dataset.active=String(active);node.querySelector('.osi-device-state').textContent=active?'CURRENT STEP':'';});
+        by(box,'.osi-step-copy').innerHTML=`<span class="eyebrow">STEP ${packetStep+1} / LAYER ${p.layer}${[5,6].includes(p.layer)?' RESPONSIBILITY':''}</span><h4>${esc(p.title)}</h4><p>${esc(p.text)}</p>`;
+        by(box,'.osi-envelopes').innerHTML=p.wrappers.map((text,i)=>`<div style="--envelope-inset:${i*9}px"><span>${i===0?'OUTER':'INSIDE'}</span><strong>${esc(text)}</strong></div>`).join('');
+        const fields=[['Ethernet source MAC',p.showFrame?p.sourceMAC:'Not shown at this step'],['Ethernet destination MAC',p.showFrame?p.destinationMAC:'Not shown at this step'],['IP source → destination',p.showIP?`${p.sourceIP} → ${p.destinationIP}`:'Not shown at this step'],['IPv4 TTL',p.showIP?String(p.ttl):'Not shown at this step'],['TCP source → destination',p.showTransport?`${p.sourcePort} → ${p.destinationPort}`:'Not shown at this step']];
+        by(box,'.osi-fields').innerHTML=fields.map(([name,value],i)=>`<div${packetStep===7&&(i<2||i===3)?' data-changed="true"':''}><dt>${esc(name)}${packetStep===7&&(i<2||i===3)?' · CHANGED':''}</dt><dd>${esc(value)}</dd></div>`).join('');
+      };
+      on(box,'.osi-packet-toolbar','click',event=>{const button=event.target.closest('[data-packet]');if(!button||button.disabled)return;packetStep=button.dataset.packet==='reset'?0:Math.max(0,Math.min(osi.steps.length-1,packetStep+(button.dataset.packet==='next'?1:-1)));renderPacket();});
+      const renderTicket=()=>{
+        const ticket=osi.tickets.find(t=>t.id===by(box,'[data-osi-ticket]').value);
+        by(box,'.osi-ticket-evidence').innerHTML=`<span class="eyebrow">OBSERVED IN THIS FICTIONAL TICKET</span><p>${esc(ticket.evidence)}</p>`;
+        box.querySelectorAll('[data-answer]').forEach(b=>b.setAttribute('aria-pressed','false'));
+        by(box,'.osi-feedback').innerHTML=status('Choose a starting point','Use the specific evidence, then compare the explanation.');delete by(box,'.osi-feedback').dataset.outcome;
+      };
+      on(box,'[data-osi-ticket]','change',renderTicket);
+      on(box,'.osi-answers','click',event=>{
+        const button=event.target.closest('[data-answer]');if(!button)return;
+        const result=osi.diagnose(by(box,'[data-osi-ticket]').value,Number(button.dataset.answer));
+        box.querySelectorAll('[data-answer]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+        by(box,'.osi-feedback').dataset.outcome=result.correct?'supported':'reconsider';
+        by(box,'.osi-feedback').innerHTML=status(result.correct?(result.primary?'A useful starting point':'A valid implementation-level view'):'Look again at the evidence',(result.correct?'':`For the responsibility this ticket highlights, start with Layer ${result.answer}, ${osi.layer(result.answer).name}. `)+result.why,result.correct);
+      });
+      renderLayer();renderPacket();renderTicket();
+    },
     triage(box){decisionExercise(box,'triage');},
     incident(box){decisionExercise(box,'incident');},
     phishing(box){decisionExercise(box,'phishing');},

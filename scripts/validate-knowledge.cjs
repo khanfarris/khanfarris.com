@@ -53,7 +53,41 @@ for(const a of data.articles){
  for(const [,id] of a.body.matchAll(/data-exercise="([a-z0-9-]+)"/g)){allExercises.add(id);assert.ok(read('study-exercises.js').includes(id+'(box)'),`No exercise implementation for ${id}`);}
  checks+=14;
 }
-for(const id of ['subnet','vlan','arp','dhcp','syslog','response','m365','tcp','triage','incident','phishing','vulnerability','firewall','routing','switching'])eq(allExercises.has(id),true);
+for(const id of ['subnet','vlan','arp','dhcp','syslog','response','m365','tcp','triage','incident','phishing','vulnerability','firewall','routing','switching','osi'])eq(allExercises.has(id),true);
+// Check the teaching distinctions that must survive UI/content changes.
+eq(m.osi.layers.map(l=>l.number).join(','),'1,2,3,4,5,6,7');
+for(let layer=1;layer<=7;layer++){
+ const l=m.osi.layer(layer);eq(l.number,layer);assert.ok(l.protocols.length>=3&&l.checks.length>=3);checks++;
+ for(const slug of l.links){eq(slugs.has(slug),true);eq(Boolean(data.articles.find(a=>a.slug===slug).archived),false);}
+}
+eq(m.osi.layer(3).ports.includes('no TCP/UDP port fields'),true);
+eq(m.osi.layer(5).internet,'TCP/IP: usually application');
+eq(m.osi.layer(6).internet,'TCP/IP: usually application');
+for(const value of [0,8,1.5,'1',null]){assert.throws(()=>m.osi.layer(value));checks++;}
+const serviceIDs=new Set();
+for(const group of ['core','windows','operations'])for(const service of m.osi.serviceGroup(group)){
+ eq(service.group,group);eq(serviceIDs.has(service.id),false);serviceIDs.add(service.id);
+}
+eq(serviceIDs.size,m.osi.serviceGroup('all').length);
+eq(m.osi.services.find(s=>s.id==='dns').endpoint,'UDP + TCP 53');
+eq(m.osi.services.find(s=>s.id==='https').endpoint,'TCP 443 / UDP 443 for HTTP/3');
+eq(m.osi.services.find(s=>s.id==='rpc').endpoint,'TCP 135 + negotiated service ports');
+assert.throws(()=>m.osi.serviceGroup('unknown'));checks++;
+for(let step=0;step<m.osi.steps.length;step++){
+ const p=m.osi.packet(step);eq(p.index,step);eq(p.sourceIP,'10.20.10.25');eq(p.destinationIP,'192.0.2.80');eq(p.sourcePort,51514);eq(p.destinationPort,443);
+ eq(p.ttl,step<7?64:63);eq(p.showTransport,step>=2&&step<8);eq(p.showIP,step>=3&&step<8);eq(p.showFrame,step>=4&&step<8);
+ eq(p.sourceMAC,step<7?'02:00:00:00:10:25':'02:00:00:00:02:01');eq(p.destinationMAC,step<7?'02:00:00:00:10:01':'02:00:00:00:02:80');
+}
+for(const step of [-1,9,1.5,NaN,'1']){assert.throws(()=>m.osi.packet(step));checks++;}
+// Normal Layer 2 forwarding must not be taught as IP routing or NAT.
+for(const key of ['sourceMAC','destinationMAC','sourceIP','destinationIP','sourcePort','destinationPort','ttl'])eq(m.osi.packet(4)[key],m.osi.packet(6)[key]);
+for(const ticket of m.osi.tickets)for(let choice=1;choice<=7;choice++){
+ const result=m.osi.diagnose(ticket.id,choice);
+ eq(result.correct,choice===ticket.answer||Boolean(ticket.also?.includes(choice)));
+ eq(result.primary,choice===ticket.answer);assert.ok(result.why.length>100);checks++;
+}
+eq(m.osi.diagnose('session',7).correct,true);eq(m.osi.diagnose('certificate',7).correct,true);
+assert.throws(()=>m.osi.diagnose('unknown',1));assert.throws(()=>m.osi.diagnose('dns',8));checks+=2;
 for(const source of ['staff','guest'])for(const service of ['smb','https'])for(const specificFirst of [false,true]){
  const r=m.firewall(source,service,specificFirst);
  eq(r.allowed,source==='staff'&&service==='smb'&&specificFirst);
