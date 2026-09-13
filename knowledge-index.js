@@ -4,11 +4,11 @@ window.knowledgePages = [
     "name": "OSI model",
     "url": "index.html#note-osi",
     "type": "Concept",
-    "keywords": "Networking Concept study The OSI model separates network communication into seven responsibilities. Use it to understand what is happening, recognize the evidence, and choose the next useful troubleshooting check. OSI seven 7 layers physical data link network transport session presentation application TCP/IP encapsulation decapsulation MAC IP hardware switch router physical port service ports protocols troubleshooting",
+    "keywords": "Networking Concept study Seven layers describe how devices communicate. Select a layer to see what belongs there. OSI seven 7 layers physical data link network transport session presentation application TCP/IP MAC IP hardware switch router physical ports TCP UDP protocols",
     "slug": "osi",
     "category": "Networking",
-    "question": "In this no-NAT lab, what changes when the router forwards the laptop’s HTTPS packet, and which “ports” belong at Layer 4?",
-    "answer": "The router replaces the incoming Ethernet frame with a frame for the outgoing link, changing source and destination MAC addresses and reducing IPv4 TTL. The laptop/server IP addresses and TCP source/destination ports stay the same. TCP 51514 and 443 are Layer 4 software ports; switch interfaces 4 and 24 are physical/logical interfaces, not transport ports."
+    "question": "Which layer uses MAC addresses, which uses IP addresses, and which uses TCP/UDP ports?",
+    "answer": "Layer 2 uses MAC addresses for local delivery. Layer 3 uses IP addresses for routing. Layer 4 uses TCP/UDP port numbers to identify service endpoints."
   },
   {
     "name": "Private IPv4 & NAT",
