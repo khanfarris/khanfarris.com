@@ -4,7 +4,7 @@ window.knowledgePages = [
     "name": "OSI model",
     "url": "index.html#note-osi",
     "type": "Concept",
-    "keywords": "Networking Concept study Select a layer, then hover or tap any protocol or device to learn what it does and why it belongs there. OSI seven 7 layers physical data link network transport session presentation application TCP/IP MAC IP ARP hub repeater bridge switch router access point NIC firewall proxy WAF load balancer DHCP DNS DNSSEC DoH DoT BGP OSPF EIGRP IPsec IKE GRE AH ESP STP LACP LLDP CDP EAPOL 802.1X RADIUS TACACS Kerberos LDAP LDAPS SSH FTP SFTP FTPS TFTP SMTP IMAP POP3 SNMP syslog RDP SIP Network+ Security+ interview",
+    "keywords": "Networking Concept study Select a layer, then hover or tap any protocol or device to learn what it does and why it belongs there. OSI seven 7 layers physical data link network transport session presentation application TCP/IP MAC IP ARP hub repeater bridge switch router access point NIC firewall proxy WAF load balancer DHCP DNS DNSSEC DoH DoT BGP OSPF EIGRP IPsec IKE GRE AH ESP STP LACP LLDP CDP EAPOL 802.1X RADIUS TACACS Kerberos LDAP LDAPS SSH FTP SFTP FTPS TFTP SMTP IMAP POP3 SNMP syslog RDP SIP Network+ Security+ interview protocol studies FTP Telnet IMAP POP3 SNMP SMTP RPC NetBIOS HTTP SSH RDP SMB LDAP",
     "slug": "osi",
     "category": "Networking",
     "question": "Why is a hub Layer 1, a switch Layer 2, and a router Layer 3? Where does ARP fit?",
@@ -199,6 +199,126 @@ window.knowledgePages = [
     "category": "Networking",
     "question": "A TCP segment starts at sequence 1000 and carries 100 data bytes. Is tcp.stream == 1100 the way to find the next bytes?",
     "answer": "No. Sequence 1100 would describe the next data-byte position in this simplified example. tcp.stream is Wireshark’s separate identifier for the whole connection. Filter the right stream, then inspect sequence and acknowledgement numbers inside it."
+  },
+  {
+    "name": "FTP",
+    "url": "index.html#note-ftp",
+    "type": "Concept",
+    "keywords": "Networking Concept study FTP transfers files using one connection for instructions and another for the actual data. That separation explains many FTP connection problems. FTP FTPS SFTP file transfer active passive TCP 20 21 22 990 control data ports",
+    "slug": "ftp",
+    "category": "Networking",
+    "question": "Why might an FTP login succeed while a directory listing times out?",
+    "answer": "The login uses the control connection, commonly TCP 21. Listings use a separate data connection. Check active/passive mode and the actual negotiated data path, then verify the firewall, NAT, and server configuration."
+  },
+  {
+    "name": "Telnet",
+    "url": "index.html#note-telnet",
+    "type": "Concept",
+    "keywords": "Networking Concept study Telnet provides a remote text terminal. Ordinary Telnet does not encrypt the session, so SSH is the usual secure choice for remote administration. Telnet TCP 23 remote terminal plaintext cleartext SSH port testing legacy management",
+    "slug": "telnet",
+    "category": "Networking",
+    "question": "Does moving Telnet from port 23 to a different port protect the password?",
+    "answer": "No. The port changes the listening endpoint, not the protocol’s encryption. Ordinary Telnet remains plaintext. Use an approved encrypted management service such as SSH and verify the server identity."
+  },
+  {
+    "name": "IMAP / IMAPS",
+    "url": "index.html#note-imap",
+    "type": "Concept",
+    "keywords": "Networking Concept study IMAP lets a mail client work with messages and folders stored on a server. IMAPS protects that same mailbox conversation with TLS from the start. IMAP IMAPS TCP 143 993 STARTTLS email mailbox sync read flags folders",
+    "slug": "imap",
+    "category": "Networking",
+    "question": "A laptop sends mail successfully, but its inbox stops updating. Does that prove SMTP is broken?",
+    "answer": "No. Sending and mailbox access are separate paths. If this client uses SMTP to send and IMAP to read, investigate its IMAP connection, TLS, authentication, and synchronization state."
+  },
+  {
+    "name": "POP3 / POP3S",
+    "url": "index.html#note-pop3",
+    "type": "Concept",
+    "keywords": "Networking Concept study POP3 retrieves messages from a mailbox, commonly into a local mail client. Whether the server keeps a copy depends on the client’s deletion settings. POP3 POP3S POP 110 995 STLS leave on server download delete QUIT email retrieval",
+    "slug": "pop3",
+    "category": "Networking",
+    "question": "Does POP3 always remove messages from the server after downloading them?",
+    "answer": "No. A client can leave copies. Removal depends on deletion requests and a successful update at session end. POP3 does not provide IMAP-style shared folder and read-state synchronization."
+  },
+  {
+    "name": "SNMP",
+    "url": "index.html#note-snmp",
+    "type": "Concept",
+    "keywords": "Cloud & telemetry Concept study SNMP lets a monitoring system ask devices for structured information and receive notifications. It can report switch health without someone opening every device’s console. SNMP v1 v2c v3 161 162 UDP MIB OID GET SET trap inform authPriv authNoPriv monitoring",
+    "slug": "snmp",
+    "category": "Cloud & telemetry",
+    "question": "Why is SNMPv3 alone not enough to claim that management traffic is encrypted?",
+    "answer": "Its security level matters. noAuthNoPriv has neither authentication nor privacy; authNoPriv adds authentication and integrity; authPriv also encrypts the scoped management payload."
+  },
+  {
+    "name": "SMTP / SMTPS",
+    "url": "index.html#note-smtp",
+    "type": "Concept",
+    "keywords": "Networking Concept study SMTP moves outgoing mail from a sender to mail servers and between servers. It does not read your inbox; IMAP and POP3 handle mailbox access. SMTP SMTPS 25 465 587 STARTTLS email submission relay MX 250 451 550 queued delivery",
+    "slug": "smtp",
+    "category": "Networking",
+    "question": "Which protocols send mail and read mail, and what does an SMTP 250 after DATA prove?",
+    "answer": "SMTP submits and relays mail; IMAP and POP3 provide mailbox access. A 250 after the complete message data means that server accepted responsibility for delivery or relay, not that the recipient received or read it."
+  },
+  {
+    "name": "RPC / NetBIOS",
+    "url": "index.html#note-rpc-netbios",
+    "type": "Concept",
+    "keywords": "IT operations Concept study RPC asks another computer to perform a software operation. NetBIOS provides older naming and communication services. They often appear in Windows troubleshooting, but they are different technologies. RPC NetBIOS endpoint mapper 135 137 138 139 445 dynamic ports 49152 65535 named pipes Windows session layer",
+    "slug": "rpc-netbios",
+    "category": "IT operations",
+    "question": "Why does a successful TCP 135 test not prove a Windows RPC operation will succeed?",
+    "answer": "135 commonly reaches the endpoint mapper. The requested service may use another negotiated port or a different transport. That path, the service itself, and the caller’s rights must also work. NetBIOS is a separate family of naming and communication services."
+  },
+  {
+    "name": "HTTP / HTTPS",
+    "url": "index.html#note-http",
+    "type": "Concept",
+    "keywords": "Networking Concept study HTTP is the request-and-response language of the web. HTTPS carries HTTP through a protected connection, helping keep the exchanged content private and intact. HTTP HTTPS 80 443 TCP UDP QUIC HTTP3 GET POST status 200 301 302 401 403 404 500 502 503 TLS",
+    "slug": "http",
+    "category": "Networking",
+    "question": "An HTTPS page returns 403. What does that tell you, and what does it not tell you?",
+    "answer": "You received an HTTP refusal from some responding component. Investigate its access or request policy and logs. It does not establish total network failure, prove the origin app received the request, or imply that HTTPS is broken."
+  },
+  {
+    "name": "SSH",
+    "url": "index.html#note-ssh",
+    "type": "Concept",
+    "keywords": "IT operations Concept study SSH provides protected remote access, commonly to a command line. It checks the server’s identity and then authenticates the user; those are two different checks. SSH Secure Shell 22 host key fingerprint public key private key authentication SFTP tunnel remote command",
+    "slug": "ssh",
+    "category": "IT operations",
+    "question": "What is the difference between an SSH host key and a user’s authentication key?",
+    "answer": "The host key identifies the server you reached. A user authentication key helps prove which user is connecting. Verify the server identity, protect the user’s private key, and keep authentication separate from permission to run a command."
+  },
+  {
+    "name": "RDP",
+    "url": "index.html#note-rdp",
+    "type": "Concept",
+    "keywords": "IT operations Concept study RDP lets you interact with a remote computer’s graphical desktop. The applications run on the remote host while your device sends input and receives the display. RDP Remote Desktop 3389 TCP UDP gateway 443 NLA Network Level Authentication disconnect sign out session",
+    "slug": "rdp",
+    "category": "IT operations",
+    "question": "What is the difference between disconnecting an RDP window and signing out of Windows?",
+    "answer": "Disconnecting ends the client connection, while the remote session and programs may remain until policy ends them. Signing out ends that user session. The applications run on the remote host, not inside the local RDP client."
+  },
+  {
+    "name": "SMB",
+    "url": "index.html#note-smb",
+    "type": "Concept",
+    "keywords": "Identity & access Concept study SMB lets a client work with files and other shared resources on a server. A mapped drive is a convenient view of that service, not a copy of the entire server folder. SMB Server Message Block 445 139 file sharing NAS mapped drive UNC SMB1 SMB3 signing encryption permissions",
+    "slug": "smb",
+    "category": "Identity & access",
+    "question": "What does SMB signing protect, and how is it different from SMB encryption?",
+    "answer": "Signing protects integrity and authenticity of SMB messages but does not hide their contents. Encryption protects SMB content in transit. Neither replaces the server’s authentication and share/file authorization checks."
+  },
+  {
+    "name": "LDAP / LDAPS",
+    "url": "index.html#note-ldap",
+    "type": "Concept",
+    "keywords": "Identity & access Concept study LDAP lets applications query and update a directory of objects such as users, groups, and computers. LDAPS protects the directory conversation with TLS from the start. LDAP LDAPS 389 636 3268 3269 StartTLS bind search directory DN distinguished name Active Directory",
+    "slug": "ldap",
+    "category": "Identity & access",
+    "question": "LDAP authentication succeeds but a search returns zero entries. What should you check before claiming the user is missing?",
+    "answer": "Check the search base, scope, filter, and the account’s read permissions. A successful bind only establishes authentication. It does not prove the query covered the right directory branch or can see every object."
   },
   {
     "name": "Alert triage",
