@@ -53,6 +53,6 @@ Use recent study material when relevant, and add beginner foundations for the in
 
 Keep established article slugs stable so Reader links continue working: `mdr` is the general EDR/MDR/XDR note and `windows-domain` covers Active Directory. Archived tool notes can be revised and republished later by updating their source data.
 
-The job-preparation collection also covers malware, security controls, risk, security awareness, VPNs, troubleshooting across Windows and macOS, change management, and technical documentation. IT operations is a separate subject filter. Related-note links connect those foundations to existing studies; the constellation maintains a minimum row height and scrolls as the archive grows. Counts come from the content, not a fixed total in the interface.
+The job-preparation collection also covers malware, security controls, risk, security awareness, and VPNs. IT operations is a separate subject filter. Related-note links connect those foundations to existing studies; the constellation maintains a minimum row height and scrolls as the archive grows. Counts come from the content, not a fixed total in the interface.
 
 Only publication-ready article content belongs in this repository. Keep raw conversation exports, private source annotations, credentials, and signed download links outside it.

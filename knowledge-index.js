@@ -439,35 +439,5 @@ window.knowledgePages = [
     "category": "Networking",
     "question": "A VPN is connected and a file server answers on TCP 445, but a share returns Access denied. Where should the investigation go next?",
     "answer": "Review the identity used for the share and its share/filesystem permissions. The successful TCP test supports service reachability, not authorization to read files."
-  },
-  {
-    "name": "Troubleshooting",
-    "url": "index.html#note-troubleshooting",
-    "type": "Concept",
-    "keywords": "IT operations Concept study Troubleshooting is a controlled process of narrowing a problem with evidence. Start with what fails, compare what still works, and test one explanation at a time. Windows Windows Server macOS OS support troubleshooting processes services Task Manager Activity Monitor diagnostics",
-    "slug": "troubleshooting",
-    "category": "IT operations",
-    "question": "One user fails on two devices while another authorized user succeeds on both. What does this comparison help you prioritize?",
-    "answer": "User-specific identity or permissions become a stronger hypothesis than a device-wide connectivity failure. Review the exact account, group membership, and resource authorization, and verify with an appropriate test."
-  },
-  {
-    "name": "Change management",
-    "url": "index.html#note-change-management",
-    "type": "Concept",
-    "keywords": "IT operations Concept study Change management makes a system change deliberate, reviewable, and recoverable. Success means the intended result works and required services still work afterward. change control rollback maintenance configuration baseline approval emergency change verification",
-    "slug": "change-management",
-    "category": "IT operations",
-    "question": "Why is a configuration backup not always a complete rollback plan?",
-    "answer": "You also need a supported restoration method, access to execute it, prerequisites, decision criteria, and validation. If the change disconnects your management session, a backup alone does not restore your ability to reach the device."
-  },
-  {
-    "name": "Technical documentation",
-    "url": "index.html#note-technical-documentation",
-    "type": "Concept",
-    "keywords": "IT operations Concept study Useful technical documentation lets another person understand the evidence or repeat a task without guessing. Its structure should match what that reader needs to do. documentation KB SOP runbook tickets client communication evidence handoff",
-    "slug": "technical-documentation",
-    "category": "IT operations",
-    "question": "What is missing from “we are investigating and will update you soon”?",
-    "answer": "It omits confirmed scope or impact, the evidence and action state, the responsible next owner, and a specific achievable update time. Fill those in from the actual case rather than using one universal sentence."
   }
 ];

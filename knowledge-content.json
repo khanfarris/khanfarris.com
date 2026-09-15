@@ -555,7 +555,6 @@
         "tcp",
         "dns",
         "tls",
-        "troubleshooting",
         "arp"
       ],
       "keywords": "OSI seven 7 layers physical data link network transport session presentation application TCP/IP MAC IP ARP hub repeater bridge switch router access point NIC firewall proxy WAF load balancer DHCP DNS DNSSEC DoH DoT BGP OSPF EIGRP IPsec IKE GRE AH ESP STP LACP LLDP CDP EAPOL 802.1X RADIUS TACACS Kerberos LDAP LDAPS SSH FTP SFTP FTPS TFTP SMTP IMAP POP3 SNMP syslog RDP SIP Network+ Security+ interview protocol studies FTP Telnet IMAP POP3 SNMP SMTP RPC NetBIOS HTTP SSH RDP SMB LDAP"
@@ -689,7 +688,6 @@
       "related": [
         "dhcp",
         "tls",
-        "troubleshooting",
         "vpns",
         "osi"
       ],
@@ -713,8 +711,7 @@
       "related": [
         "dns",
         "vlans",
-        "switching",
-        "troubleshooting"
+        "switching"
       ],
       "keywords": ""
     },
@@ -991,7 +988,6 @@
       "related": [
         "windows-server",
         "file-shares",
-        "troubleshooting",
         "security-controls",
         "ldap",
         "rpc-netbios",
@@ -1041,7 +1037,6 @@
         "windows-domain",
         "timus",
         "vpns",
-        "troubleshooting",
         "smb",
         "rpc-netbios"
       ],
@@ -1111,8 +1106,7 @@
       "related": [
         "windows-domain",
         "sentinel",
-        "alert-triage",
-        "troubleshooting"
+        "alert-triage"
       ],
       "keywords": ""
     },
@@ -1225,7 +1219,7 @@
       "kind": "Concept",
       "basis": "Concept study",
       "principle": "Telnet provides a remote text terminal. Ordinary Telnet does not encrypt the session, so SSH is the usual secure choice for remote administration.",
-      "body": "<p><strong>Telnet</strong> lets you type commands into another computer or network device and receive text output. For example, an older switch might present a login prompt over Telnet. The commands run on the remote device, not on your own laptop.</p><aside class=\"protocol-layer\"><span class=\"protocol-layer-number\" aria-hidden=\"true\">7</span><div><strong>OSI · Application layer</strong><p>Telnet defines how a remote terminal exchanges text and terminal-control information. Using a TCP port does not make Telnet a Layer 4 protocol. TCP or UDP carries its messages at Layer 4.</p></div></aside><div class=\"table-scroll\" role=\"region\" aria-label=\"Common server ports\" tabindex=\"0\"><table class=\"protocol-ports\"><caption>Common ports · server side</caption><thead><tr><th scope=\"col\">Service</th><th scope=\"col\">Transport / port</th><th scope=\"col\">What to remember</th></tr></thead><tbody><tr><th scope=\"row\">Telnet</th><td>TCP 23</td><td>Remote terminal; ordinary sessions are plaintext.</td></tr><tr><th scope=\"row\">SSH comparison</th><td>TCP 22</td><td>Encrypted remote terminal and related services.</td></tr></tbody></table></div><p class=\"protocol-caption\">These are common defaults, not proof of the application or its security. A TCP/UDP port identifies a software endpoint; it is different from a physical switch port.</p><h2>What plaintext actually means</h2><p><strong>Plaintext</strong> means the protocol does not hide the transmitted content with encryption. Someone positioned to capture the traffic may be able to read usernames, passwords, commands, and responses. A password prompt can authenticate a user while still exposing the password on the network. Authentication and encryption solve different problems.</p><p>The terminal window itself tells you little about security. <a href=\"#note-ssh\">SSH</a> can look almost identical while protecting the connection. Moving Telnet to an unusual port changes where it listens; that alone adds no encryption.</p><section class=\"protocol-lab\" aria-labelledby=\"telnet-lab-title\"><div class=\"protocol-lab-heading\"><span class=\"eyebrow\">TRY IT / FICTIONAL CASES</span><h2 id=\"telnet-lab-title\">Same terminal, different protection</h2><p>A fictional technician needs to inspect a legacy switch. No real credentials or network traffic are used. Make a prediction, then open a case to follow the result.</p></div><details class=\"protocol-case\" name=\"protocol-telnet\"><summary><span class=\"protocol-case-number\" aria-hidden=\"true\">01</span><span><strong>Use ordinary Telnet</strong><span>What could an observer on the path read?</span></span><span class=\"protocol-case-toggle\" aria-hidden=\"true\">+</span></summary><div class=\"protocol-case-body\"><ol class=\"protocol-path\" aria-label=\"Example sequence\"><li><span class=\"protocol-step\">01</span><strong>Technician types</strong><span>A made-up login and command enter the client.</span></li><li><span class=\"protocol-step\">02</span><strong>TCP 23 carries text</strong><span>The session has no protocol encryption.</span></li><li><span class=\"protocol-step\">03</span><strong>Switch responds</strong><span>The output can also be readable on the path.</span></li></ol><p class=\"protocol-outcome\"><strong>What this tells you</strong>The username, password, and commands may be exposed. Being inside an office network does not itself encrypt them.</p><p>Document the legacy dependency and arrange an approved migration or restricted temporary access path.</p></div></details><details class=\"protocol-case\" name=\"protocol-telnet\"><summary><span class=\"protocol-case-number\" aria-hidden=\"true\">02</span><span><strong>Use SSH with verified identity</strong><span>What changes on the wire?</span></span><span class=\"protocol-case-toggle\" aria-hidden=\"true\">+</span></summary><div class=\"protocol-case-body\"><ol class=\"protocol-path\" aria-label=\"Example sequence\"><li><span class=\"protocol-step\">01</span><strong>Verify the host</strong><span>The known server identity is checked.</span></li><li><span class=\"protocol-step\">02</span><strong>Encrypted session</strong><span>SSH protects authentication and command traffic.</span></li><li><span class=\"protocol-step\">03</span><strong>Switch responds</strong><span>The authorized client decrypts the output.</span></li></ol><p class=\"protocol-outcome\"><strong>What this tells you</strong>The text interface looks familiar, but the communication is encrypted and integrity-protected.</p><p>The account still needs appropriate rights. Encryption does not make every command or logged-in user trustworthy.</p></div></details><details class=\"protocol-case\" name=\"protocol-telnet\"><summary><span class=\"protocol-case-number\" aria-hidden=\"true\">03</span><span><strong>A port test succeeds</strong><span>Does this prove the remote login works?</span></span><span class=\"protocol-case-toggle\" aria-hidden=\"true\">+</span></summary><div class=\"protocol-case-body\"><ol class=\"protocol-path\" aria-label=\"Example sequence\"><li><span class=\"protocol-step\">01</span><strong>TCP connects</strong><span>The target accepts a connection at the tested port.</span></li><li><span class=\"protocol-step\">02</span><strong>No login tested</strong><span>The result contains no authentication evidence.</span></li><li><span class=\"protocol-step\">03</span><strong>Access remains unknown</strong><span>Command execution and permissions were not checked.</span></li></ol><p class=\"protocol-outcome\"><strong>What this tells you</strong>A successful connection is a limited reachability result. It does not establish the application, encryption, or user access.</p><p>Record “TCP connection succeeded,” then use the approved application check for the actual service.</p></div></details></section><h2>Where this matters at work</h2><p>A vulnerability report may flag Telnet on a printer, switch, or appliance. First establish which asset owns the address and whether the service is needed. Check the supported secure-management option, who can reach the interface, and the change owner. Do not disable a production management path before confirming a working replacement.</p><p>You may also hear “telnet to a port” as an old connectivity test. That refers to using a Telnet client against a chosen port; it does not mean the service on that port is Telnet. An HTTPS service, for example, expects a TLS handshake rather than ordinary typed text. <a href=\"#note-troubleshooting\">Troubleshooting</a> should separate basic reachability from a working application.</p>",
+      "body": "<p><strong>Telnet</strong> lets you type commands into another computer or network device and receive text output. For example, an older switch might present a login prompt over Telnet. The commands run on the remote device, not on your own laptop.</p><aside class=\"protocol-layer\"><span class=\"protocol-layer-number\" aria-hidden=\"true\">7</span><div><strong>OSI · Application layer</strong><p>Telnet defines how a remote terminal exchanges text and terminal-control information. Using a TCP port does not make Telnet a Layer 4 protocol. TCP or UDP carries its messages at Layer 4.</p></div></aside><div class=\"table-scroll\" role=\"region\" aria-label=\"Common server ports\" tabindex=\"0\"><table class=\"protocol-ports\"><caption>Common ports · server side</caption><thead><tr><th scope=\"col\">Service</th><th scope=\"col\">Transport / port</th><th scope=\"col\">What to remember</th></tr></thead><tbody><tr><th scope=\"row\">Telnet</th><td>TCP 23</td><td>Remote terminal; ordinary sessions are plaintext.</td></tr><tr><th scope=\"row\">SSH comparison</th><td>TCP 22</td><td>Encrypted remote terminal and related services.</td></tr></tbody></table></div><p class=\"protocol-caption\">These are common defaults, not proof of the application or its security. A TCP/UDP port identifies a software endpoint; it is different from a physical switch port.</p><h2>What plaintext actually means</h2><p><strong>Plaintext</strong> means the protocol does not hide the transmitted content with encryption. Someone positioned to capture the traffic may be able to read usernames, passwords, commands, and responses. A password prompt can authenticate a user while still exposing the password on the network. Authentication and encryption solve different problems.</p><p>The terminal window itself tells you little about security. <a href=\"#note-ssh\">SSH</a> can look almost identical while protecting the connection. Moving Telnet to an unusual port changes where it listens; that alone adds no encryption.</p><section class=\"protocol-lab\" aria-labelledby=\"telnet-lab-title\"><div class=\"protocol-lab-heading\"><span class=\"eyebrow\">TRY IT / FICTIONAL CASES</span><h2 id=\"telnet-lab-title\">Same terminal, different protection</h2><p>A fictional technician needs to inspect a legacy switch. No real credentials or network traffic are used. Make a prediction, then open a case to follow the result.</p></div><details class=\"protocol-case\" name=\"protocol-telnet\"><summary><span class=\"protocol-case-number\" aria-hidden=\"true\">01</span><span><strong>Use ordinary Telnet</strong><span>What could an observer on the path read?</span></span><span class=\"protocol-case-toggle\" aria-hidden=\"true\">+</span></summary><div class=\"protocol-case-body\"><ol class=\"protocol-path\" aria-label=\"Example sequence\"><li><span class=\"protocol-step\">01</span><strong>Technician types</strong><span>A made-up login and command enter the client.</span></li><li><span class=\"protocol-step\">02</span><strong>TCP 23 carries text</strong><span>The session has no protocol encryption.</span></li><li><span class=\"protocol-step\">03</span><strong>Switch responds</strong><span>The output can also be readable on the path.</span></li></ol><p class=\"protocol-outcome\"><strong>What this tells you</strong>The username, password, and commands may be exposed. Being inside an office network does not itself encrypt them.</p><p>Document the legacy dependency and arrange an approved migration or restricted temporary access path.</p></div></details><details class=\"protocol-case\" name=\"protocol-telnet\"><summary><span class=\"protocol-case-number\" aria-hidden=\"true\">02</span><span><strong>Use SSH with verified identity</strong><span>What changes on the wire?</span></span><span class=\"protocol-case-toggle\" aria-hidden=\"true\">+</span></summary><div class=\"protocol-case-body\"><ol class=\"protocol-path\" aria-label=\"Example sequence\"><li><span class=\"protocol-step\">01</span><strong>Verify the host</strong><span>The known server identity is checked.</span></li><li><span class=\"protocol-step\">02</span><strong>Encrypted session</strong><span>SSH protects authentication and command traffic.</span></li><li><span class=\"protocol-step\">03</span><strong>Switch responds</strong><span>The authorized client decrypts the output.</span></li></ol><p class=\"protocol-outcome\"><strong>What this tells you</strong>The text interface looks familiar, but the communication is encrypted and integrity-protected.</p><p>The account still needs appropriate rights. Encryption does not make every command or logged-in user trustworthy.</p></div></details><details class=\"protocol-case\" name=\"protocol-telnet\"><summary><span class=\"protocol-case-number\" aria-hidden=\"true\">03</span><span><strong>A port test succeeds</strong><span>Does this prove the remote login works?</span></span><span class=\"protocol-case-toggle\" aria-hidden=\"true\">+</span></summary><div class=\"protocol-case-body\"><ol class=\"protocol-path\" aria-label=\"Example sequence\"><li><span class=\"protocol-step\">01</span><strong>TCP connects</strong><span>The target accepts a connection at the tested port.</span></li><li><span class=\"protocol-step\">02</span><strong>No login tested</strong><span>The result contains no authentication evidence.</span></li><li><span class=\"protocol-step\">03</span><strong>Access remains unknown</strong><span>Command execution and permissions were not checked.</span></li></ol><p class=\"protocol-outcome\"><strong>What this tells you</strong>A successful connection is a limited reachability result. It does not establish the application, encryption, or user access.</p><p>Record “TCP connection succeeded,” then use the approved application check for the actual service.</p></div></details></section><h2>Where this matters at work</h2><p>A vulnerability report may flag Telnet on a printer, switch, or appliance. First establish which asset owns the address and whether the service is needed. Check the supported secure-management option, who can reach the interface, and the change owner. Do not disable a production management path before confirming a working replacement.</p><p>You may also hear “telnet to a port” as an old connectivity test. That refers to using a Telnet client against a chosen port; it does not mean the service on that port is Telnet. An HTTPS service, for example, expects a TLS handshake rather than ordinary typed text. Troubleshooting should separate basic reachability from a working application.</p>",
       "question": "Does moving Telnet from port 23 to a different port protect the password?",
       "answer": "No. The port changes the listening endpoint, not the protocol’s encryption. Ordinary Telnet remains plaintext. Use an approved encrypted management service such as SSH and verify the server identity.",
       "sources": [
@@ -1238,7 +1232,6 @@
         "ssh",
         "tcp",
         "security-controls",
-        "troubleshooting",
         "osi"
       ],
       "keywords": "Telnet TCP 23 remote terminal plaintext cleartext SSH port testing legacy management"
@@ -1289,7 +1282,6 @@
         "imap",
         "smtp",
         "tls",
-        "troubleshooting",
         "osi"
       ],
       "keywords": "POP3 POP3S POP 110 995 STLS leave on server download delete QUIT email retrieval"
@@ -1367,7 +1359,6 @@
         "windows-domain",
         "dns",
         "firewalls",
-        "troubleshooting",
         "osi"
       ],
       "keywords": "RPC NetBIOS endpoint mapper 135 137 138 139 445 dynamic ports 49152 65535 named pipes Windows session layer"
@@ -1393,7 +1384,6 @@
         "dns",
         "tcp",
         "phishing",
-        "troubleshooting",
         "osi"
       ],
       "keywords": "HTTP HTTPS 80 443 TCP UDP QUIC HTTP3 GET POST status 200 301 302 401 403 404 500 502 503 TLS"
@@ -1444,7 +1434,6 @@
         "vpns",
         "ztna-sase",
         "windows-events",
-        "troubleshooting",
         "osi"
       ],
       "keywords": "RDP Remote Desktop 3389 TCP UDP gateway 443 NLA Network Level Authentication disconnect sign out session"
@@ -1542,8 +1531,7 @@
         "mdr",
         "siem",
         "incident-response",
-        "windows-events",
-        "technical-documentation"
+        "windows-events"
       ],
       "keywords": "SOC escalation queue severity priority false positive benign positive"
     },
@@ -1564,9 +1552,7 @@
       "related": [
         "alert-triage",
         "malware",
-        "bec",
-        "change-management",
-        "technical-documentation"
+        "bec"
       ],
       "keywords": "containment eradication recovery evidence timeline handoff incident response IR"
     },
@@ -1623,7 +1609,7 @@
       "kind": "Concept",
       "basis": "Concept study",
       "principle": "Vulnerability management is the repeated work of finding weaknesses, deciding which matter most, fixing or reducing them, and verifying the result.",
-      "body": "<h2>A finding is the start of the work</h2><p>A <strong>vulnerability</strong> is a weakness that could be used to cause harm. Examples include an unpatched service, a weak configuration, or excessive access. A <strong>vulnerability assessment</strong> identifies and evaluates weaknesses. <strong>Vulnerability management</strong> is the ongoing process that turns findings into owned, verified improvements.</p><p>A scanner can help discover software versions, exposed services, and configuration issues. Its report is evidence to evaluate, not a complete description of business risk. A penetration test goes further by attempting authorized exploitation within agreed rules; running a vulnerability scan does not make the activity a penetration test.</p>\n<h2>Configure an assessment with a purpose</h2><ol><li><strong>Define scope:</strong> confirm the customer, asset list, network ranges, exclusions, and maintenance constraints.</li><li><strong>Choose the viewpoint:</strong> an external scan shows an internet-facing view; an internal scan shows what is reachable from its network position.</li><li><strong>Choose depth:</strong> an authenticated scan uses authorized credentials to inspect local details. An unauthenticated scan has a more limited external view.</li><li><strong>Confirm coverage:</strong> record unreachable assets, failed authentication, and skipped checks. Missing results are not the same as clean results.</li><li><strong>Validate findings:</strong> check the detected version, affected configuration, vendor guidance, and existing mitigations before planning work.</li></ol>\n<h2>Understand the labels</h2><p>A <strong>CVE</strong> is an identifier for a publicly disclosed vulnerability. It is not a severity score. <strong>CVSS</strong> describes vulnerability severity with a score and vector, the details used to calculate it. Record the version and score type; a base score alone is not a complete business-priority calculation.</p><p>CISA’s <strong>Known Exploited Vulnerabilities (KEV)</strong> catalog identifies vulnerabilities with evidence of exploitation in the wild. KEV inclusion is an urgency signal, not proof that your particular device has been compromised. Absence from the catalog is not proof of safety. Combine threat evidence with exposure, prerequisites, asset importance, and current controls.</p>\n<section class=\"exercise\" data-exercise=\"vulnerability\" aria-label=\"Which finding gets attention first?\"><div class=\"exercise-heading\"><span class=\"eyebrow\">INTERACTIVE / FICTIONAL EXAMPLE</span><h2>Which finding gets attention first?</h2><p>Compare three fictional findings, then change the environment. Choose a first priority and read the reasoning.</p></div><div class=\"exercise-mount\"></div><noscript><p>An exposed, affected gateway with known exploitation may outrank a higher base score on a contained test system. If that test system becomes a critical exposed service, reassess the priority. Example scores are invented and do not refer to real CVEs.</p></noscript></section>\n<h2>Close the loop after a fix</h2><p>Assign an owner and target date. Plan patching through <a href=\"#note-change-management\">Change management</a>, including service testing and recovery options. If a patch cannot be applied immediately, document a specific mitigation, its evidence, and an expiry or review date. A mitigation reduces exposure; it may not remove the vulnerable software.</p><p>After the change, verify the running version and required restart, rescan with comparable coverage, and test the application. If the scanner loses access, do not interpret the missing finding as remediation. A suspected exploited weakness also needs an incident-response review; patching alone does not remove an attacker already present.</p>\n<div class=\"field-note\"><strong>A useful finding record</strong><p>Asset and owner → evidence and affected version → exposure and likely impact → priority rationale → fix or mitigation → verification result. This is the bridge between a scan report and completed security work.</p></div>",
+      "body": "<h2>A finding is the start of the work</h2><p>A <strong>vulnerability</strong> is a weakness that could be used to cause harm. Examples include an unpatched service, a weak configuration, or excessive access. A <strong>vulnerability assessment</strong> identifies and evaluates weaknesses. <strong>Vulnerability management</strong> is the ongoing process that turns findings into owned, verified improvements.</p><p>A scanner can help discover software versions, exposed services, and configuration issues. Its report is evidence to evaluate, not a complete description of business risk. A penetration test goes further by attempting authorized exploitation within agreed rules; running a vulnerability scan does not make the activity a penetration test.</p>\n<h2>Configure an assessment with a purpose</h2><ol><li><strong>Define scope:</strong> confirm the customer, asset list, network ranges, exclusions, and maintenance constraints.</li><li><strong>Choose the viewpoint:</strong> an external scan shows an internet-facing view; an internal scan shows what is reachable from its network position.</li><li><strong>Choose depth:</strong> an authenticated scan uses authorized credentials to inspect local details. An unauthenticated scan has a more limited external view.</li><li><strong>Confirm coverage:</strong> record unreachable assets, failed authentication, and skipped checks. Missing results are not the same as clean results.</li><li><strong>Validate findings:</strong> check the detected version, affected configuration, vendor guidance, and existing mitigations before planning work.</li></ol>\n<h2>Understand the labels</h2><p>A <strong>CVE</strong> is an identifier for a publicly disclosed vulnerability. It is not a severity score. <strong>CVSS</strong> describes vulnerability severity with a score and vector, the details used to calculate it. Record the version and score type; a base score alone is not a complete business-priority calculation.</p><p>CISA’s <strong>Known Exploited Vulnerabilities (KEV)</strong> catalog identifies vulnerabilities with evidence of exploitation in the wild. KEV inclusion is an urgency signal, not proof that your particular device has been compromised. Absence from the catalog is not proof of safety. Combine threat evidence with exposure, prerequisites, asset importance, and current controls.</p>\n<section class=\"exercise\" data-exercise=\"vulnerability\" aria-label=\"Which finding gets attention first?\"><div class=\"exercise-heading\"><span class=\"eyebrow\">INTERACTIVE / FICTIONAL EXAMPLE</span><h2>Which finding gets attention first?</h2><p>Compare three fictional findings, then change the environment. Choose a first priority and read the reasoning.</p></div><div class=\"exercise-mount\"></div><noscript><p>An exposed, affected gateway with known exploitation may outrank a higher base score on a contained test system. If that test system becomes a critical exposed service, reassess the priority. Example scores are invented and do not refer to real CVEs.</p></noscript></section>\n<h2>Close the loop after a fix</h2><p>Assign an owner and target date. Plan patching through change management, including service testing and recovery options. If a patch cannot be applied immediately, document a specific mitigation, its evidence, and an expiry or review date. A mitigation reduces exposure; it may not remove the vulnerable software.</p><p>After the change, verify the running version and required restart, rescan with comparable coverage, and test the application. If the scanner loses access, do not interpret the missing finding as remediation. A suspected exploited weakness also needs an incident-response review; patching alone does not remove an attacker already present.</p>\n<div class=\"field-note\"><strong>A useful finding record</strong><p>Asset and owner → evidence and affected version → exposure and likely impact → priority rationale → fix or mitigation → verification result. This is the bridge between a scan report and completed security work.</p></div>",
       "question": "A scanner reports no findings on a server, but authentication failed. What should you conclude?",
       "answer": "The assessment has a coverage gap. Confirm which checks ran, repair authorized scan access, and repeat the relevant assessment. You cannot treat an unauthenticated or unreachable result as proof that the server is patched.",
       "sources": [
@@ -1634,7 +1620,6 @@
       "related": [
         "risk",
         "security-controls",
-        "change-management",
         "firewalls",
         "malware"
       ],
@@ -1701,8 +1686,7 @@
       ],
       "related": [
         "phishing",
-        "security-controls",
-        "technical-documentation"
+        "security-controls"
       ],
       "keywords": "KnowBe4 awareness training phishing simulations culture reporting"
     },
@@ -1726,7 +1710,6 @@
         "private-addressing",
         "syslog",
         "security-controls",
-        "change-management",
         "ftp",
         "smb",
         "rdp"
@@ -1778,7 +1761,6 @@
         "arp",
         "routing",
         "dhcp",
-        "change-management",
         "osi"
       ],
       "keywords": "switch ports MAC table CAM learning flooding unicast broadcast trunk access STP"
@@ -1808,83 +1790,6 @@
         "ssh"
       ],
       "keywords": "VPN remote access site to site split tunnel force full tunnel IPsec TLS overlapping subnets"
-    },
-    {
-      "slug": "troubleshooting",
-      "title": "Troubleshooting",
-      "category": "IT operations",
-      "kind": "Concept",
-      "basis": "Concept study",
-      "principle": "Troubleshooting is a controlled process of narrowing a problem with evidence. Start with what fails, compare what still works, and test one explanation at a time.",
-      "body": "<h2>Translate “it is broken” into a testable problem</h2><p>Ask what the user was trying to do, the exact error, when it started, and whether it ever worked. Establish <strong>scope</strong>: one application, one account, one device, one office, or everyone? Check recent changes, but remember that events close together in time are not automatically cause and effect.</p><p>A <strong>hypothesis</strong> is a possible explanation you can test. “DNS may be failing because the service works by verified IP but not by name” is testable. “Windows is acting weird” does not point to a useful test.</p>\n<h2>Work from observation to confirmation</h2><ol><li>Record the expected and actual behavior, time zone, device, and affected user.</li><li>Compare a known-working case under similar conditions.</li><li>Choose a low-impact test that can distinguish between explanations.</li><li>Interpret exactly what the result proves, including what it does not prove.</li><li>Apply an authorized fix, then repeat the original failing task.</li><li>Document the result and any remaining limitations.</li></ol>\n<h2>Look at the same foundations on Windows and macOS</h2>\n<div class=\"table-scroll\"><table><thead><tr><th scope=\"col\">Question</th><th scope=\"col\">Windows starting point</th><th scope=\"col\">macOS starting point</th></tr></thead><tbody><tr><td>Is one process consuming resources?</td><td>Task Manager: processes, CPU, memory, disk.</td><td>Activity Monitor: CPU, memory pressure, disk.</td></tr><tr><td>Are network settings expected?</td><td>Settings and ipconfig /all.</td><td>System Settings → Network; inspect the active connection’s details.</td></tr><tr><td>What happened at the failure time?</td><td>Relevant application/system records in Event Viewer.</td><td>Relevant application logs and Console.</td></tr><tr><td>Is storage nearly full?</td><td>Storage settings and the affected volume.</td><td>Storage settings and the affected volume.</td></tr></tbody></table></div>\n<p>A <strong>process</strong> is a running program. A <strong>service</strong> or background daemon performs work without necessarily displaying a window. High resource usage is a symptom to correlate with the workload; it is not automatically malware. On macOS, memory pressure gives more context than unused RAM alone. Interface labels can differ by operating-system version.</p>\n<h2>Separate the layers of a connection</h2><p>For a failed business application, check link or Wi-Fi, address configuration, route, name resolution, service reachability, then identity and permissions. These checks can overlap, but keeping their meanings separate prevents random fixes.</p><p>On Windows, <code>ipconfig /all</code> displays configuration. For an approved test against a known lab server, <code>Test-NetConnection 10.20.30.10 -Port 445</code> tests TCP reachability. A successful result does not establish permission to open its files. On either operating system, a failed ping may reflect ICMP filtering rather than a completely unreachable application.</p>\n<h2>Use a comparison to narrow the cause</h2><p>In a fictional office, one user cannot open the finance share from two devices. A different authorized user can open it from both. That points toward user-specific identity or authorization rather than a broken switch cable. Review the account and permissions instead of restarting the network.</p><details><summary>What changes if every user fails only on one laptop?</summary><p>Investigate device-specific configuration, connectivity, time, cached authentication, or client software. The comparison changes the next hypothesis; it still does not prove a particular root cause by itself.</p></details>\n<h2>Remember what a server supports</h2><p>A Windows Server may provide DNS, DHCP, domain authentication, or shared files to many users. Identify its role and dependencies before restarting a service or the host. Collect relevant health and event evidence first. A disruptive “try a reboot” action may interrupt the support session, erase useful transient evidence, and affect customers who never reported the original problem.</p>",
-      "question": "One user fails on two devices while another authorized user succeeds on both. What does this comparison help you prioritize?",
-      "answer": "User-specific identity or permissions become a stronger hypothesis than a device-wide connectivity failure. Review the exact account, group membership, and resource authorization, and verify with an appropriate test.",
-      "sources": [
-        "ipconfig",
-        "connectionTest",
-        "macMemory",
-        "eventViewer"
-      ],
-      "related": [
-        "dns",
-        "dhcp",
-        "windows-events",
-        "file-shares",
-        "change-management",
-        "technical-documentation",
-        "osi",
-        "rdp",
-        "http",
-        "rpc-netbios"
-      ],
-      "keywords": "Windows Windows Server macOS OS support troubleshooting processes services Task Manager Activity Monitor diagnostics"
-    },
-    {
-      "slug": "change-management",
-      "title": "Change management",
-      "category": "IT operations",
-      "kind": "Concept",
-      "basis": "Concept study",
-      "principle": "Change management makes a system change deliberate, reviewable, and recoverable. Success means the intended result works and required services still work afterward.",
-      "body": "<h2>A small setting can have a large reach</h2><p>Changing a switch port, firewall rule, server service, or access policy can affect more than the original ticket. A management-VLAN change can disconnect your own remote session. A broad deny rule can interrupt several applications. <strong>Change management</strong> is the process for understanding and controlling that impact.</p><p>A <strong>baseline</strong> is a known reference configuration. A <strong>change record</strong> describes the proposed difference, reason, expected impact, and evidence. A <strong>rollback</strong> is a planned way to return to an acceptable earlier state if the change does not meet its criteria.</p>\n<h2>Write the change before making it</h2><ul><li><strong>Purpose and scope:</strong> which customer, devices, accounts, or services are included, and why?</li><li><strong>Current and proposed state:</strong> the exact configuration difference.</li><li><strong>Dependencies and impact:</strong> who could lose access, including the person making the change?</li><li><strong>Authorization and timing:</strong> the appropriate approver, implementer, maintenance window, and communication.</li><li><strong>Validation:</strong> what observable results will show success and protect required behavior?</li><li><strong>Recovery:</strong> rollback steps, prerequisites, decision threshold, and an alternate access path where needed.</li></ul>\n<p>Preserve the current configuration through the platform’s supported method. Some changes cannot be undone with a simple inverse command. A database conversion or major upgrade may require a tested restore path. Confirm the recovery method rather than treating the word “backup” as enough.</p>\n<h2>A fictional firewall change</h2><p>The application owner requests that staff reach a new file server. Document the staff subnet, server address, TCP 445, evaluation order, and the required restriction on guest access. Confirm routing and server readiness before adding the rule.</p><p>Your validation plan needs two outcomes: an authorized staff connection works, and the guest test remains blocked. Also check relevant existing services. If the staff test still fails, inspect logs and the destination service; do not keep widening access until the symptom disappears.</p><details><summary>What belongs in this change’s rollback plan?</summary><p>The original policy or rule identifiers, the exact new rule to remove or prior configuration to restore, who makes that decision, and which checks confirm the restored state. Include a way to recover management access if the change can disconnect the normal session. A rollback that depends on an already-lost connection is incomplete.</p></details>\n<h2>Implementation is not verification</h2><p>A successful save message shows that a configuration operation was accepted. It does not show that the intended traffic works or that the rule reached every relevant device. Record actual before-and-after tests, policy deployment status, and the affected service owner’s result where appropriate.</p><p>Make one controlled change or a clearly defined change set so you can reason about its effects. If a test fails, follow the agreed decision point rather than continuing improvised modifications beyond the approved scope.</p>\n<h2>Urgent changes still need ownership</h2><p>An active incident may require an emergency process with expedited authority. Capture the decision, implementation, verification, and subsequent review under that process. “Emergency” changes the timing and workflow; it does not make the action result or customer impact irrelevant.</p>\n<p>After the change, update the configuration record, affected diagrams, and applicable knowledge articles. The next analyst should not have to reconstruct the current network from a months-old ticket and a guess.</p>",
-      "question": "Why is a configuration backup not always a complete rollback plan?",
-      "answer": "You also need a supported restoration method, access to execute it, prerequisites, decision criteria, and validation. If the change disconnects your management session, a backup alone does not restore your ability to reach the device.",
-      "sources": [
-        "changeGuide",
-        "firewallGuide"
-      ],
-      "related": [
-        "firewalls",
-        "switching",
-        "vulnerability-management",
-        "technical-documentation",
-        "troubleshooting"
-      ],
-      "keywords": "change control rollback maintenance configuration baseline approval emergency change verification"
-    },
-    {
-      "slug": "technical-documentation",
-      "title": "Technical documentation",
-      "category": "IT operations",
-      "kind": "Concept",
-      "basis": "Concept study",
-      "principle": "Useful technical documentation lets another person understand the evidence or repeat a task without guessing. Its structure should match what that reader needs to do.",
-      "body": "<h2>Choose the document for the job</h2><p>A support team needs several kinds of writing. A <strong>ticket note</strong> records what happened in one case. A <strong>knowledge-base article</strong> teaches a reusable concept or solution. A <strong>standard operating procedure (SOP)</strong> defines a repeatable process and its responsibilities. A <strong>runbook</strong> usually gives operational steps for a particular situation. Teams use these labels differently; make the purpose and audience clear.</p><p>A beginner study note explains why a concept works. A production procedure must also identify the supported environment, required access, decision points, expected results, and recovery steps. Understanding a lab exercise does not establish that the same commands are approved for every customer.</p>\n<h2>Write a ticket another analyst can inherit</h2><ul><li><strong>Context:</strong> customer, affected service, device or account, impact, and the relevant time zone.</li><li><strong>Evidence:</strong> observations and references to the records used.</li><li><strong>Actions:</strong> what was requested, attempted, completed, or failed, by whom and when.</li><li><strong>Interpretation:</strong> the current conclusion and its limits.</li><li><strong>Next step:</strong> outstanding work, accountable owner, and next update or review time.</li></ul>\n<p>“Checked everything; looks fine” gives the reader no reproducible basis. “The tested staff laptop reached the file server on TCP 445 at 15:20 UTC; the user still receives Access denied when opening the share” describes a result and the unresolved problem.</p>\n<h2>Build a procedure around decisions</h2><ol><li>Name the task and explain when the procedure applies.</li><li>List prerequisites: access, supported versions, customer scope, and any required approval.</li><li>Use numbered actions in the order they should be performed.</li><li>Show the expected result and what to do if it differs.</li><li>Include validation, rollback or escalation, owner, and review date.</li></ol>\n<p>Replace vague verbs such as “handle” or “process” with the action the reader should take. Define new terms where they first matter. Use examples with fictional addresses and clearly marked placeholders. Keep credentials, secrets, and unnecessary customer personal information out of reusable articles.</p>\n<h2>Practice an evidence-based update</h2><p>Fictional record: one laptop raised an alert at 10:05 UTC. The EDR confirmed isolation at 10:07. The investigation has not yet established whether other accounts or devices are affected. The response lead owns the scope review.</p><details><summary>Reveal a client-facing update supported by this record</summary><p>“One laptop generated a security alert at 10:05 UTC and was isolated at 10:07. The response lead is investigating the activity and checking for related impact on other accounts and devices. We will provide the next update at 10:30 UTC.” The update reports confirmed actions and an owned next step. It does not claim that the infection is removed or that no other systems are affected.</p></details>\n<p>The time commitment in a real update must be achievable and agreed. Generic reassurance cannot replace the case’s actual facts. If new evidence changes the conclusion, update the record rather than leaving contradictory statements unexplained.</p>\n<h2>Review documentation like a small test</h2><p>Ask another appropriate reader to follow the procedure in a safe, representative environment. Note missing prerequisites and ambiguous choices. After a system or process changes, revise the relevant document and identify its owner. A beautiful article with obsolete instructions is less useful than a clear, maintained one.</p>",
-      "question": "What is missing from “we are investigating and will update you soon”?",
-      "answer": "It omits confirmed scope or impact, the evidence and action state, the responsible next owner, and a specific achievable update time. Fill those in from the actual case rather than using one universal sentence.",
-      "sources": [
-        "writingAudience",
-        "writingSteps",
-        "incidentGuide"
-      ],
-      "related": [
-        "incident-response",
-        "alert-triage",
-        "change-management",
-        "troubleshooting",
-        "security-awareness"
-      ],
-      "keywords": "documentation KB SOP runbook tickets client communication evidence handoff"
     }
   ]
 }
