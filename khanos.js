@@ -451,7 +451,7 @@
   let activeCase=null,caseStep=0;
   function renderCases() {
     activeCase=null;caseStep=0;
-    $('.case-content').innerHTML='<div class="case-launchers"><button data-case="soc"><b aria-hidden="true">⌁</b><span>Azure honeypot</span><small>Windows / Sentinel ↗</small></button><button data-case="lifx"><b aria-hidden="true">◉</b><span>LIFX bulb</span><small>UDP / 56700 ↗</small></button><button data-case="vuln"><b aria-hidden="true">◎</b><span>Finding and fixing vulnerabilities</span><small>Tenable / Windows ↗</small></button><button type="button" disabled><b aria-hidden="true">▤</b><span>BTL</span><small>Blue Team Labs / Coming soon</small></button></div>';
+    $('.case-content').innerHTML='<div class="case-launchers"><button data-case="soc"><b aria-hidden="true">⌁</b><span>Azure honeypot</span><small>Windows / Sentinel ↗</small></button><button data-case="lifx"><b aria-hidden="true">◉</b><span>LIFX bulb</span><small>UDP / 56700 ↗</small></button><button data-case="vuln"><b aria-hidden="true">◎</b><span>Finding and fixing vulnerabilities</span><small>Tenable / Windows ↗</small></button><button type="button" disabled><b aria-hidden="true">▤</b><span>BTL</span><small>Coming soon</small></button></div>';
   }
   function renderCase(id,step=0) {
     const data=investigations[id];if(!data)return;
