@@ -42,6 +42,7 @@ body{background:var(--bg);color:var(--fg)}
 .note-body a,.note-body code,.note-connections button,.note-recall summary{color:var(--accent)}
 .note-sheet .note-principle{color:var(--fg);border-color:var(--accent)}
 .case-launchers>button:last-child:nth-child(odd){grid-column:1/-1}
+.case-launchers button:disabled{cursor:default;background:rgb(var(--p-faint)/.0353);border-style:dashed}
 @media(min-width:761px){.window-cases{width:400px;height:370px}}
 .window-shell{left:29%;top:8%;width:67%;height:73%;min-width:580px;min-height:400px;z-index:8}
 .shell-surface{flex:1;min-height:0;display:flex;flex-direction:column;background:linear-gradient(150deg,rgb(var(--p-panel)/.08),rgb(var(--p-base)/.25))}
