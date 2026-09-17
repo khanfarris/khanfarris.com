@@ -1,5 +1,10 @@
 /* BTL collection and annotated evidence; original image files stay unchanged. */
 .btl-writeup-name{text-transform:none}
+.btl-writeup .investigation-intro{padding-bottom:0}
+.btl-writeup .investigation-intro>.lab-readme{margin:16px 0 0}
+.btl-writeup #setup{padding-top:28px}
+.btl-writeup .log-flow{gap:40px}
+.btl-writeup .log-flow li+li::before{top:0;left:-30px;width:20px;text-align:center;font:500 18px/22.4px var(--mono)}
 .btl-library{border-top:1px solid var(--line)}
 .btl-entry{display:grid;grid-template-columns:48px minmax(0,1fr) 30px;gap:24px;padding:34px 0;border-bottom:1px solid var(--line);text-decoration:none;align-items:start}
 .btl-entry-number{font:25px/1.4 var(--mono);color:var(--accent)}
@@ -40,6 +45,12 @@
 .recall p{font-size:15px;margin:12px 0 0}
 .indicator-table{font-variant-numeric:tabular-nums}
 .indicator-table tbody th{width:auto}
+@media(max-width:760px){
+  .btl-writeup .log-flow{grid-template-columns:1fr;gap:12px}
+  .btl-writeup .log-flow li+li::before{display:none}
+  .btl-writeup .log-flow li:not(:last-child)::after{content:'↓';display:block;margin-top:12px;color:var(--accent);font:500 18px/22.4px var(--mono)}
+  .btl-writeup .log-flow li:last-child::after{display:none}
+}
 @media(max-width:620px){
   .btl-entry{grid-template-columns:32px minmax(0,1fr) 20px;gap:14px;padding:28px 0}
   .btl-entry h2{font-size:28px}
