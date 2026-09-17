@@ -1,4 +1,5 @@
 /* BTL collection and annotated evidence; original image files stay unchanged. */
+.btl-writeup-name{text-transform:none}
 .btl-library{border-top:1px solid var(--line)}
 .btl-entry{display:grid;grid-template-columns:48px minmax(0,1fr) 30px;gap:24px;padding:34px 0;border-bottom:1px solid var(--line);text-decoration:none;align-items:start}
 .btl-entry-number{font:25px/1.4 var(--mono);color:var(--accent)}
