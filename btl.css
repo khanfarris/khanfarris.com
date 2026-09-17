@@ -1,0 +1,54 @@
+/* BTL collection and annotated evidence; original image files stay unchanged. */
+.btl-library{border-top:1px solid var(--line)}
+.btl-entry{display:grid;grid-template-columns:48px minmax(0,1fr) 30px;gap:24px;padding:34px 0;border-bottom:1px solid var(--line);text-decoration:none;align-items:start}
+.btl-entry-number{font:25px/1.4 var(--mono);color:var(--accent)}
+.btl-entry-copy{display:block;color:var(--muted);font-size:16px;line-height:1.75}
+.btl-entry-copy .eyebrow{display:block;font:11px/1.6 var(--mono);margin-bottom:12px;letter-spacing:1px}
+.btl-entry h2{margin:0 0 12px;font-size:32px;color:var(--fg)}
+.btl-entry-arrow{font-size:28px;color:var(--accent)}
+.btl-entry:hover h2{text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:7px}
+.btl-entry:focus-visible{outline:2px solid var(--accent);outline-offset:7px}
+.btl-library-footer{padding:36px 0 64px;font-size:14px}
+.question-index{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px;list-style:none;padding:0;margin:24px 0}
+.question-index a{display:flex;gap:12px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:14px}
+.question-index a:hover{color:var(--fg)}
+.question-index span{font:12px var(--mono);color:var(--accent);flex-shrink:0}
+.lab-question{font-size:17px;color:var(--fg);padding-left:15px;border-left:2px solid var(--accent)}
+.answer-box{margin:22px 0;padding:16px 20px;border:1px solid rgb(var(--p-accent)/.36);border-radius:7px;background:rgb(var(--p-accent)/.045)}
+.answer-box>span{display:block;font:11px/1.7 var(--mono);letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:7px}
+.answer-box>p{margin:0;color:var(--fg);overflow-wrap:anywhere}
+.answer-box code{font-size:15px}
+.answer-box ul{margin:0;padding-left:20px}
+.evidence-open{display:block;position:relative;overflow:hidden;background:white;cursor:zoom-in;border:1px solid var(--line);border-radius:7px}
+.evidence-open:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
+.evidence-image{display:block;width:100%;height:auto;background:white}
+.evidence-mark{fill:none;stroke:#e51b36;stroke-width:2.5;vector-effect:non-scaling-stroke}
+.evidence-hint{display:block;margin-top:9px;font:11px/1.5 var(--mono);color:var(--accent)}
+.evidence-dialog{padding:0;width:min(1500px,calc(100% - 32px));max-width:none;max-height:calc(100dvh - 32px);border:1px solid var(--line);border-radius:10px;color:var(--fg);background:var(--bg);box-shadow:0 20px 90px #0009}
+.evidence-dialog::backdrop{background:#000c}
+.evidence-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:10px 20px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.evidence-toolbar h2{font:15px/1.5 var(--mono);margin:0 auto 0 0}
+.evidence-toolbar button,.evidence-toolbar a{font:12px/1.6 var(--mono);color:var(--fg);padding:7px 10px;border:1px solid var(--line);border-radius:5px;background:transparent;cursor:pointer}
+.evidence-toolbar :is(button,a):focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.evidence-canvas{overflow:auto;max-height:calc(100dvh - 165px);background:#fff}
+.evidence-canvas:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
+.evidence-canvas:not(.is-zoomed) .evidence-image{width:min(100%,calc((100dvh - 180px) * var(--evidence-ratio)));margin-inline:auto}
+.evidence-canvas.is-zoomed .evidence-image{width:max(100%,1800px);max-width:none}
+.evidence-caption{padding:12px 18px;margin:0;font-size:13px}
+.recall{margin:18px 0;padding:14px 0;border-block:1px solid var(--line)}
+.recall p{font-size:15px;margin:12px 0 0}
+.indicator-table{font-variant-numeric:tabular-nums}
+.indicator-table tbody th{width:auto}
+@media(max-width:620px){
+  .btl-entry{grid-template-columns:32px minmax(0,1fr) 20px;gap:14px;padding:28px 0}
+  .btl-entry h2{font-size:28px}
+  .btl-entry-number{font-size:20px}
+  .question-index{grid-template-columns:1fr}
+  .answer-box{padding:14px 16px}
+  .evidence-dialog{width:calc(100% - 16px);max-height:calc(100dvh - 16px)}
+  .evidence-toolbar{padding:12px;gap:8px}
+  .evidence-toolbar h2{flex-basis:100%}
+  .evidence-canvas{max-height:calc(100dvh - 200px)}
+  .evidence-canvas:not(.is-zoomed) .evidence-image{width:min(100%,calc((100dvh - 230px) * var(--evidence-ratio)))}
+}
+@media print{.evidence-hint,.evidence-dialog{display:none}.evidence-open{border-color:#ccc}.answer-box{background:white}.answer-box>span{color:#333}.question-index{display:none}}

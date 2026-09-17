@@ -200,6 +200,7 @@
     {name:'pwning my light bulbs',slug:'lifx',kind:'case',target:'lifx',aliases:['lifx-pentest']},
     {name:'Azure honeypot lab',slug:'soc',kind:'case',target:'soc',aliases:['soc-honeypot','honeypot','sentinel','azure']},
     {name:'Vulnerability scanning lab',slug:'vuln',kind:'case',target:'vuln',aliases:['vulnerability-scan','tenable']},
+    {name:'BTL writeups',slug:'btl',kind:'link',target:'btl.html',aliases:['btlo']},
     {name:'Labs',slug:'labs',kind:'app',target:'cases',aliases:['lab','cases','investigations']},
     {name:'whoami',slug:'whoami',kind:'app',target:'profile',aliases:['about']},
     {name:'home lab',slug:'home',kind:'app',target:'shell',aliases:['index','shell']},
@@ -451,7 +452,7 @@
   let activeCase=null,caseStep=0;
   function renderCases() {
     activeCase=null;caseStep=0;
-    $('.case-content').innerHTML='<div class="case-launchers"><button data-case="soc"><b aria-hidden="true">⌁</b><span>Azure honeypot</span><small>Windows / Sentinel ↗</small></button><button data-case="lifx"><b aria-hidden="true">◉</b><span>LIFX bulb</span><small>UDP / 56700 ↗</small></button><button data-case="vuln"><b aria-hidden="true">◎</b><span>Finding and fixing vulnerabilities</span><small>Tenable / Windows ↗</small></button><button type="button" disabled><b aria-hidden="true">▤</b><span>BTL</span><small>Coming soon</small></button></div>';
+    $('.case-content').innerHTML='<div class="case-launchers"><button data-case="soc"><b aria-hidden="true">⌁</b><span>Azure honeypot</span><small>Windows / Sentinel ↗</small></button><button data-case="lifx"><b aria-hidden="true">◉</b><span>LIFX bulb</span><small>UDP / 56700 ↗</small></button><button data-case="vuln"><b aria-hidden="true">◎</b><span>Finding and fixing vulnerabilities</span><small>Tenable / Windows ↗</small></button><button type="button" data-btl><b aria-hidden="true">▤</b><span>BTL</span><small>Writeups ↗</small></button></div>';
   }
   function renderCase(id,step=0) {
     const data=investigations[id];if(!data)return;
@@ -474,6 +475,7 @@
     if (target.hasAttribute('data-related')) {selectNote(target.dataset.related,true);return;}
     if (target.hasAttribute('data-read')) {event.preventDefault();openReader(target.dataset.read);return;}
     if (target.hasAttribute('data-clear-filters')) {state.category='All';state.query='';$('#knowledge-query').value='';filterKnowledge();return;}
+    if (target.hasAttribute('data-btl')) {location.assign('btl.html?theme='+palette.id);return;}
     if (target.hasAttribute('data-case')) {
       renderCase(target.dataset.case);const el=windows.get('cases');
       if (!mobile.matches&&!el.classList.contains('maximized')) applyGeometry(el,fitted(el,{x:workspace.clientWidth*.18,y:workspace.clientHeight*.13,w:600,h:540}));

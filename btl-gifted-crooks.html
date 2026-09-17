@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gifted Crooks — BTL — Farris Khan</title>
+  <meta name="description" content="A step-by-step MISP investigation: reading event context, matching files and network indicators, and understanding threat intelligence.">
+  <link rel="canonical" href="https://khanfarris.com/btl-gifted-crooks.html">
+  <link rel="stylesheet" href="khanos-common.css?v=khanos-1">
+  <link rel="stylesheet" href="palette-tokens.css?v=khanos-1">
+  <link rel="stylesheet" href="investigation.css?v=lab-readme-1">
+  <link rel="stylesheet" href="btl.css?v=gifted-crooks-1">
+  <script src="khanos-palettes.js?v=khanos-1"></script>
+  <script src="investigation.js?v=soc-lab-1" defer></script>
+  <script src="btl-evidence.js?v=gifted-crooks-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#investigation">Skip to investigation</a>
+  <header class="investigation-bar">
+    <a href="btl.html" data-workspace-link><span class="mono">[k/f]</span> <span>BTL writeups</span></a>
+    <span class="mono">KHANOS / LABS</span>
+  </header>
+  <main id="investigation" class="investigation">
+    <header class="investigation-intro">
+      <p class="eyebrow">BTL / GIFTED CROOKS</p>
+      <h1>Reading threat intelligence<br> in MISP</h1>
+      <p class="intro">I completed Gifted Crooks by working through MISP event 10128. I used its header, file records, and network indicators to connect the answers to the evidence and understand what each field meant.</p>
+      <p class="byline"><span>Farris Khan</span><span>September 2026</span><span>MISP / Threat intelligence</span></p>
+      <p class="scope">The red outlines below mark answer fields in my saved lab screenshots. Select an image to enlarge it. Where the supplied evidence does not show a complete count or a lookup result, I identify the answer as reference checked.</p>
+      <details class="lab-readme" id="readme">
+        <summary><span class="readme-title">README</span><span class="readme-subtitle">Lab setup notes</span></summary>
+        <div class="readme-content">
+          <p class="readme-context">The lab's supplied setup notes, formatted for reference.</p>
+          <section aria-labelledby="readme-misp">
+            <h2 id="readme-misp">Open MISP</h2>
+            <pre><code>https://localhost:8443/</code></pre>
+          </section>
+          <section aria-labelledby="readme-login">
+            <h2 id="readme-login">MISP lab login</h2>
+            <dl class="readme-login">
+              <dt>Username</dt><dd><code>sbtmispuser@sbt.com</code></dd>
+              <dt>Password</dt><dd><code>M!sp2025@Secure#Sbt</code></dd>
+            </dl>
+          </section>
+          <section aria-labelledby="readme-pymisp">
+            <h2 id="readme-pymisp">Use PyMISP</h2>
+            <p>Use the Python virtual environment:</p>
+            <pre><code>source ~/pymisp-env/bin/activate</code></pre>
+          </section>
+          <section aria-labelledby="readme-database">
+            <h2 id="readme-database">If MISP is not loading</h2>
+            <p>Check MariaDB, then start it:</p>
+            <pre><code>sudo systemctl status mariadb
+sudo systemctl start mariadb</code></pre>
+          </section>
+          <section aria-labelledby="readme-chrome">
+            <h2 id="readme-chrome">Launch Chrome</h2>
+            <p>If Chrome asks for an unlock password, use <code>test</code>.</p>
+            <pre><code>pkill chrome
+rm ~/.config/google-chrome/SingletonLock
+google-chrome</code></pre>
+          </section>
+        </div>
+      </details>
+      <nav class="article-jumps" aria-label="Writeup sections">
+        <a href="#setup"><span>01</span> Starting point</a>
+        <a href="#questions"><span>02</span> Questions</a>
+        <a href="#findings"><span>03</span> Findings</a>
+        <a href="#remember"><span>04</span> Study recap</a>
+      </nav>
+    </header>
+    <section class="article-section" id="setup" aria-labelledby="setup-title">
+      <p class="eyebrow">STARTING POINT</p>
+      <h2 id="setup-title">Understand the event before counting anything</h2>
+      <p><strong>MISP</strong> is a platform for organizing and sharing threat intelligence. An <strong>event</strong> collects information about a threat or investigation. Its <strong>attributes</strong> are individual pieces of information, such as a filename, hash, IP address, or report link. An <strong>object</strong> groups related attributes so their relationship is clear.</p>
+      <p>I opened event <code>10128</code> in the lab's MISP interface. I started with the summary at the top, then moved into the attributes below it. An <strong>indicator of compromise (IOC)</strong> is an observable value that can help an analyst look for suspicious activity. Finding an IOC in an intelligence record does not mean my own computer contacted it.</p>
+      <ol class="log-flow" aria-label="Investigation order">
+        <li><strong>Header</strong><span>Who published it, when, and how it is tagged.</span></li>
+        <li><strong>Attributes</strong><span>Read each value with its type and category.</span></li>
+        <li><strong>Objects</strong><span>Keep a file with its hashes, or an IP with its port.</span></li>
+        <li><strong>Context</strong><span>Use comments and the original report to explain the values.</span></li>
+      </ol>
+      <p class="reference">Platform reference: <a href="https://www.circl.lu/doc/misp/using-the-system/" target="_blank" rel="noopener">MISP user guide</a>.</p>
+    </section>
+    <section class="article-section" id="questions" aria-labelledby="questions-title">
+      <p class="eyebrow">QUESTION BY QUESTION</p>
+      <h2 id="questions-title">Follow the evidence in order</h2>
+      <nav class="question-index" aria-label="Jump to a question">
+        <a href="#question-1"><span>01</span>Country and campaign</a>
+        <a href="#question-2"><span>02</span>Publication and creator</a>
+        <a href="#question-3"><span>03</span>Attributes and objects</a>
+        <a href="#question-4"><span>04</span>Categories</a>
+        <a href="#question-5"><span>05</span>File extensions</a>
+        <a href="#question-6"><span>06</span>Office documents</a>
+        <a href="#question-7"><span>07</span>Script filenames</a>
+        <a href="#question-8"><span>08</span>Archive and directory</a>
+        <a href="#question-9"><span>09</span>First C2</a>
+        <a href="#question-10"><span>10</span>Second C2</a>
+        <a href="#question-11"><span>11</span>First IP enrichment</a>
+        <a href="#question-12"><span>12</span>Second IP enrichment</a>
+        <a href="#question-13"><span>13</span>TLP tag</a>
+      </nav>
+    </section>
+<section class="lab-step" aria-labelledby="q1" id="question-1">
+        <span class="step-number" aria-hidden="true">01</span>
+        <div class="step-body">
+          <p class="eyebrow">QUESTION 01</p>
+          <h2 id="q1">Which country issued the alert, and what kind of campaign was it?</h2>
+          
+<p>I started with the event title and the <strong>cert-ua</strong> tag. CERT-UA is the <strong>Computer Emergency Response Team of Ukraine</strong>; the linked advisory describes targeted espionage involving UAC-0226 and GIFTEDCROOK. <strong>Cyber espionage</strong> means using computer access to gather information secretly.</p>
+<p>A tag can be a clue without explaining itself. Clicking <code>cert-ua</code> filtered events; it did not give me a definition. The useful next step was to check the named organization and source report. For the Ukrainian title, translating the whole phrase gives better context than translating one word.</p>
+<div class="answer-box"><span>Answer</span><p><code>Ukraine, Cyber-Espionage</code></p></div>
+<figure>
+            <a class="evidence-open" href="assets/investigations/btl-gifted-crooks/event-overview.png" data-evidence aria-label="Enlarge evidence: The CERT-UA title and its reference to targeted espionage">
+              <svg class="evidence-image" viewBox="300 215 1960 105" style="--evidence-ratio:18.666667" role="img" aria-label="The CERT-UA title and its reference to targeted espionage" xmlns="http://www.w3.org/2000/svg">
+                <image href="assets/investigations/btl-gifted-crooks/event-overview.png" width="2512" height="1203"/>
+                <rect class="evidence-mark" x="307" y="230" width="800" height="43" rx="3"/>
+              </svg>
+            </a>
+            <span class="evidence-hint" aria-hidden="true">Enlarge evidence ↗</span>
+            <figcaption>From my saved lab screenshots: the outline marks the title used as a starting clue. The country and campaign meaning come from understanding the title and its source, not a hidden Galaxy entry.</figcaption>
+          </figure>
+<p class="reference"><a href="https://cert.gov.ua/article/6282946">Original CERT-UA advisory ↗</a></p>
+        </div>
+      </section>
+<section class="lab-step" aria-labelledby="q2" id="question-2">
+        <span class="step-number" aria-hidden="true">02</span>
+        <div class="step-body">
+          <p class="eyebrow">QUESTION 02</p>
+          <h2 id="q2">When was the event published, and who created the record?</h2>
+          
+<p>In the header, I read the <strong>Published</strong> row and <strong>Creator org</strong> row. The creator organization in MISP is <code>rosti.bin.re</code>; that is separate from CERT-UA, the source of the alert.</p>
+<div class="answer-box"><span>Answer</span><p><code>2025-04-08 08:43:37, rosti.bin.re</code></p></div>
+<figure>
+            <a class="evidence-open" href="assets/investigations/btl-gifted-crooks/event-overview.png" data-evidence aria-label="Enlarge evidence: Creator organization rosti.bin.re and publication timestamp 2025-04-08 08:43:37">
+              <svg class="evidence-image" viewBox="305 411 720 406" style="--evidence-ratio:1.773399" role="img" aria-label="Creator organization rosti.bin.re and publication timestamp 2025-04-08 08:43:37" xmlns="http://www.w3.org/2000/svg">
+                <image href="assets/investigations/btl-gifted-crooks/event-overview.png" width="2512" height="1203"/>
+                <rect class="evidence-mark" x="551" y="422" width="104" height="31" rx="3"/>
+                <rect class="evidence-mark" x="626" y="778" width="184" height="30" rx="3"/>
+              </svg>
+            </a>
+            <span class="evidence-hint" aria-hidden="true">Enlarge evidence ↗</span>
+            <figcaption>From my saved lab screenshots: the two outlined values answer this question. The separate Date row reads 2025-06-04.</figcaption>
+          </figure>
+<p class="takeaway"><strong>Why the dates confused me:</strong> <em>Date</em> is the event’s assigned incident/reference date; <em>Published</em> records publication, and <em>Last change</em> records an edit. The later Date value does not prove when the attack began or why the dates differ. I need the record history or source report to establish that.</p>
+        </div>
+      </section>
+<section class="lab-step" aria-labelledby="q3" id="question-3">
+        <span class="step-number" aria-hidden="true">03</span>
+        <div class="step-body">
+          <p class="eyebrow">QUESTION 03</p>
+          <h2 id="q3">How many attributes and objects are listed?</h2>
+          
+<p>The <strong>#Attributes</strong> row already gives both totals, so there is no need to count every visible line.</p>
+<div class="answer-box"><span>Answer</span><p><code>56, 21</code></p></div>
+<figure>
+            <a class="evidence-open" href="assets/investigations/btl-gifted-crooks/event-overview.png" data-evidence aria-label="Enlarge evidence: 56 attributes and 21 objects">
+              <svg class="evidence-image" viewBox="308 813 550 49" style="--evidence-ratio:11.22449" role="img" aria-label="56 attributes and 21 objects" xmlns="http://www.w3.org/2000/svg">
+                <image href="assets/investigations/btl-gifted-crooks/event-overview.png" width="2512" height="1203"/>
+                <rect class="evidence-mark" x="551" y="821" width="140" height="28" rx="3"/>
+              </svg>
+            </a>
+            <span class="evidence-hint" aria-hidden="true">Enlarge evidence ↗</span>
+            <figcaption>From my saved lab screenshots: MISP displays <strong>56 (21 Objects)</strong>. These are two different kinds of count.</figcaption>
+          </figure>
+<p>An <strong>attribute</strong> is a single value with a type and category, such as an IP address. An <strong>object</strong> groups related attributes. For example, a file object can hold its filename, MD5, and SHA-256 together. Those hashes are fingerprints of the file’s contents, not extra files.</p>
+<p class="reference"><a href="https://www.misp-project.org/misp-training/cheatsheet.pdf">MISP’s event, attribute, and object guide ↗</a></p>
+        </div>
+      </section>
+<section class="lab-step" aria-labelledby="q4" id="question-4">
+        <span class="step-number" aria-hidden="true">04</span>
+        <div class="step-body">
+          <p class="eyebrow">QUESTION 04</p>
+          <h2 id="q4">How many different categories appear?</h2>
+          
+<p>I expanded the objects and read the <strong>Category</strong> column across the event, collecting each distinct label once. The four categories are <strong>Payload delivery</strong>, <strong>Network activity</strong>, <strong>Artifacts dropped</strong>, and <strong>External analysis</strong>.</p>
+<div class="answer-box"><span>Answer</span><p><code>4</code></p></div>
+<figure>
+            <a class="evidence-open" href="assets/investigations/btl-gifted-crooks/event-attributes.png" data-evidence aria-label="Enlarge evidence: The four distinct MISP category labels">
+              <svg class="evidence-image" viewBox="605 282 1450 982" style="--evidence-ratio:1.476578" role="img" aria-label="The four distinct MISP category labels" xmlns="http://www.w3.org/2000/svg">
+                <image href="assets/investigations/btl-gifted-crooks/event-attributes.png" width="2350" height="1678"/>
+                <rect class="evidence-mark" x="612" y="293" width="146" height="30" rx="3"/>
+                <rect class="evidence-mark" x="612" y="582" width="146" height="30" rx="3"/>
+                <rect class="evidence-mark" x="612" y="1031" width="150" height="30" rx="3"/>
+                <rect class="evidence-mark" x="612" y="1227" width="150" height="30" rx="3"/>
+              </svg>
+            </a>
+            <span class="evidence-hint" aria-hidden="true">Enlarge evidence ↗</span>
+            <figcaption>From my saved lab screenshots: one example of each category is outlined in red.</figcaption>
+          </figure>
+<p class="takeaway"><strong>Category versus type:</strong> category describes the evidence’s role, such as <em>Network activity</em>. Type describes what the value is, such as <code>ip-dst</code>, <code>filename</code>, or <code>sha256</code>. Counting types would answer a different question.</p>
+        </div>
+      </section>
+<section class="lab-step" aria-labelledby="q5" id="question-5">
+        <span class="step-number" aria-hidden="true">05</span>
+        <div class="step-body">
+          <p class="eyebrow">QUESTION 05</p>
+          <h2 id="q5">Which file extensions appear?</h2>
+          
+<p>I looked at filename values, kept the suffix after the final dot, removed repeats, and put the extensions in alphabetical order. A filename can include a full path, so the ZIP under <code>%TMP%</code> still belongs in the list.</p>
+<div class="answer-box"><span>Answer</span><p><code>.ps1, .xlsm, .zip</code></p></div>
+<p><code>.ps1</code> is a PowerShell script; <code>.xlsm</code> is an Excel workbook that can contain macros; <code>.zip</code> is an archive. An extension describes a format, not whether every file of that format is malicious.</p>
+<figure>
+            <a class="evidence-open" href="assets/investigations/btl-gifted-crooks/excel-february.png" data-evidence aria-label="Enlarge evidence: ZIP archive and XLSM filename values">
+              <svg class="evidence-image" viewBox="300 0 1390 536" style="--evidence-ratio:2.593284" role="img" aria-label="ZIP archive and XLSM filename values" xmlns="http://www.w3.org/2000/svg">
+                <image href="assets/investigations/btl-gifted-crooks/excel-february.png" width="2017" height="537"/>
+                <rect class="evidence-mark" x="610" y="6" width="151" height="32" rx="3"/>
+                <rect class="evidence-mark" x="610" y="474" width="142" height="31" rx="3"/>
+              </svg>
+            </a>
+            <span class="evidence-hint" aria-hidden="true">Enlarge evidence ↗</span>
+            <figcaption>From my saved lab screenshots: the archive path and Excel filename show <code>.zip</code> and <code>.xlsm</code>.</figcaption>
+          </figure>
+<figure>
+            <a class="evidence-open" href="assets/investigations/btl-gifted-crooks/powershell-march.png" data-evidence aria-label="Enlarge evidence: The PowerShell filename nnnnrth.ps1">
+              <svg class="evidence-image" viewBox="300 240 1300 71" style="--evidence-ratio:18.309859" role="img" aria-label="The PowerShell filename nnnnrth.ps1" xmlns="http://www.w3.org/2000/svg">
+                <image href="assets/investigations/btl-gifted-crooks/powershell-march.png" width="3309" height="312"/>
+                <rect class="evidence-mark" x="614" y="251" width="117" height="29" rx="3"/>
+              </svg>
+            </a>
+            <span class="evidence-hint" aria-hidden="true">Enlarge evidence ↗</span>
+            <figcaption>From my saved lab screenshots: the script filename supplies the <code>.ps1</code> extension.</figcaption>
+          </figure>
+        </div>
+      </section>
+<section class="lab-step" aria-labelledby="q6" id="question-6">
+        <span class="step-number" aria-hidden="true">06</span>
+        <div class="step-body">
+          <p class="eyebrow">QUESTION 06</p>
+          <h2 id="q6">How many Office documents are included?</h2>
+          
+<p>I narrowed the review to Office document filenames, including the <code>.xlsm</code> workbooks. I initially counted seven in a filtered view; clearing the filter exposed more matches. That taught me to check the whole event before trusting a total.</p>
+<div class="answer-box"><span>Lab answer · reference checked</span><p><code>9</code></p></div>
+<p><strong>Counting method:</strong> expand the objects, check every page of results, and count document entries once. A filename repeated in a blue object summary, a comment, or another visible field does not automatically represent another document. Browser Find counts text matches, so its number alone is not an inventory.</p>
+<figure>
+            <a class="evidence-open" href="assets/investigations/btl-gifted-crooks/excel-february.png" data-evidence aria-label="Enlarge evidence: One XLSM document example in a file object">
+              <svg class="evidence-image" viewBox="300 220 1300 316" style="--evidence-ratio:4.113924" role="img" aria-label="One XLSM document example in a file object" xmlns="http://www.w3.org/2000/svg">
+                <image href="assets/investigations/btl-gifted-crooks/excel-february.png" width="2017" height="537"/>
+                <rect class="evidence-mark" x="610" y="474" width="142" height="31" rx="3"/>
+              </svg>
+            </a>
+            <span class="evidence-hint" aria-hidden="true">Enlarge evidence ↗</span>
+            <figcaption>From my saved lab screenshots: this is one Office document example. My saved lab screenshots do not show the complete nine-document inventory; the total was checked against a walkthrough.</figcaption>
+          </figure>
+        </div>
+      </section>
+<section class="lab-step" aria-labelledby="q7" id="question-7">
+        <span class="step-number" aria-hidden="true">07</span>
+        <div class="step-body">
+          <p class="eyebrow">QUESTION 07</p>
+          <h2 id="q7">What are the script filenames?</h2>
+          
+<p>This question needs the <strong>full names</strong>, rather than the number of documents or just their extensions. I found the two <code>.ps1</code> filename attributes and listed them alphabetically.</p>
+<div class="answer-box"><span>Answer</span><p><code>kpbkewf32mm.ps1, nnnnrth.ps1</code></p></div>
+<figure>
+            <a class="evidence-open" href="assets/investigations/btl-gifted-crooks/powershell-february.png" data-evidence aria-label="Enlarge evidence: PowerShell script kpbkewf32mm.ps1">
+              <svg class="evidence-image" viewBox="300 0 1310 314" style="--evidence-ratio:4.171975" role="img" aria-label="PowerShell script kpbkewf32mm.ps1" xmlns="http://www.w3.org/2000/svg">
+                <image href="assets/investigations/btl-gifted-crooks/powershell-february.png" width="3306" height="315"/>
+                <rect class="evidence-mark" x="612" y="250" width="152" height="31" rx="3"/>
+              </svg>
+            </a>
+            <span class="evidence-hint" aria-hidden="true">Enlarge evidence ↗</span>
+            <figcaption>From my saved lab screenshots: the filename reads <code>kpbkewf32mm.ps1</code>. The spelling here follows the visible evidence.</figcaption>
+          </figure>
+<figure>
+            <a class="evidence-open" href="assets/investigations/btl-gifted-crooks/powershell-march.png" data-evidence aria-label="Enlarge evidence: PowerShell script nnnnrth.ps1">
+              <svg class="evidence-image" viewBox="300 0 1310 312" style="--evidence-ratio:4.198718" role="img" aria-label="PowerShell script nnnnrth.ps1" xmlns="http://www.w3.org/2000/svg">
+                <image href="assets/investigations/btl-gifted-crooks/powershell-march.png" width="3309" height="312"/>
+                <rect class="evidence-mark" x="614" y="251" width="117" height="29" rx="3"/>
+              </svg>
+            </a>
+            <span class="evidence-hint" aria-hidden="true">Enlarge evidence ↗</span>
+            <figcaption>From my saved lab screenshots: the second file object contains <code>nnnnrth.ps1</code>.</figcaption>
+          </figure>
+<p class="takeaway"><strong>Keep the object together:</strong> the filename and hash rows describe the same file. A script name tells me what was recorded; it does not, by itself, show what commands the script runs.</p>
+        </div>
+      </section>
+<section class="lab-step" aria-labelledby="q8" id="question-8">
+        <span class="step-number" aria-hidden="true">08</span>
+        <div class="step-body">
+          <p class="eyebrow">QUESTION 08</p>
+          <h2 id="q8">Which dropped archive and directory does the question ask for?</h2>
+          
+<p>I located the standalone <strong>Artifacts dropped</strong> attribute and read both its value and comment. The value is <code>%TMP%\status.zip</code>; the comment contains <code>%TMP%\nmpoyqv5l0ig\</code>. <strong>%TMP%</strong> is a Windows environment variable for a temporary directory.</p>
+<div class="answer-box"><span>Answer</span><p><code>status.zip, %TMP%\nmpoyqv5l0ig\</code></p></div>
+<figure>
+            <a class="evidence-open" href="assets/investigations/btl-gifted-crooks/dropped-archive.png" data-evidence aria-label="Enlarge evidence: The status.zip filename and the temporary directory in its comment">
+              <svg class="evidence-image" viewBox="300 0 1380 46" style="--evidence-ratio:30" role="img" aria-label="The status.zip filename and the temporary directory in its comment" xmlns="http://www.w3.org/2000/svg">
+                <image href="assets/investigations/btl-gifted-crooks/dropped-archive.png" width="2022" height="46"/>
+                <rect class="evidence-mark" x="608" y="5" width="150" height="32" rx="3"/>
+                <rect class="evidence-mark" x="1455" y="5" width="188" height="32" rx="3"/>
+              </svg>
+            </a>
+            <span class="evidence-hint" aria-hidden="true">Enlarge evidence ↗</span>
+            <figcaption>From my saved lab screenshots: the red boxes separate the archive value from the directory in the comment.</figcaption>
+          </figure>
+<p class="takeaway"><strong>Read the path’s role carefully:</strong> the source advisory shows <code>Compress-Archive</code> taking files from that directory and writing <code>status.zip</code>. It does not describe the ZIP being extracted into the directory. Although the lab question says “at the start of infection,” this attribute row alone does not establish timing. <a class="reference" href="https://cert.gov.ua/article/6282946">CERT-UA’s host indicators ↗</a></p>
+        </div>
+      </section>
+<section class="lab-step" aria-labelledby="q9" id="question-9">
+        <span class="step-number" aria-hidden="true">09</span>
+        <div class="step-body">
+          <p class="eyebrow">QUESTION 09</p>
+          <h2 id="q9">What IP and port does the lab call the first C2?</h2>
+          
+<p><strong>C2</strong> means <strong>command and control</strong>: communication that lets an attacker direct compromised software. The standalone IP attributes have <code>C2</code> in their comments. I matched the requested IP to its own <strong>ip-port object</strong>, where <code>ip-dst</code> identifies the destination address and <code>dst-port</code> gives its port.</p>
+<div class="answer-box"><span>Answer</span><p><code>89[.]44[.]9[.]186, 3240</code></p></div>
+<figure>
+            <a class="evidence-open" href="assets/investigations/btl-gifted-crooks/network-indicators.png" data-evidence aria-label="Enlarge evidence: 89.44.9.186 paired with port 3240 and a separate C2 comment">
+              <svg class="evidence-image" viewBox="298 257 1400 433" style="--evidence-ratio:3.233256" role="img" aria-label="89.44.9.186 paired with port 3240 and a separate C2 comment" xmlns="http://www.w3.org/2000/svg">
+                <image href="assets/investigations/btl-gifted-crooks/network-indicators.png" width="3249" height="691"/>
+                <rect class="evidence-mark" x="614" y="378" width="136" height="29" rx="3"/>
+                <rect class="evidence-mark" x="614" y="442" width="52" height="29" rx="3"/>
+                <rect class="evidence-mark" x="614" y="656" width="136" height="28" rx="3"/>
+                <rect class="evidence-mark" x="1463" y="656" width="37" height="28" rx="3"/>
+              </svg>
+            </a>
+            <span class="evidence-hint" aria-hidden="true">Enlarge evidence ↗</span>
+            <figcaption>From my saved lab screenshots: the IP and port belong to the same bordered object. The lower standalone record adds the C2 role.</figcaption>
+          </figure>
+<p><strong>Defanging</strong> means writing an indicator in a form less likely to become an accidental clickable link: dots become <code>[.]</code>. In <a class="reference" href="https://gchq.github.io/CyberChef/">CyberChef</a>, add <strong>Defang IP Addresses</strong> and enter the IP to make that change. CyberChef transforms text; it does not decide whether the IP is malicious.</p>
+<p class="takeaway"><strong>“First” is the lab’s label here.</strong> The position of a row on screen does not prove which server was used first.</p>
+        </div>
+      </section>
+<section class="lab-step" aria-labelledby="q10" id="question-10">
+        <span class="step-number" aria-hidden="true">10</span>
+        <div class="step-body">
+          <p class="eyebrow">QUESTION 10</p>
+          <h2 id="q10">What IP and port does the lab call the second C2?</h2>
+          
+<p>I found the separate object for <code>37[.]120[.]239[.]187</code> and read its own destination port: <strong>6501</strong>. I did not borrow port 3240 from the nearby object.</p>
+<div class="answer-box"><span>Answer</span><p><code>37[.]120[.]239[.]187:6501</code></p></div>
+<figure>
+            <a class="evidence-open" href="assets/investigations/btl-gifted-crooks/network-indicators.png" data-evidence aria-label="Enlarge evidence: 37.120.239.187 paired with port 6501 and a separate C2 comment">
+              <svg class="evidence-image" viewBox="298 0 1400 690" style="--evidence-ratio:2.028986" role="img" aria-label="37.120.239.187 paired with port 6501 and a separate C2 comment" xmlns="http://www.w3.org/2000/svg">
+                <image href="assets/investigations/btl-gifted-crooks/network-indicators.png" width="3249" height="691"/>
+                <rect class="evidence-mark" x="614" y="120" width="149" height="29" rx="3"/>
+                <rect class="evidence-mark" x="614" y="184" width="52" height="29" rx="3"/>
+                <rect class="evidence-mark" x="614" y="611" width="149" height="29" rx="3"/>
+                <rect class="evidence-mark" x="1463" y="611" width="37" height="28" rx="3"/>
+              </svg>
+            </a>
+            <span class="evidence-hint" aria-hidden="true">Enlarge evidence ↗</span>
+            <figcaption>From my saved lab screenshots: the top object contains this IP/port pair. Its standalone C2 row is outside the object for 89.44.9.186.</figcaption>
+          </figure>
+<p class="takeaway"><strong>The border matters:</strong> an object ends at its enclosing border. Standalone rows below it do not inherit its port. The separate <code>149[.]102[.]246[.]110</code> row is labelled <strong>VPN</strong>, so it is not one of these two C2 answers.</p>
+        </div>
+      </section>
+<section class="lab-step" aria-labelledby="q11" id="question-11">
+        <span class="step-number" aria-hidden="true">11</span>
+        <div class="step-body">
+          <p class="eyebrow">QUESTION 11</p>
+          <h2 id="q11">What country is recorded for the first C2?</h2>
+          
+<p>This step adds outside context to an indicator, which is called <strong>enrichment</strong>. In <a class="reference" href="https://lookup.icann.org/">ICANN Lookup</a>, search the ordinary dotted form of the first IP, <code>89[.]44[.]9[.]186</code>, and inspect the returned network registration information.</p>
+<div class="answer-box"><span>Lab answer · reference checked</span><p><code>France</code></p></div>
+<p>The country result is not shown in my saved lab screenshots, so I retain this as the lab’s reference answer. Registration data can change; a country field describes the registration context and does not prove the attacker’s nationality or physical location.</p>
+        </div>
+      </section>
+<section class="lab-step" aria-labelledby="q12" id="question-12">
+        <span class="step-number" aria-hidden="true">12</span>
+        <div class="step-body">
+          <p class="eyebrow">QUESTION 12</p>
+          <h2 id="q12">What country is recorded for the second C2?</h2>
+          
+<p>Repeat the lookup for <code>37[.]120[.]239[.]187</code>, removing the brackets before searching. Keep each result attached to the correct IP so the two answers do not get swapped.</p>
+<div class="answer-box"><span>Lab answer · reference checked</span><p><code>Netherlands</code></p></div>
+<p>This lookup result is also not shown in my saved lab screenshots. When repeating the exercise, save the IP, the exact country field, and the lookup date together. ICANN provides registration information through <strong>RDAP</strong>, a protocol for looking up that information. <a class="reference" href="https://lookup.icann.org/en/faq">ICANN’s lookup explanation ↗</a></p>
+        </div>
+      </section>
+<section class="lab-step" aria-labelledby="q13" id="question-13">
+        <span class="step-number" aria-hidden="true">13</span>
+        <div class="step-body">
+          <p class="eyebrow">QUESTION 13</p>
+          <h2 id="q13">Which TLP tag is on the event?</h2>
+          
+<p>I returned to the header and read the <strong>Tags</strong> row.</p>
+<div class="answer-box"><span>Answer</span><p><code>tlp:clear</code></p></div>
+<figure>
+            <a class="evidence-open" href="assets/investigations/btl-gifted-crooks/event-overview.png" data-evidence aria-label="Enlarge evidence: The event tag tlp:clear">
+              <svg class="evidence-image" viewBox="308 530 550 51" style="--evidence-ratio:10.784314" role="img" aria-label="The event tag tlp:clear" xmlns="http://www.w3.org/2000/svg">
+                <image href="assets/investigations/btl-gifted-crooks/event-overview.png" width="2512" height="1203"/>
+                <rect class="evidence-mark" x="668" y="539" width="115" height="33" rx="3"/>
+              </svg>
+            </a>
+            <span class="evidence-hint" aria-hidden="true">Enlarge evidence ↗</span>
+            <figcaption>From my saved lab screenshots: the exact tag is outlined beside cert-ua.</figcaption>
+          </figure>
+<p><strong>Traffic Light Protocol (TLP)</strong> communicates sharing boundaries. <strong>TLP:CLEAR</strong> permits unrestricted sharing under the TLP rules, subject to normal copyright requirements. It does not mean the malware is safe, and it does not change MISP’s separate <strong>Distribution</strong> access setting. <a class="reference" href="https://www.first.org/tlp/">FIRST’s TLP definitions ↗</a></p>
+        </div>
+      </section>
+    <section class="article-section" id="findings" aria-labelledby="findings-title">
+      <p class="eyebrow">FINDINGS</p>
+      <h2 id="findings-title">What the event brought together</h2>
+      <p>The event describes a cyber-espionage campaign reported by CERT-UA. It brings together macro-enabled Excel documents, PowerShell scripts, a ZIP archive, and network indicators. The useful part is the context connecting them: the type identifies the value, the object groups related fields, and the comment explains its reported role.</p>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="C2 indicator summary">
+        <table class="indicator-table">
+          <caption>C2 pairs recorded in the lab event</caption>
+          <thead><tr><th scope="col">Lab label</th><th scope="col">Destination IP</th><th scope="col">Port</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">First C2</th><td><code>89[.]44[.]9[.]186</code></td><td><code>3240</code></td></tr>
+            <tr><th scope="row">Second C2</th><td><code>37[.]120[.]239[.]187</code></td><td><code>6501</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="takeaway"><strong>Evidence limit:</strong> this was an investigation of a prepared intelligence event. These records describe reported activity; they are not endpoint or packet evidence from a system I investigated myself.</p>
+    </section>
+    <section class="article-section" id="remember" aria-labelledby="remember-title">
+      <p class="eyebrow">CHECK MY UNDERSTANDING</p>
+      <h2 id="remember-title">Questions to revisit</h2>
+      <details class="recall"><summary>How do I know which port belongs to an IP?</summary><p>I read the destination IP and port inside the same object. A nearby standalone IP row is a separate attribute and does not inherit the port above it.</p></details>
+      <details class="recall"><summary>Why can the attribute count be larger than the file count?</summary><p>One file can have several attributes, including its filename and multiple hashes. I count unique file records when the question asks for files.</p></details>
+      <details class="recall"><summary>Does an IP's country identify the attacker?</summary><p>No. Registry information describes the registration of network resources. Hosting, VPNs, and proxies can separate infrastructure from the person operating it.</p></details>
+      <details class="recall"><summary>Does clicking a MISP tag explain its meaning?</summary><p>Not necessarily. A tag can filter related events without providing a definition. I use the source organization or the published standard to confirm what it means.</p></details>
+      <h3 class="recap-heading">Recap</h3>
+      <blockquote>I learned to read a MISP event as related evidence instead of a list of answers. I checked the header for context, kept attributes inside their objects, separated filenames from hashes, and used source material when a value needed explanation. The main habit I want to keep is asking what a field proves before deciding what it means.</blockquote>
+    </section>
+    <footer class="investigation-footer">
+      <p>Completed lab notes, checked against a walkthrough and the linked technical references. All visual evidence comes from my saved lab screenshots.</p>
+      <a href="btl.html" data-workspace-link>← Back to BTL writeups</a>
+    </footer>
+  </main>
+</body>
+</html>

@@ -43,6 +43,10 @@ The homepage retains plain-text topic summaries without JavaScript. Full study n
 
 For future lab writeups, omit reading-time estimates. Keep tutorial attribution general (for example, “a tutorial I followed”). Do not link to or identify the specific video, tutorial title, creator, or channel. Never mention transcripts in lab copy. Refer to screenshots as “my saved lab screenshots.” Retain useful official product documentation links and accurate distinctions between reference material and observed results.
 
+When the user supplies a lab README, transcribe its content into a collapsed `README` disclosure near the beginning of the writeup, using the site's active palette and readable text/code formatting. Do not embed the README screenshot. Use the reusable `.lab-readme` native `<details>` styles in `investigation.css`; keep supplied setup instructions distinct from claims about steps completed in the investigation.
+
+BTL opens `btl.html`, the collection of completed BTL writeups. Its first entry, `btl-gifted-crooks.html`, follows all thirteen questions in order with explanations, evidence, and a red Recap. Keep the question IDs stable when extending the article. The seven original images live under `assets/investigations/btl-gifted-crooks/`; inline SVG crops and red outlines display the relevant fields without modifying those originals. `btl.css` styles the collection and evidence, while `btl-evidence.js` adds an accessible enlargement dialog with zoom and original-image access. Counts and enrichment results absent from the saved evidence are labeled as reference checked.
+
 The Samsung TV lab is archived. Its original `samsung-tv-pentest.html` and `Samsung_TV_Pentest_Runbook.pdf` remain available by direct URL. The article is labeled archived and has `noindex, nofollow` metadata; it is excluded from Labs, shell commands and listings, site search, homepage navigation, and related-lab recommendations.
 
 ## Editorial scope
